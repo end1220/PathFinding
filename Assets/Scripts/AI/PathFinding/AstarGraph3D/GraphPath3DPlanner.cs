@@ -54,12 +54,7 @@ namespace Lite.AStar
 
 		protected override int CalCostG(AStarNode prevNode, AStarNode currentNode)
 		{
-			int dx = Math.Abs(((GraphAStar3DNode)prevNode).x - ((GraphAStar3DNode)currentNode).x);
-			int dy = Math.Abs(((GraphAStar3DNode)prevNode).y - ((GraphAStar3DNode)currentNode).y);
-			int dist = dx > dy ? 14 * dy + 10 * (dx - dy) : 14 * dx + 10 * (dy - dx);
-			return prevNode.g + dist;
-
-			//return prevNode.g + map.GetEdge(prevNode.id, currentNode.id).cost;
+			return prevNode.g + map.GetEdge(prevNode.id, currentNode.id).cost;
 		}
 
 		protected override int CalCostH(AStarNode node)

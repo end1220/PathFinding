@@ -70,19 +70,6 @@ namespace TwGame
 				}
 			}*/
 
-			if (BattleMap.Instance != null && BattleMap.Instance.currentPoint3D.x != 0)
-			{
-				int x = BattleMap.Instance.currentPoint3D.x;
-				int y = BattleMap.Instance.currentPoint3D.y;
-				int z = BattleMap.Instance.currentPoint3D.z;
-				Gizmos.color = blue;
-				int posx = minPos.x + x * cellSize + cellRadius;
-				int posy = minPos.y + y * cellSize + cellRadius;
-				int posz = minPos.z + z * cellSize + cellRadius;
-				Vector3 pos = new Vector3(posx / 1000f, posy / 1000f, posz / 1000f);
-				Gizmos.DrawWireCube(pos, gridSize);
-			}
-
 			var smallSize = new Vector3(0.1f, 0.1f, 0.1f);
 			for (int i = 0; i < navData.nodeList.Count; ++i)
 			{
@@ -100,22 +87,6 @@ namespace TwGame
 				Gizmos.DrawLine(from.worldPosition.ToVector3(), to.worldPosition.ToVector3());
 			}
 
-			if (BattleMap.Instance != null)
-			{
-				if (BattleMap.Instance.currentNode != null)
-				{
-					var node = BattleMap.Instance.currentNode;
-					Gizmos.color = blue;
-					Gizmos.DrawWireCube(node.worldPosition.ToVector3(), smallSize);
-				}
-				if (BattleMap.Instance.targetNode != null)
-				{
-					var node = BattleMap.Instance.targetNode;
-					Gizmos.color = red;
-					Gizmos.DrawWireCube(node.worldPosition.ToVector3(), smallSize);
-				}
-
-			}
 
 			// end draw
 

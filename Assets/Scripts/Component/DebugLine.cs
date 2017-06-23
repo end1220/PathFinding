@@ -13,12 +13,12 @@ class LineInfo
 	public List<Vector3> pointList = new List<Vector3>();
 	public Color color = Color.cyan;
 
-	public LineInfo(TwVector3[] points, Color color)
+	public LineInfo(Vector3[] points, Color color)
 	{
 		this.color = color;
 		for (int i = 0; i < points.Length; ++i)
 		{
-			pointList.Add(points[i].ToVector3() + new Vector3(0, 0.01f, 0));
+			pointList.Add(points[i] + new Vector3(0, 0.01f, 0));
 		}
 	}
 }
@@ -47,7 +47,7 @@ public class DebugLine : MonoBehaviour
 	private List<CircleInfo> circleList = new List<CircleInfo>();
 
 
-	public void AddLine(TwVector3[] points, Color color)
+	public void AddLine(Vector3[] points, Color color)
 	{
 		var info = new LineInfo(points, color);
 		lineList.Add(info);

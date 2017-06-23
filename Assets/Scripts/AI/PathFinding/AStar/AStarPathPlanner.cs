@@ -47,7 +47,8 @@ namespace Lite.AStar
 				if (CheckArrived(curNode))
 				{
 					arriveNode = curNode;
-					UnityEngine.Debug.LogError("AStarPathPlanner : take count " + count);
+					if (count > 100)
+						UnityEngine.Debug.LogError("AStarPathPlanner : take count " + count);
 					break;
 				}
 				EvaluateAllNeighbours(curNode);
