@@ -41,6 +41,8 @@ namespace Lite.AStar
 		{
 			startNode = map.GetNodeByID(start) as GraphAStar3DNode;
 			targetNode = map.GetNodeByID(end) as GraphAStar3DNode;
+			if (startNode == null || targetNode == null)
+				return null;
 
 			GraphAStar3DNode endNode = DoAStar(startNode) as GraphAStar3DNode;
 

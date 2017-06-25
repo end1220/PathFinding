@@ -185,13 +185,6 @@ public class NavGraphEditor : EditorWindow
 
 		EditorUtility.SetDirty(builder.navData);
 
-		var bamap = GameObject.FindObjectOfType<BattleMap>();
-		if (bamap != null)
-		{
-			//string path = AssetDatabase.GetAssetPath(navigation);
-			//bamap.navigation = existingAsset;
-		}
-
 		UnityEngine.Debug.Log("Saved  : " + saveFilePath);
 	}
 

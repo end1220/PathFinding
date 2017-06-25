@@ -234,7 +234,7 @@ namespace Lite.AStar.NavGraph
 						count++;
 						var cell = cells[x, y, z];
 						EditorUtility.DisplayProgressBar(string.Format("building nodes {0}/{1}", count, totalSize), "", (float)count / totalSize);
-						if (cell == null)
+						if (cell == null || !cell.walkable)
 							continue;
 
 						int id = CalcNodeId(x, y ,z);
@@ -262,7 +262,7 @@ namespace Lite.AStar.NavGraph
 						count++;
 						var cell = cells[x, y, z];
 						EditorUtility.DisplayProgressBar(string.Format("Building edges {0}/{1}", count, totalSize), "", (float)count / totalSize);
-						if (cell == null)
+						if (cell == null || !cell.walkable)
 							continue;
 
 						int id = CalcNodeId(x, y ,z);
@@ -320,10 +320,13 @@ namespace Lite.AStar.NavGraph
 
 											if (tan > cfg.tanSlope)
 												cost = int.MaxValue;
-											
-											int nbId = CalcNodeId(realx, realy, realz);
-											var edge = new GraphAStar3DEdge(id, nbId, cost);
-											navData.AddEdge(edge);
+
+											if (cost != int.MaxValue)
+											{
+												int nbId = CalcNodeId(realx, realy, realz);
+												var edge = new GraphAStar3DEdge(id, nbId, cost);
+												navData.AddEdge(edge);
+											}
 										}
 									}
 								}
