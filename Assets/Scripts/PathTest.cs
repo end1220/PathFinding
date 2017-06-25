@@ -12,9 +12,9 @@ using Lite.AStar;
 namespace TwGame
 {
 
-	public class BattleMap : MonoBehaviour
+	public class PathTest : MonoBehaviour
 	{
-		public static BattleMap Instance;
+		public static PathTest Instance;
 
 		// navigation asset
 		public NavigationData navGrid;
