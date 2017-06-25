@@ -282,6 +282,10 @@ namespace Lite.AStar.NavGraph
 									{
 										if (ix == 0 && iz == 0)
 											continue;
+
+										if (ix != 0 && iz != 0)
+											continue;
+
 										var neighbor = cells[realx, realy, realz];
 										if (neighbor != null)
 										{
