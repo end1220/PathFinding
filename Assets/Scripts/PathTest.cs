@@ -71,7 +71,11 @@ namespace Lite
 			}
 			else
 			{
-
+				int startx = random.Next(0, 42);
+				int starty = random.Next(0, 42);
+				int endx = random.Next(0, 42);
+				int endy = random.Next(0, 42);
+				gridFindPath(startx, starty, endx, endy, ref result);
 			}
 			if (result.Count > 0)
 			{
@@ -133,7 +137,22 @@ namespace Lite
 			return result.Count > 0;
 		}
 
-		
+
+		private bool gridFindPath(int startX, int startY, int endX, int endY, ref List<Vector3> result)
+		{
+			var path = gridPathFinder.FindPath(startX, startY, endX, endY);
+
+			result.Clear();
+			for (int i = 0; i < path.Count; ++i)
+			{
+				float x = navGrid.minX + path[i].x * navGrid.gridSize;
+				float y = navGrid.minZ + path[i].y * navGrid.gridSize;
+				Vector3 pos = new Vector3(x, 1, y);
+				result.Add(pos);
+			}
+
+			return result.Count > 0;
+		}
 
 
 		private void SetNavDebugDraw()
