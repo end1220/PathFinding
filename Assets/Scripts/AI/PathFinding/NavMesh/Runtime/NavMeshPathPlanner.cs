@@ -5,7 +5,7 @@ using UnityEngine;
 using Lite.AStar;
 
 
-namespace TwGame.NavMesh
+namespace Lite.NavMesh
 {
 	
 	public class NavMeshPathPlanner : AStarPathPlanner

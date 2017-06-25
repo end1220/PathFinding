@@ -3,7 +3,7 @@ using System;
 using UnityEngine;
 using Lite.AStar;
 
-namespace TwGame.NavMesh
+namespace Lite.NavMesh
 {
 	[Serializable]
 	public class NavMeshNode : AStarNode

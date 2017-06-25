@@ -1,6 +1,6 @@
 
 
-namespace TwGame.Graph
+namespace Lite.Graph
 {
 	public class GraphEdge
 	{

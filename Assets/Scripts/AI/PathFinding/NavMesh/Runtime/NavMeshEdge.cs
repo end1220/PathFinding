@@ -1,9 +1,9 @@
 
 using System;
-using TwGame.Graph;
+using Lite.Graph;
 
 
-namespace TwGame.NavMesh
+namespace Lite.NavMesh
 {
 	[Serializable]
 	public class NavMeshEdge : GraphEdge

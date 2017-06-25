@@ -2,15 +2,15 @@
 using System;
 using UnityEngine;
 using System.Collections.Generic;
-using TwGame.Graph;
+using Lite.Graph;
 
 
-namespace TwGame.NavMesh
+namespace Lite.NavMesh
 {
 	/// <summary>
 	/// 存储着3D NavMesh寻路数据
 	/// </summary>
-	[CreateAssetMenu(menuName = "TwGame/NavMeshData", order = 3)]
+	[CreateAssetMenu(menuName = "Lite/NavMeshData", order = 3)]
 	public class NavMeshData : ScriptableObject
 	{
 		public List<NavMeshNode> nodeList = new List<NavMeshNode>();

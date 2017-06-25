@@ -9,7 +9,7 @@ namespace Lite.AStar
 	/// <summary>
 	/// 存储着2D网格寻路数据
 	/// </summary>
-	//[CreateAssetMenu(menuName = "TwGame/Navigation Data", order = 2)]
+	//[CreateAssetMenu(menuName = "Lite/Navigation Data", order = 2)]
 	public class NavigationData : ScriptableObject
 	{
 		public int width = 0;

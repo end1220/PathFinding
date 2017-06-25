@@ -2,12 +2,12 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
-using TwGame.Graph;
+using Lite.Graph;
 using Lite.AStar;
 using Lite.AStar.NavGraph;
 
 
-namespace TwGame
+namespace Lite
 {
 	public class NavGraphGizmo : MonoBehaviour
 	{

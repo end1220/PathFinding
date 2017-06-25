@@ -3,7 +3,7 @@
 namespace Lite.AStar
 {
 
-	public abstract class AStarNode : TwGame.Graph.GraphNode
+	public abstract class AStarNode : Lite.Graph.GraphNode
 	{
 		public int g;
 		public int h;
