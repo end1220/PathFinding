@@ -7,9 +7,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 
-using TwGame;
+using Lite;
 using Lite.AStar;
-using TwGame.Graph;
+using Lite.Graph;
 using Lite.AStar.NavGraph;
 
 
@@ -26,7 +26,7 @@ public class NavGraphEditor : EditorWindow
 	string str_roleHeight = "2";
 	string str_slope = "80";
 
-	string saveFilePath = "Assets/{0}_nav.asset";
+	string saveFilePath = "Assets/{0}_navgraph.asset";
 	readonly string drawObjectName = "_NavGraphData_Gizmo";
 
 	#region GUI

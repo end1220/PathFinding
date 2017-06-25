@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using Lite;
-using TwGame.Graph;
+using Lite.Graph;
 
 
 namespace Lite.AStar.NavGraph

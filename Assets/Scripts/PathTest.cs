@@ -9,7 +9,7 @@ using Lite;
 using Lite.AStar;
 
 
-namespace TwGame
+namespace Lite
 {
 
 	public class PathTest : MonoBehaviour
@@ -59,13 +59,20 @@ namespace TwGame
 		System.Random random = new System.Random();
 		void DoIt()
 		{
-			int count = 40;
-			int begin = 40;
-			int delta = 600;
+			if (graphMode)
+			{
+				int count = 40;
+				int begin = 40;
+				int delta = 600;
 
-			int start = begin + random.Next(0, count) * delta + random.Next(0, count-1);
-			int end = begin + random.Next(0, count) * delta + random.Next(0, count-1);
-			graphFindPath(start, end, ref result);
+				int start = begin + random.Next(0, count) * delta + random.Next(0, count - 1);
+				int end = begin + random.Next(0, count) * delta + random.Next(0, count - 1);
+				graphFindPath(start, end, ref result);
+			}
+			else
+			{
+
+			}
 			if (result.Count > 0)
 			{
 				line.ClearLines();
