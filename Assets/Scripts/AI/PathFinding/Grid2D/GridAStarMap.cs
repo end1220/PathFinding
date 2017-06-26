@@ -2,9 +2,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TwFramework;
 
 
-namespace Lite.AStar
+namespace TwGame.AStar
 {
 	public class GridAStarMap : AStarMap
 	{
@@ -18,9 +19,12 @@ namespace Lite.AStar
 
 		private int nodeIdCounter;
 
+		NavGrid2DData navGridData;
 
-		public void InitMap(int width, int height, NavigationData data)
+
+		public void InitMap(int width, int height, NavGrid2DData data)
 		{
+			navGridData = data;
 			nodeIdCounter = 0;
 			this.width = width;
 			this.height = height;
@@ -126,6 +130,86 @@ namespace Lite.AStar
 			return (nodes[from.x, to.y].blockValue < 1 && nodes[to.x, from.y].blockValue < 1) 
 				|| (from.x == to.x && from.y == to.y);
 		}
+
+
+		public Point2D TwVector3ToPoint2D(TwVector3 position)
+		{
+			double x = ((double)position.x / TwMath.ratio_mm - navGridData.MinX) / navGridData.GridSize + 0.5f;
+			double z = ((double)position.z / (double)TwMath.ratio_mm - navGridData.MinZ) / navGridData.GridSize + 0.5f;
+			return new Point2D((int)x, (int)z);
+		}
+
+
+		public TwVector3 Point2DToTwVector3(Point2D point)
+		{
+			float fposx = navGridData.MinX + navGridData.GridSize * point.x;
+			float fposz = navGridData.MinZ + navGridData.GridSize * point.y;
+			var vec = new TwVector3((long)(fposx * TwMath.ratio_mm), 0, (long)(fposz * TwMath.ratio_mm));
+			return vec;
+		}
+
+
+		public bool IsPassable(TwVector3 position)
+		{
+			Point2D pt2d = TwVector3ToPoint2D(position);
+			bool ret = this.IsNodePassable(pt2d.x, pt2d.y);
+			return ret;
+		}
+
+
+		// 射线碰撞，计算起点到终点间的最远可到达点
+		public TwVector3 RayCast2D(TwVector3 from, TwVector3 to)
+		{
+			TwVector3 blockPoint = from;
+			int stepLen = Math.Min(300, (int)(BattleMap.Instance.navGrid.GridSize * TwMath.ratio_mm));
+			bool blocked = false;
+
+			// y = a*x + b
+			Fix64 a = (Fix64)0;
+			long dx = to.x - from.x;
+			long dz = to.z - from.z;
+			if (Math.Abs(dx) > Math.Abs(dz))
+			{
+				a = (Fix64)dz / (Fix64)dx;
+				int step = to.x - from.x > 0 ? stepLen : -stepLen;
+				for (long x = from.x + step; step > 0 ? x < to.x + step : x > to.x - step; x += step)
+				{
+					x = step > 0 ? System.Math.Min(x, to.x) : System.Math.Max(x, to.x);
+					Fix64 z = (Fix64)from.z + a * (Fix64)(x - from.x);
+
+					if (!IsPassable(new TwVector3(x, 0, (long)z)))
+					{
+						blocked = true;
+						break;
+					}
+
+					blockPoint.Set(x, from.y, (long)z);
+				}
+			}
+			else
+			{
+				a = (Fix64)dx / (Fix64)dz;
+				int step = to.z - from.z > 0 ? stepLen : -stepLen;
+				for (long z = from.z + step; step > 0 ? z < to.z + step : z > to.z - step; z += step)
+				{
+					z = step > 0 ? System.Math.Min(z, to.z) : System.Math.Max(z, to.z);
+					Fix64 x = (Fix64)from.x + a * (Fix64)(z - from.z);
+					if (!IsPassable(new TwVector3((long)x, 0, z)))
+					{
+						blocked = true;
+						break;
+					}
+
+					blockPoint.Set((long)x, from.y, z);
+				}
+			}
+
+			if (blockPoint != from || blocked)
+				return blockPoint;
+			else
+				return to;
+		}
+
 
 	}
 }

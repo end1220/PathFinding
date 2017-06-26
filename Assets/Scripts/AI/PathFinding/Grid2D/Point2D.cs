@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-namespace Lite.AStar
+namespace TwGame.AStar
 {
 
 	public struct Point2D

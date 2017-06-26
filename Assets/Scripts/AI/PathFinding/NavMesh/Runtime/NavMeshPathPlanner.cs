@@ -2,10 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Lite.AStar;
+using TwGame.AStar;
 
 
-namespace Lite.NavMesh
+namespace TwGame.NavMesh
 {
 	
 	public class NavMeshPathPlanner : AStarPathPlanner

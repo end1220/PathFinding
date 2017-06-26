@@ -1,7 +1,7 @@
 ﻿
 using System.Collections.Generic;
 using UnityEngine;
-using Lite.NavMesh;
+using TwGame.NavMesh;
 
 
 public class TestNavMesh : MonoBehaviour

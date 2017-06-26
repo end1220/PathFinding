@@ -1,9 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TwFramework;
 
 
-namespace Lite.AStar
+namespace TwGame.AStar
 {
 	
 	public class GridPathPlanner : AStarPathPlanner
@@ -16,6 +17,33 @@ namespace Lite.AStar
 		private GridAStarNode targetNode;
 
 		private List<Point2D> resultCache = new List<Point2D>();
+
+
+		public bool FindPath(TwVector3 from, TwVector3 to, ref List<TwVector3> result)
+		{
+			GridAStarMap gridMap = this.map as GridAStarMap;
+
+			Point2D start = gridMap.TwVector3ToPoint2D(from);
+			Point2D end = gridMap.TwVector3ToPoint2D(to);
+
+			var path = FindPath(start.x, start.y, end.x, end.y);
+
+			PathOptimizer.Optimize(ref path);
+
+			result.Clear();
+			for (int i = 0; i < path.Count; ++i)
+			{
+				result.Add(gridMap.Point2DToTwVector3(path[i]));
+			}
+			
+			if (result.Count > 0)
+			{
+				result[0] = from;
+				result[result.Count - 1] = to;
+			}
+
+			return result.Count > 0;
+		}
 
 
 		public List<Point2D> FindPath(int startX, int startY, int endX, int endY)

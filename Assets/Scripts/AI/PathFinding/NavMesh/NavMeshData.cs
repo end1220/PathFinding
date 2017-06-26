@@ -2,10 +2,10 @@
 using System;
 using UnityEngine;
 using System.Collections.Generic;
-using Lite.Graph;
+using TwGame.Graph;
 
 
-namespace Lite.NavMesh
+namespace TwGame.NavMesh
 {
 	/// <summary>
 	/// 存储着3D NavMesh寻路数据

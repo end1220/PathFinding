@@ -2,11 +2,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Lite.Graph;
-using Lite.AStar;
+using TwGame.Graph;
+using TwGame.AStar;
 
 
-namespace Lite.NavMesh
+namespace TwGame.NavMesh
 {
 	public class NavMeshMap : AStarMap
 	{

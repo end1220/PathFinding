@@ -1,20 +1,23 @@
 ﻿
 using UnityEngine;
-using Lite;
+using TwFramework;
+using TwGame;
 
 
-namespace Lite.AStar.NavGraph
+namespace TwGame.AStar.NavGraph
 {
 
 	public class Cell
 	{
-		public Vector3 centerPosition;
+		public Int3 pos;
 		public Vector3 worldPosition;
 		public bool walkable;
+		public int id;
 
-		public Cell(Vector3 pos, Vector3 worldPos, bool walkable)
+		public Cell(int id, Int3 pos, Vector3 worldPos, bool walkable)
 		{
-			this.centerPosition = pos;
+			this.id = id;
+			this.pos = pos;
 			this.worldPosition = worldPos;
 			this.walkable = walkable;
 		}
@@ -33,9 +36,19 @@ namespace Lite.AStar.NavGraph
 		public Int3 worldSize;
 		public Int3 worldCenterPos;
 		public Int3 worldMinPos;
-		public int cellCountX;
-		public int cellCountY;
-		public int cellCountZ;
+		public Int3 cellCount;
+	}
+
+	/// <summary>
+	/// 子空间
+	/// 从3D场景空间生成路径Graph信息时，
+	/// 进行划分子空间，可以快速剔除完全空的子空间，从而减少生成时间。
+	/// </summary>
+	public class SubSpace
+	{
+		public Int3 minPos;
+		public Int3 startIndex;
+		public Int3 cellCount;
 	}
 
 
