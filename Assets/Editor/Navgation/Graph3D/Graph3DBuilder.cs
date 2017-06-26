@@ -3,11 +3,11 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using TwFramework;
-using TwGame.Graph;
+
+using Lite.Graph;
 
 
-namespace TwGame.AStar.NavGraph
+namespace Lite.AStar.NavGraph
 {
 
 	public class Graph3DBuilder

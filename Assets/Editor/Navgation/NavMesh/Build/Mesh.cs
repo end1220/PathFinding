@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace TwGame.NavMesh
+namespace Lite.NavMesh
 {
 	public class Mesh
 	{

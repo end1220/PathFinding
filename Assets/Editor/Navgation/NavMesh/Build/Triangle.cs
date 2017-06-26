@@ -2,7 +2,7 @@
 using UnityEngine;
 
 
-namespace TwGame.NavMesh
+namespace Lite.NavMesh
 {
 	public class Triangle
 	{

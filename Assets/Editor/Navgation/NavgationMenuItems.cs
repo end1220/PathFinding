@@ -7,11 +7,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 
-using TwGame;
-using TwGame.AStar;
-using TwGame.Graph;
-using TwGame.AStar.NavGraph;
-using TwGame.NavMesh;
+using Lite;
+using Lite.AStar;
+using Lite.Graph;
+using Lite.AStar.NavGraph;
+using Lite.NavMesh;
 
 
 public class NavgationMenuItems

@@ -7,8 +7,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 
-using TwGame;
-namespace TwGame.NavMesh
+using Lite;
+namespace Lite.NavMesh
 {
 
 	public class NavMeshEditor : EditorWindow

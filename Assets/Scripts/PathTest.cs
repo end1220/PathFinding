@@ -17,17 +17,17 @@ namespace Lite
 		public static PathTest Instance;
 
 		// navigation asset
-		public NavigationData navGrid;
+		public NavGrid2DData navGrid;
 
-		public NavGraphData navGraph;
+		public NavGraph3DData navGraph;
 
 		// path finding
 		public bool graphMode;
 		private GridAStarMap gridMap;
 		private GridPathPlanner gridPathFinder = new GridPathPlanner();
 
-		private GraphAStar3DMap graphMap;
-		private GraphPath3DPlanner graphPathFinder = new GraphPath3DPlanner();
+		private Graph3DAStarMap graphMap;
+		private Graph3DPathPlanner graphPathFinder = new Graph3DPathPlanner();
 
 		public DebugLine line;
 
@@ -61,12 +61,8 @@ namespace Lite
 		{
 			if (graphMode)
 			{
-				int count = 40;
-				int begin = 40;
-				int delta = 600;
-
-				int start = begin + random.Next(0, count) * delta + random.Next(0, count - 1);
-				int end = begin + random.Next(0, count) * delta + random.Next(0, count - 1);
+				int start = random.Next(0, 1600);
+				int end = random.Next(0, 1600);
 				graphFindPath(start, end, ref result);
 			}
 			else
@@ -98,7 +94,7 @@ namespace Lite
 				{
 					if (graphMode)
 					{
-						graphMap = new GraphAStar3DMap();
+						graphMap = new Graph3DAStarMap();
 						graphMap.Init(navGraph);
 						graphPathFinder.Setup(graphMap);
 					}
@@ -121,11 +117,9 @@ namespace Lite
 		}
 
 
-		#region ---------- 寻路 ------------
-
 		private bool graphFindPath(int startId, int endId, ref List<Vector3> result)
 		{
-			var path = graphPathFinder.FindPath(startId, endId);
+			var path = graphPathFinder.FindPath3D(startId, endId);
 
 			result.Clear();
 			for (int i = 0; i < path.Count; ++i)
@@ -187,10 +181,6 @@ namespace Lite
 				gizmoLine.SetGridPosList(navGrid, pos, navGrid.Width, navGrid.Height);
 			}
 		}
-
-
-		#endregion
-
 		
 
 	}

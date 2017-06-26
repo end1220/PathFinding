@@ -7,9 +7,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 
-using TwGame;
-using TwGame.AStar;
-using TwGame.Graph;
+using Lite;
+using Lite.AStar;
+using Lite.Graph;
 
 
 public class Grid2DEditor : EditorWindow
@@ -328,13 +328,6 @@ public class Grid2DEditor : EditorWindow
 		}
 
 		EditorUtility.SetDirty(navigation);
-
-		var bamap = GameObject.FindObjectOfType<BattleMap>();
-		if (bamap != null)
-		{
-			//string path = AssetDatabase.GetAssetPath(navigation);
-			bamap.navGrid = existingAsset;
-		}
 
 		UnityEngine.Debug.Log("File saved  : " + saveFilePath);
 	}
