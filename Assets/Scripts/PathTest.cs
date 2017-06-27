@@ -153,9 +153,9 @@ namespace Lite
 		{
 			if (graphMode)
 			{
-				NavGraphGizmo gizmo = gameObject.GetComponent<NavGraphGizmo>();
+				NavGraph3DGizmo gizmo = gameObject.GetComponent<NavGraph3DGizmo>();
 				if (gizmo == null)
-					gizmo = gameObject.AddComponent<NavGraphGizmo>();
+					gizmo = gameObject.AddComponent<NavGraph3DGizmo>();
 
 				gizmo.cfg = navGraph.buildConfig;
 				gizmo.navData = navGraph;
@@ -163,9 +163,9 @@ namespace Lite
 			}
 			else
 			{
-				NavigationGizmo gizmoLine = gameObject.GetComponent<NavigationGizmo>();
+				NavGrid2DGizmo gizmoLine = gameObject.GetComponent<NavGrid2DGizmo>();
 				if (gizmoLine == null)
-					gizmoLine = gameObject.AddComponent<NavigationGizmo>();
+					gizmoLine = gameObject.AddComponent<NavGrid2DGizmo>();
 
 				Vector3[,] pos = new Vector3[navGrid.Width, navGrid.Height];
 				for (int x = 0; x < navGrid.Width; ++x)
