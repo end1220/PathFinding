@@ -74,7 +74,7 @@ namespace Lite.AStar
 			}
 		}
 
-		public bool IsNodePassable(int x, int y)
+		public bool IsNodePassable(int x, int y, int z)
 		{
 			if (x >= 0 && x < width && y >= 0 && y <= height)
 			{
@@ -132,15 +132,15 @@ namespace Lite.AStar
 		}
 
 
-		public Point2D TwVector3ToPoint2D(TwVector3 position)
+		public Point3D TwVector3ToPoint3D(TwVector3 position)
 		{
 			double x = ((double)position.x / TwMath.ratio_mm - navGridData.MinX) / navGridData.GridSize + 0.5f;
 			double z = ((double)position.z / (double)TwMath.ratio_mm - navGridData.MinZ) / navGridData.GridSize + 0.5f;
-			return new Point2D((int)x, (int)z);
+			return new Point3D((int)x, (int)z);
 		}
 
 
-		public TwVector3 Point2DToTwVector3(Point2D point)
+		public TwVector3 Point3DToTwVector3(Point3D point)
 		{
 			float fposx = navGridData.MinX + navGridData.GridSize * point.x;
 			float fposz = navGridData.MinZ + navGridData.GridSize * point.y;
@@ -151,8 +151,8 @@ namespace Lite.AStar
 
 		public bool IsPassable(TwVector3 position)
 		{
-			Point2D pt2d = TwVector3ToPoint2D(position);
-			bool ret = this.IsNodePassable(pt2d.x, pt2d.y);
+			Point3D pt2d = TwVector3ToPoint3D(position);
+			bool ret = this.IsNodePassable(pt2d.x, pt2d.y, pt2d.z);
 			return ret;
 		}
 
@@ -165,17 +165,17 @@ namespace Lite.AStar
 			bool blocked = false;
 
 			// y = a*x + b
-			float a = (float)0;
+			Fix64 a = (Fix64)0;
 			long dx = to.x - from.x;
 			long dz = to.z - from.z;
 			if (Math.Abs(dx) > Math.Abs(dz))
 			{
-				a = (float)dz / (float)dx;
+				a = (Fix64)dz / (Fix64)dx;
 				int step = to.x - from.x > 0 ? stepLen : -stepLen;
 				for (long x = from.x + step; step > 0 ? x < to.x + step : x > to.x - step; x += step)
 				{
 					x = step > 0 ? System.Math.Min(x, to.x) : System.Math.Max(x, to.x);
-					float z = (float)from.z + a * (float)(x - from.x);
+					Fix64 z = (Fix64)from.z + a * (Fix64)(x - from.x);
 
 					if (!IsPassable(new TwVector3(x, 0, (long)z)))
 					{
@@ -188,12 +188,12 @@ namespace Lite.AStar
 			}
 			else
 			{
-				a = (float)dx / (float)dz;
+				a = (Fix64)dx / (Fix64)dz;
 				int step = to.z - from.z > 0 ? stepLen : -stepLen;
 				for (long z = from.z + step; step > 0 ? z < to.z + step : z > to.z - step; z += step)
 				{
 					z = step > 0 ? System.Math.Min(z, to.z) : System.Math.Max(z, to.z);
-					float x = (float)from.x + a * (float)(z - from.z);
+					Fix64 x = (Fix64)from.x + a * (Fix64)(z - from.z);
 					if (!IsPassable(new TwVector3((long)x, 0, z)))
 					{
 						blocked = true;

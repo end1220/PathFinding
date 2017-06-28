@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-
 using Lite.Graph;
 
 
@@ -22,7 +21,7 @@ namespace Lite.AStar.NavGraph
 
 		public NavGraph3DData navData;
 
-		private const bool Enable8Directions = true;
+		private bool Enable8Directions = true;
 
 		
 		public void Stetup(GameObject box, float cellSize, float agentHeight, float tanSlope)
@@ -54,6 +53,7 @@ namespace Lite.AStar.NavGraph
 			cfg.worldMinPos = new Int3(render.bounds.min);
 			cfg.cellSize = (int)TwMath.m2mm(cellSize);
 			cfg.agentHeight = agentHeight;
+			cfg.agentHeightStep = (int)Math.Round(agentHeight / cellSize);
 			cfg.tanSlope = tanSlope;
 			cfg.cellCount.x = Mathf.RoundToInt(worldSize.x / cellSize);
 			cfg.cellCount.y = Mathf.RoundToInt(worldSize.y / cellSize);
@@ -180,7 +180,7 @@ namespace Lite.AStar.NavGraph
 		private void PerformCellTest(Vector3 worldPoint, int x, int y, int z)
 		{
 			float heightStep = cfg.cellSize / 1000f;
-			//float nodeDiameter = cfg.cellSize / 1000f;
+			float nodeDiameter = cfg.cellSize / 1000f;
 			float nodeRadius = cfg.cellSize / 1000f / 2;
 
 			Vector3 raycastPoint = worldPoint + Vector3.up * nodeRadius;
@@ -196,41 +196,27 @@ namespace Lite.AStar.NavGraph
 
 				bool walkable = ((1 << hitLayer) & cfg.walkableMask) > 0;
 
-				//bool canDoObstacleUpdate = false;
+				// test if there're obstacles besides
 				Collider[] obses = Physics.OverlapSphere(actualWorldPoint, nodeRadius, cfg.obstacleMask);
 				if (obses.Length > 0)
 				{
 					walkable = false;
-					//canDoObstacleUpdate = true;
-				}
-
-				// check upper cells for role height
-				if (walkable)
-				{
-					float testHeight = worldPoint.y;
-					while (testHeight < worldPoint.y + cfg.agentHeight)
-					{
-						testHeight += heightStep;
-
-					}
 				}
 
 				//Raycasting for walkable regions
-				/*int movePenalty = 0;
 				if (walkable)
 				{
 					RaycastHit hit;
 					Ray ray = new Ray(actualWorldPoint + Vector3.up * nodeRadius, Vector3.down);
-					if (Physics.Raycast(ray, out hit, nodeDiameter, walkableMask))
+					if (Physics.Raycast(ray, out hit, nodeDiameter, cfg.walkableMask))
 					{
-						
+						//Make new cell
+						actualWorldPoint = hit.point;
+						var cell = new Cell(idCounter++, new Int3(x, y, z), actualWorldPoint, walkable);
+						cellArray[x, y, z] = cell;
+						cells.Add(cell);
 					}
-				}*/
-
-				//Make new node in grid
-				var cell = new Cell(idCounter++, new Int3(x, y, z), actualWorldPoint, walkable);
-				cellArray[x, y, z] = cell;
-				cells.Add(cell);
+				}
 			}
 		}
 
@@ -258,8 +244,7 @@ namespace Lite.AStar.NavGraph
 				int x = cell.pos.x;
 				int y = cell.pos.y;
 				int z = cell.pos.z;
-				int stepY = (int)(cfg.agentHeight / cellSize) + 1;
-				//float testHeight = cell.worldPosition.y;
+				int stepY = cfg.agentHeightStep + 1;
 				while (stepY > 0 && y + stepY < cfg.cellCount.y)
 				{
 					var cellY = cellArray[x, y + stepY, z];
@@ -269,6 +254,18 @@ namespace Lite.AStar.NavGraph
 						break;
 					}
 					stepY--;
+				}
+				// inside one step
+				float stepOne = 0;
+				while (stepOne < cellSize)
+				{
+					stepOne += cellSize / 5;
+					Collider[] obses = Physics.OverlapSphere(cell.worldPosition + Vector3.up * stepOne, stepOne, cfg.obstacleMask);
+					if (obses.Length > 0)
+					{
+						cell.walkable = false;
+						break;
+					}
 				}
 			}
 		}
@@ -284,7 +281,7 @@ namespace Lite.AStar.NavGraph
 			navData = ScriptableObject.CreateInstance<NavGraph3DData>();
 			navData.Init(cfg);
 			
-			int totalSize = cfg.cellCount.x * cfg.cellCount.y * cfg.cellCount.z;
+			//int totalSize = cfg.cellCount.x * cfg.cellCount.y * cfg.cellCount.z;
 			int count = 0;
 			float cellSize = cfg.cellSize / 1000f;
 

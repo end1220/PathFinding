@@ -15,6 +15,14 @@ namespace Lite.AStar
 		public int z;
 
 
+		public Point3D(int x, int y)
+		{
+			this.x = x;
+			this.y = y;
+			this.z = 0;
+		}
+
+
 		public Point3D(int x, int y, int z)
 		{
 			this.x = x;

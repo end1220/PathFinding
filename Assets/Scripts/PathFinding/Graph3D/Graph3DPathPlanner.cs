@@ -18,36 +18,35 @@ namespace Lite.AStar
 		public bool FindPath3D(TwVector3 from, TwVector3 to, ref List<TwVector3> result)
 		{
 			Graph3DAStarMap graphMap = this.map as Graph3DAStarMap;
-			var start = graphMap.TwVector3ToPoint3D(from);
-			var end = graphMap.TwVector3ToPoint3D(to);
-			var startNode = graphMap.GetNodeAt(start.x, start.y, start.z);
-			var endNode = graphMap.GetNodeAt(end.x, end.y, end.z);
+			var startNode = graphMap.GetNearbyWalkableNode(from);
+			var endNode = graphMap.GetNearbyWalkableNode(to);
 			if (startNode == null || endNode == null)
 				return false;
-			
-			int startId = startNode.id;
-			int endId = endNode.id;
-			Graph3DAStarNode node = _findPath(startNode.id, endNode.id);
+
+			var points = FindPath3D(startNode.id, endNode.id);
+
+			PathOptimizer.Optimize(ref points);
 
 			result.Clear();
-			while (node != null)
+			for (int i = 0; i < points.Count; ++i)
 			{
+				var point = points[i];
+				var node = graphMap.GetNodeAt(point.x, point.y, point.z);
 				result.Add(new TwVector3(node.worldPosition.x, node.worldPosition.y, node.worldPosition.z));
-				node = node.prev as Graph3DAStarNode;
 			}
 			if (result.Count > 0)
 			{
 				result[0] = from;
 				result[result.Count - 1] = to;
 			}
-			Cleanup();
-			return result.Count > 0;
+			
+			return result.Count >= 2;
 		}
 
 
-		public List<Point3D> FindPath3D(int from, int to)
+		public List<Point3D> FindPath3D(int startId, int endId)
 		{
-			Graph3DAStarNode node = _findPath(from, to);
+			Graph3DAStarNode node = _findPath(startId, endId);
 
 			resultCache.Clear();
 			while (node != null)
@@ -55,7 +54,7 @@ namespace Lite.AStar
 				resultCache.Add(new Point3D(node.x, node.y, node.z));
 				node = node.prev as Graph3DAStarNode;
 			}
-			Cleanup();
+			
 			return resultCache;
 		}
 

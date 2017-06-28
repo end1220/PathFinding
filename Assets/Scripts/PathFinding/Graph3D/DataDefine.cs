@@ -1,5 +1,6 @@
 ﻿
 using UnityEngine;
+
 using Lite;
 
 
@@ -30,6 +31,7 @@ namespace Lite.AStar.NavGraph
 		public int obstacleMask;
 		public int cellSize;
 		public float agentHeight;
+		public int agentHeightStep;
 		public float tanSlope;
 		public GameObject box;
 		public Int3 worldSize;

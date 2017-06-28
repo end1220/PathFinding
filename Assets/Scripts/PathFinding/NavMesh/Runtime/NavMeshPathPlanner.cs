@@ -15,7 +15,7 @@ namespace Lite.NavMesh
 		private NavMeshNode startNode;
 		private NavMeshNode targetNode;
 
-		public Point2D[] FindPath(int startID, int endID)
+		public Point3D[] FindPath(int startID, int endID)
 		{
 			this.startID = endID;
 			this.endID = startID;
@@ -33,15 +33,15 @@ namespace Lite.NavMesh
 				pointCount++;
 				pathNode = pathNode.prev as NavMeshNode;
 			}
-			Point2D[] pointArray = new Point2D[pointCount];
+			Point3D[] pointArray = new Point3D[pointCount];
 			pathNode = endNode;
 			int index = 0;
 			while (pathNode != null)
 			{
-				pointArray[index++] = new Point2D((int)pathNode.center.x, (int)pathNode.center.y);
+				pointArray[index++] = new Point3D((int)pathNode.center.x, (int)pathNode.center.y);
 				pathNode = pathNode.prev as NavMeshNode;
 			}
-			Cleanup();
+			
 			return pointArray;
 		}
 
