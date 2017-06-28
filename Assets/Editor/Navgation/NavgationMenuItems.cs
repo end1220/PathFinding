@@ -13,7 +13,6 @@ using Lite.Graph;
 using Lite.AStar.NavGraph;
 
 
-
 public class NavgationMenuItems
 {
 
@@ -35,7 +34,7 @@ public class NavgationMenuItems
 	public static void ShowWindowNavMeshEditor()
 	{
 		EditorWindow.GetWindow(typeof(NavMeshEditor));
-	}*/
-
+	}
+	*/
 
 }

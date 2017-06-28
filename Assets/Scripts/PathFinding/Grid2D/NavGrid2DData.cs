@@ -12,25 +12,25 @@ namespace Lite.AStar
 	//[CreateAssetMenu(menuName = "Lite/Navigation Data", order = 2)]
 	public class NavGrid2DData : ScriptableObject
 	{
-		[HideInInspector]
-		public int width = 0;
+		[SerializeField]
+		private int width = 0;
 		public int Width { get { return width; } }
 
-		[HideInInspector]
-		public int height = 0;
+		[SerializeField]
+		private int height = 0;
 		public int Height { get { return height; } }
 
-		[HideInInspector]
-		public float gridSize;
-		public float GridSize { get { return gridSize; } }
+		[SerializeField]
+		private int gridSize;
+		public int GridSize { get { return gridSize; } }
 
-		[HideInInspector]
-		public float minX;
-		public float MinX { get { return minX; } }
+		[SerializeField]
+		private int minX;
+		public int MinX { get { return minX; } }
 
-		[HideInInspector]
-		public float minZ;
-		public float MinZ { get { return minZ; } }
+		[SerializeField]
+		private int minZ;
+		public int MinZ { get { return minZ; } }
 
 		[HideInInspector]
 		public int[] mask = null;
@@ -53,7 +53,7 @@ namespace Lite.AStar
 		}
 
 
-		public void _setData(int[,] msk, int w, int h, float grid, float minx, float minz)
+		public void _setData(int[,] msk, int w, int h, int grid, int minx, int minz)
 		{
 			width = w;
 			height = h;

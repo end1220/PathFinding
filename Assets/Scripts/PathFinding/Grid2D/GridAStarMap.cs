@@ -2,7 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Lite;
+
 
 
 namespace Lite.AStar
@@ -134,18 +134,20 @@ namespace Lite.AStar
 
 		public Int2 TwVector3ToInt2(TwVector3 position)
 		{
-			double x = ((double)position.x / TwMath.ratio_mm - navGridData.MinX) / navGridData.GridSize + 0.5f;
-			double z = ((double)position.z / (double)TwMath.ratio_mm - navGridData.MinZ) / navGridData.GridSize + 0.5f;
-			return new Int2((int)x, (int)z);
+			int gridSize = navGridData.GridSize;
+			int dx = position.x - navGridData.MinX;
+			int dz = position.z - navGridData.MinZ;
+			int x = dx / gridSize;
+			int z = dz / gridSize;
+			return new Int2(x, z);
 		}
 
 
 		public TwVector3 Int2ToTwVector3(Int2 point)
 		{
-			float fposx = navGridData.MinX + navGridData.GridSize * point.x;
-			float fposz = navGridData.MinZ + navGridData.GridSize * point.y;
-			var vec = new TwVector3((long)(fposx * TwMath.ratio_mm), 0, (long)(fposz * TwMath.ratio_mm));
-			return vec;
+			int x = navGridData.MinX + navGridData.GridSize * point.x;
+			int z = navGridData.MinZ + navGridData.GridSize * point.y;
+			return new TwVector3(x, 0, z);;
 		}
 
 
@@ -161,46 +163,46 @@ namespace Lite.AStar
 		public TwVector3 RayCast2D(TwVector3 from, TwVector3 to)
 		{
 			TwVector3 blockPoint = from;
-			int stepLen = Math.Min(300, (int)(navGridData.GridSize * TwMath.ratio_mm));
+			int stepLen = Math.Min(300, navGridData.GridSize);
 			bool blocked = false;
 
 			// y = a*x + b
 			Fix64 a = (Fix64)0;
-			long dx = to.x - from.x;
-			long dz = to.z - from.z;
+			int dx = to.x - from.x;
+			int dz = to.z - from.z;
 			if (Math.Abs(dx) > Math.Abs(dz))
 			{
 				a = (Fix64)dz / (Fix64)dx;
 				int step = to.x - from.x > 0 ? stepLen : -stepLen;
-				for (long x = from.x + step; step > 0 ? x < to.x + step : x > to.x - step; x += step)
+				for (int x = from.x + step; step > 0 ? x < to.x + step : x > to.x - step; x += step)
 				{
 					x = step > 0 ? System.Math.Min(x, to.x) : System.Math.Max(x, to.x);
 					Fix64 z = (Fix64)from.z + a * (Fix64)(x - from.x);
 
-					if (!IsPassable(new TwVector3((long)x, 0, (long)z)))
+					if (!IsPassable(new TwVector3(x, 0, (int)z)))
 					{
 						blocked = true;
 						break;
 					}
 
-					blockPoint.Set(x, from.y, (long)z);
+					blockPoint.Set(x, from.y, (int)z);
 				}
 			}
 			else
 			{
 				a = (Fix64)dx / (Fix64)dz;
 				int step = to.z - from.z > 0 ? stepLen : -stepLen;
-				for (long z = from.z + step; step > 0 ? z < to.z + step : z > to.z - step; z += step)
+				for (int z = from.z + step; step > 0 ? z < to.z + step : z > to.z - step; z += step)
 				{
 					z = step > 0 ? System.Math.Min(z, to.z) : System.Math.Max(z, to.z);
 					Fix64 x = (Fix64)from.x + a * (Fix64)(z - from.z);
-					if (!IsPassable(new TwVector3((long)x, 0, (long)z)))
+					if (!IsPassable(new TwVector3((int)x, 0, z)))
 					{
 						blocked = true;
 						break;
 					}
 
-					blockPoint.Set((long)x, from.y, z);
+					blockPoint.Set((int)x, from.y, z);
 				}
 			}
 

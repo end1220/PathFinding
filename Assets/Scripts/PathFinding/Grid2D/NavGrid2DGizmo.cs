@@ -46,7 +46,7 @@ public class NavGrid2DGizmo : MonoBehaviour
 
 		Color defaultColor = Gizmos.color;
 
-		float a = navigation.gridSize/2;
+		float a = TwMath.mm2m(navigation.GridSize)/2;
 
 		// passables
 		for (int i = 0; i < width; ++i)

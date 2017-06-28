@@ -1,6 +1,6 @@
 
 using UnityEngine;
-using Lite;
+
 using Lite;
 
 
@@ -12,6 +12,7 @@ namespace Lite.AStar
 		public int z;
 
 		public Int3 worldPosition;
+
 		public bool walkable;
 
 

@@ -133,8 +133,8 @@ namespace Lite
 			result.Clear();
 			for (int i = 0; i < path.Count; ++i)
 			{
-				float x = navGrid.minX + path[i].x * navGrid.gridSize;
-				float y = navGrid.minZ + path[i].y * navGrid.gridSize;
+				float x = navGrid.MinX + path[i].x * navGrid.GridSize;
+				float y = navGrid.MinZ + path[i].y * navGrid.GridSize;
 				Vector3 pos = new Vector3(x, 1, y);
 				result.Add(pos);
 			}

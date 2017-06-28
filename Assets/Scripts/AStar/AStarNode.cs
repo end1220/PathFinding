@@ -1,15 +1,25 @@
 
+using System;
+
 
 namespace Lite.AStar
 {
 
 	public abstract class AStarNode : Lite.Graph.GraphNode
 	{
+		[NonSerialized]
 		public int g;
+
+		[NonSerialized]
 		public int h;
+
+		[NonSerialized]
 		public int f;
+
 		public AStarNode prev;
 		public AStarNode next;
+
+		[NonSerialized]
 		public int blockValue;
 
 		public AStarNode(int id)
