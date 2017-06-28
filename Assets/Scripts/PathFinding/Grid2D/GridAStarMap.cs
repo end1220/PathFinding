@@ -2,7 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using Lite;
 
 
 namespace Lite.AStar
@@ -74,7 +74,7 @@ namespace Lite.AStar
 			}
 		}
 
-		public bool IsNodePassable(int x, int y, int z)
+		public bool IsNodePassable(int x, int y)
 		{
 			if (x >= 0 && x < width && y >= 0 && y <= height)
 			{
@@ -132,15 +132,15 @@ namespace Lite.AStar
 		}
 
 
-		public Point3D TwVector3ToPoint3D(TwVector3 position)
+		public Int2 TwVector3ToInt2(TwVector3 position)
 		{
 			double x = ((double)position.x / TwMath.ratio_mm - navGridData.MinX) / navGridData.GridSize + 0.5f;
 			double z = ((double)position.z / (double)TwMath.ratio_mm - navGridData.MinZ) / navGridData.GridSize + 0.5f;
-			return new Point3D((int)x, (int)z);
+			return new Int2((int)x, (int)z);
 		}
 
 
-		public TwVector3 Point3DToTwVector3(Point3D point)
+		public TwVector3 Int2ToTwVector3(Int2 point)
 		{
 			float fposx = navGridData.MinX + navGridData.GridSize * point.x;
 			float fposz = navGridData.MinZ + navGridData.GridSize * point.y;
@@ -151,8 +151,8 @@ namespace Lite.AStar
 
 		public bool IsPassable(TwVector3 position)
 		{
-			Point3D pt2d = TwVector3ToPoint3D(position);
-			bool ret = this.IsNodePassable(pt2d.x, pt2d.y, pt2d.z);
+			Int2 pt2d = TwVector3ToInt2(position);
+			bool ret = this.IsNodePassable(pt2d.x, pt2d.y);
 			return ret;
 		}
 
@@ -177,7 +177,7 @@ namespace Lite.AStar
 					x = step > 0 ? System.Math.Min(x, to.x) : System.Math.Max(x, to.x);
 					Fix64 z = (Fix64)from.z + a * (Fix64)(x - from.x);
 
-					if (!IsPassable(new TwVector3(x, 0, (long)z)))
+					if (!IsPassable(new TwVector3((long)x, 0, (long)z)))
 					{
 						blocked = true;
 						break;
@@ -194,7 +194,7 @@ namespace Lite.AStar
 				{
 					z = step > 0 ? System.Math.Min(z, to.z) : System.Math.Max(z, to.z);
 					Fix64 x = (Fix64)from.x + a * (Fix64)(z - from.z);
-					if (!IsPassable(new TwVector3((long)x, 0, z)))
+					if (!IsPassable(new TwVector3((long)x, 0, (long)z)))
 					{
 						blocked = true;
 						break;

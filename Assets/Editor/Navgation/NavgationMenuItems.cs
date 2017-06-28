@@ -11,7 +11,7 @@ using Lite;
 using Lite.AStar;
 using Lite.Graph;
 using Lite.AStar.NavGraph;
-using Lite.NavMesh;
+
 
 
 public class NavgationMenuItems
@@ -31,11 +31,11 @@ public class NavgationMenuItems
 	}
 
 
-	[MenuItem(@"Tools/Navgation/Nav Mesh")]
+	/*[MenuItem(@"Tools/Navgation/Nav Mesh")]
 	public static void ShowWindowNavMeshEditor()
 	{
 		EditorWindow.GetWindow(typeof(NavMeshEditor));
-	}
+	}*/
 
 
 }

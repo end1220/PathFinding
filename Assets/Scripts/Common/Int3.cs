@@ -14,6 +14,13 @@ namespace Lite
 		public int z;
 
 
+		public Int3(int x, int y)
+		{
+			this.x = x;
+			this.y = y;
+			this.z = 0;
+		}
+
 		public Int3(int x, int y, int z)
 		{
 			this.x = x;
@@ -101,16 +108,6 @@ namespace Lite
 			return (int)System.Math.Sqrt(DistanceSqr(vec));
 		}
 
-		/*public int Cross(Int3 vec)
-		{
-			return this.x * vec.x + this.y * vec.y + this.z * vec.z;
-		}
-
-		public int Dot(Int3 lhs, Int3 rhs)
-		{
-			return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z;
-		}*/
-
 		public override bool Equals(object o)
 		{
 			return base.Equals(o);
@@ -119,11 +116,6 @@ namespace Lite
 		public override int GetHashCode()
 		{
 			return base.GetHashCode();
-		}
-
-		public string ToString()
-		{
-			return string.Format("{0},{1},{2}", x, y, z);
 		}
 
 	}

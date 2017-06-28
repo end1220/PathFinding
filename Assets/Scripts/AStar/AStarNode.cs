@@ -9,7 +9,7 @@ namespace Lite.AStar
 		public int h;
 		public int f;
 		public AStarNode prev;
-		public AStarNode next;	// for linked list
+		public AStarNode next;
 		public int blockValue;
 
 		public AStarNode(int id)

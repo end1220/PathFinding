@@ -40,15 +40,15 @@ namespace Lite.AStar
 				count++;
 				if (count > 10000)
 				{
-					UnityEngine.Debug.LogError("AStarPathPlanner : too slow....");
+					UnityEngine.Debug.LogError("AStar Error: too slow....");
 					break;
 				}
 				AStarNode curNode = openList;
 				if (CheckArrived(curNode))
 				{
 					arriveNode = curNode;
-					if (count > 100)
-						UnityEngine.Debug.LogError("AStarPathPlanner : take count " + count);
+					//if (count > 50)
+						UnityEngine.Debug.LogError("AStar : take step " + count);
 					break;
 				}
 				EvaluateAllNeighbours(curNode);
@@ -275,25 +275,6 @@ namespace Lite.AStar
 
 				return null;
 			}
-		}
-
-		public void Cleanup()
-		{
-			map.Cleanup();
-
-			while (openList != null)
-			{
-				map.RecycleNode(openList);
-				openList = openList.next;
-			}
-			while (closedList != null)
-			{
-				map.RecycleNode(closedList);
-				closedList = closedList.next;
-			}
-
-			openList = null;
-			closedList = null;
 		}
 
 	}

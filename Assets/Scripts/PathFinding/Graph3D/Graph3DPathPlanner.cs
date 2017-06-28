@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using Lite;
 
 
 namespace Lite.AStar
@@ -12,7 +12,7 @@ namespace Lite.AStar
 		Graph3DAStarNode startNode;
 		Graph3DAStarNode targetNode;
 
-		private List<Point3D> resultCache = new List<Point3D>();
+		private List<Int3> resultCache = new List<Int3>();
 
 
 		public bool FindPath3D(TwVector3 from, TwVector3 to, ref List<TwVector3> result)
@@ -25,7 +25,7 @@ namespace Lite.AStar
 
 			var points = FindPath3D(startNode.id, endNode.id);
 
-			PathOptimizer.Optimize(ref points);
+			PathOptimizer3D.Optimize(graphMap, ref points);
 
 			result.Clear();
 			for (int i = 0; i < points.Count; ++i)
@@ -34,24 +34,31 @@ namespace Lite.AStar
 				var node = graphMap.GetNodeAt(point.x, point.y, point.z);
 				result.Add(new TwVector3(node.worldPosition.x, node.worldPosition.y, node.worldPosition.z));
 			}
-			if (result.Count > 0)
+			if (result.Count >= 2)
 			{
 				result[0] = from;
 				result[result.Count - 1] = to;
 			}
-			
+			if (result.Count >= 4)
+			{
+				int cellSize = graphMap.navGraphData.buildConfig.cellSize;
+				if ((result[1] - from).sqrMagnitude < cellSize * cellSize)
+					result.RemoveAt(1);
+				if ((result[result.Count - 2] - to).sqrMagnitude < cellSize * cellSize)
+					result.RemoveAt(result.Count - 2);
+			}
 			return result.Count >= 2;
 		}
 
 
-		public List<Point3D> FindPath3D(int startId, int endId)
+		public List<Int3> FindPath3D(int startId, int endId)
 		{
 			Graph3DAStarNode node = _findPath(startId, endId);
 
 			resultCache.Clear();
 			while (node != null)
 			{
-				resultCache.Add(new Point3D(node.x, node.y, node.z));
+				resultCache.Add(new Int3(node.x, node.y, node.z));
 				node = node.prev as Graph3DAStarNode;
 			}
 			

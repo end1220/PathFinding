@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using UnityEngine;
@@ -34,8 +35,30 @@ namespace Lite
 		void Awake()
 		{
 			Instance = this;
-			OnSceneLoaded(0);
+			
+			if (navGrid == null && navGraph == null)
+			{
+				Log.Error("Navigation data is null !");
+			}
+			else
+			{
+				if (graphMode)
+				{
+					graphMap = new Graph3DAStarMap();
+					graphMap.Init(navGraph);
+					graphPathFinder.Setup(graphMap);
+				}
+				else
+				{
+					gridMap = new GridAStarMap();
+					gridMap.InitMap(navGrid.Width, navGrid.Height, navGrid);
+					gridPathFinder.Setup(gridMap);
+				}
+
+				SetNavDebugDraw();
+			}
 		}
+		
 
 		List<Vector3> result = new List<Vector3>();
 		void OnGUI()
@@ -49,7 +72,7 @@ namespace Lite
 		float lastTime = 0;
 		void Update()
 		{
-			if (Time.timeSinceLevelLoad - lastTime > 1)
+			if (Time.timeSinceLevelLoad - lastTime > 0.5f)
 			{
 				lastTime = Time.timeSinceLevelLoad;
 				DoIt();
@@ -59,6 +82,9 @@ namespace Lite
 		System.Random random = new System.Random();
 		void DoIt()
 		{
+			Stopwatch watch = new Stopwatch();
+			watch.Start();
+
 			if (graphMode)
 			{
 				int start = random.Next(0, 1600);
@@ -78,42 +104,10 @@ namespace Lite
 				line.ClearLines();
 				line.AddLine(result.ToArray(), Color.red);
 			}
-		}
 
-
-		public void OnSceneLoaded(int id)
-		{
-			try
-			{
-				// nav data
-				if (navGrid == null && navGraph == null)
-				{
-					Log.Error("Navigation data is null !");
-				}
-				else
-				{
-					if (graphMode)
-					{
-						graphMap = new Graph3DAStarMap();
-						graphMap.Init(navGraph);
-						graphPathFinder.Setup(graphMap);
-					}
-					else
-					{
-						gridMap = new GridAStarMap();
-						gridMap.InitMap(navGrid.Width, navGrid.Height, navGrid);
-						gridPathFinder.Setup(gridMap);
-					}
-
-#if UNITY_EDITOR
-					SetNavDebugDraw();
-#endif
-				}
-			}
-			catch(Exception e)
-			{
-				Log.Error(e.ToString());
-			}
+			watch.Stop();
+			if (result.Count > 0)
+				UnityEngine.Debug.Log("time " + watch.ElapsedMilliseconds);
 		}
 
 

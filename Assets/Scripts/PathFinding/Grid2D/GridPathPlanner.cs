@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using Lite;
 
 
 namespace Lite.AStar
@@ -16,24 +16,24 @@ namespace Lite.AStar
 		private GridAStarNode startNode;
 		private GridAStarNode targetNode;
 
-		private List<Point3D> resultCache = new List<Point3D>();
+		private List<Int2> resultCache = new List<Int2>();
 
 
 		public bool FindPath(TwVector3 from, TwVector3 to, ref List<TwVector3> result)
 		{
 			GridAStarMap gridMap = this.map as GridAStarMap;
 
-			Point3D start = gridMap.TwVector3ToPoint3D(from);
-			Point3D end = gridMap.TwVector3ToPoint3D(to);
+			Int2 start = gridMap.TwVector3ToInt2(from);
+			Int2 end = gridMap.TwVector3ToInt2(to);
 
 			var path = FindPath(start.x, start.y, end.x, end.y);
 
-			PathOptimizer.Optimize(ref path);
+			PathOptimizer2D.Optimize(gridMap, ref path);
 
 			result.Clear();
 			for (int i = 0; i < path.Count; ++i)
 			{
-				result.Add(gridMap.Point3DToTwVector3(path[i]));
+				result.Add(gridMap.Int2ToTwVector3(path[i]));
 			}
 			
 			if (result.Count > 0)
@@ -46,7 +46,7 @@ namespace Lite.AStar
 		}
 
 
-		public List<Point3D> FindPath(int startX, int startY, int endX, int endY)
+		public List<Int2> FindPath(int startX, int startY, int endX, int endY)
 		{
 			GridAStarNode endNode = _findPath(startX, startY, endX, endY);
 
@@ -55,7 +55,7 @@ namespace Lite.AStar
 			GridAStarNode pathNode = endNode;
 			while (pathNode != null)
 			{
-				resultCache.Add(new Point3D(pathNode.x, pathNode.y));
+				resultCache.Add(new Int2(pathNode.x, pathNode.y));
 				pathNode = pathNode.prev as GridAStarNode;
 			}
 			

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using Lite;
 using Lite.Graph;
 
 
@@ -306,7 +307,6 @@ namespace Lite.AStar.NavGraph
 				node.y = y;
 				node.z = z;
 				node.worldPosition = new Int3(cell.worldPosition);
-				//node.centerPosition = cell.centerPosition;
 				node.walkable = cell.walkable;
 				navData.AddNode(node);
 			}
@@ -347,17 +347,18 @@ namespace Lite.AStar.NavGraph
 								var neighbor = cellArray[realx, realy, realz];
 								if (neighbor != null)
 								{
-									float tan = 0;
 									int cost = int.MaxValue;
 									int absDelta = Math.Abs(ix) + Math.Abs(iy) + Math.Abs(iz);
 									if (neighbor.walkable)
 									{
+										float tan = 0;
 										float dx = cellSize;
 										float dy = Math.Abs(neighbor.worldPosition.y - cell.worldPosition.y);
 										float dz = cellSize;
+										float distance = (cell.worldPosition - neighbor.worldPosition).magnitude;
+										cost = (int)Math.Round(distance / (cfg.cellSize / 1000f) * 10);
 										if (absDelta == 1)
 										{
-											cost = 10;
 											if (ix == 0)
 												tan = dy / dz;
 											else if (iz == 0)
@@ -367,7 +368,6 @@ namespace Lite.AStar.NavGraph
 										}
 										else if (absDelta == 2)
 										{
-											cost = 14;
 											if (iy == 0)
 												tan = dy / cellSize * 1.414f;
 											else
@@ -375,19 +375,17 @@ namespace Lite.AStar.NavGraph
 										}
 										else if (absDelta == 3)
 										{
-											cost = 17;
 											tan = dy / cellSize * 1.414f;
 										}
-									}
+										if (tan > cfg.tanSlope)
+											cost = int.MaxValue;
 
-									if (tan > cfg.tanSlope)
-										cost = int.MaxValue;
-
-									if (cost != int.MaxValue)
-									{
-										int nbId = neighbor.id;// CalcNodeId(realx, realy, realz);
-										var edge = new Graph3DAStarEdge(id, nbId, cost);
-										navData.AddEdge(edge);
+										if (cost != int.MaxValue)
+										{
+											int nbId = neighbor.id;// CalcNodeId(realx, realy, realz);
+											var edge = new Graph3DAStarEdge(id, nbId, cost);
+											navData.AddEdge(edge);
+										}
 									}
 								}
 							}

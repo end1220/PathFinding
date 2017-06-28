@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Lite;
 using Lite.Graph;
 
 
@@ -11,7 +11,7 @@ namespace Lite.AStar
 {
 	public class Graph3DAStarMap : GraphAStarMap
 	{
-		private NavGraph3DData navGraphData;
+		public NavGraph3DData navGraphData;
 
 		private Graph3DAStarNode[, ,] nodeMatrix;
 		public Graph3DAStarNode[, ,] NodeMatrix { get { return nodeMatrix; } }
@@ -54,6 +54,18 @@ namespace Lite.AStar
 				return false;
 		}
 
+
+		public bool IsNodeEmpty(int x, int y, int z)
+		{
+			if (IsIndexValid(x, y, z))
+			{
+				var grid = nodeMatrix[x, y, z];
+				return grid == null;
+			}
+			else
+				return true;
+		}
+
 		public bool IsIndexValid(int x, int y, int z)
 		{
 			return (x >= 0 && x < navGraphData.buildConfig.cellCount.x
@@ -79,7 +91,7 @@ namespace Lite.AStar
 		}
 
 
-		public Point3D TwVector3ToPoint3D(TwVector3 position)
+		public Int3 TwVector3ToPoint3D(TwVector3 position)
 		{
 			int cellSize = navGraphData.buildConfig.cellSize;
 			int dx = (int)position.x - navGraphData.buildConfig.worldMinPos.x;
@@ -88,13 +100,13 @@ namespace Lite.AStar
 			int x = dx / cellSize/* + ((dx % cellSize) > 0 ? 1 : 0)*/;
 			int y = dy / cellSize/* + ((dy % cellSize) > 0 ? 1 : 0)*/;
 			int z = dz / cellSize/* + ((dz % cellSize) > 0 ? 1 : 0)*/;
-			return new Point3D(x, y, z);
+			return new Int3(x, y, z);
 		}
 
 
 		public bool IsPassable(TwVector3 position)
 		{
-			Point3D pt3d = TwVector3ToPoint3D(position);
+			Int3 pt3d = TwVector3ToPoint3D(position);
 			bool ret = this.IsNodePassable(pt3d.x, pt3d.y, pt3d.z);
 			return ret;
 		}
@@ -139,21 +151,17 @@ namespace Lite.AStar
 
 			// y = a*x + b
 			Fix64 a_xz = (Fix64)0;
-			Fix64 a_y = (Fix64)0;
 			long dx = to.x - from.x;
-			long dy = to.y - from.y;
 			long dz = to.z - from.z;
 			if (Math.Abs(dx) > Math.Abs(dz))
 			{
 				a_xz = (Fix64)dz / (Fix64)dx;
-				a_y = (Fix64)dy / (Fix64)dx;
 				int step = to.x - from.x > 0 ? stepLen : -stepLen;
 				long lastY = from.y;
 				for (long x = from.x + step; step > 0 ? x < to.x + step : x > to.x - step; x += step)
 				{
 					x = step > 0 ? System.Math.Min(x, to.x) : System.Math.Max(x, to.x);
 					Fix64 z = (Fix64)from.z + a_xz * (Fix64)(x - from.x);
-					//Fix64 y = (Fix64)from.y + a_y * (Fix64)(x - from.x);
 					long y = lastY;
 
 					// stairs
@@ -161,7 +169,7 @@ namespace Lite.AStar
 					for (int iy = halfAgentHeightStep; iy >= -halfAgentHeightStep; iy--)
 					{
 						long tmpy = y + iy * navGraphData.buildConfig.cellSize;
-						Point3D pt3d = TwVector3ToPoint3D(new TwVector3(x, tmpy, (long)z));
+						Int3 pt3d = TwVector3ToPoint3D(new TwVector3(x, tmpy, (long)z));
 						var node = GetNodeAt(pt3d.x, pt3d.y, pt3d.z);
 						if (IsNodePassable(pt3d.x, pt3d.y, pt3d.z))
 						{
@@ -189,14 +197,12 @@ namespace Lite.AStar
 			else
 			{
 				a_xz = (Fix64)dx / (Fix64)dz;
-				a_y = (Fix64)dy / (Fix64)dz;
 				int step = to.z - from.z > 0 ? stepLen : -stepLen;
 				long lastY = from.y;
 				for (long z = from.z + step; step > 0 ? z < to.z + step : z > to.z - step; z += step)
 				{
 					z = step > 0 ? System.Math.Min(z, to.z) : System.Math.Max(z, to.z);
 					Fix64 x = (Fix64)from.x + a_xz * (Fix64)(z - from.z);
-					//Fix64 y = (Fix64)from.y + a_y * (Fix64)(z - from.z);
 					long y = lastY;
 
 					// stairs
@@ -204,7 +210,7 @@ namespace Lite.AStar
 					for (int iy = halfAgentHeightStep; iy >= -halfAgentHeightStep; iy--)
 					{
 						long tmpy = y + iy * navGraphData.buildConfig.cellSize;
-						Point3D pt3d = TwVector3ToPoint3D(new TwVector3((long)x, tmpy, z));
+						Int3 pt3d = TwVector3ToPoint3D(new TwVector3((long)x, tmpy, z));
 						var node = GetNodeAt(pt3d.x, pt3d.y, pt3d.z);
 						if (IsNodePassable(pt3d.x, pt3d.y, pt3d.z))
 						{

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Lite;
 
 
 namespace Lite.AStar
@@ -11,10 +12,10 @@ namespace Lite.AStar
 		GraphAStarNode startNode;
 		GraphAStarNode targetNode;
 
-		private List<Point3D> resultCache = new List<Point3D>();
+		private List<Int3> resultCache = new List<Int3>();
 
 
-		public List<Point3D> FindPath(int start, int end)
+		public List<Int3> FindPath(int start, int end)
 		{
 			GraphAStarNode endNode = _findPath(start, end);
 
@@ -23,7 +24,7 @@ namespace Lite.AStar
 			GraphAStarNode pathNode = endNode;
 			while (pathNode != null)
 			{
-				resultCache.Add(new Point3D(pathNode.x, pathNode.y));
+				resultCache.Add(new Int3(pathNode.x, pathNode.y));
 				pathNode = pathNode.prev as GraphAStarNode;
 			}
 			
