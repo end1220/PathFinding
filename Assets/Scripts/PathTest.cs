@@ -72,7 +72,7 @@ namespace Lite
 		float lastTime = 0;
 		void Update()
 		{
-			if (Time.timeSinceLevelLoad - lastTime > 0.5f)
+			if (Time.timeSinceLevelLoad - lastTime > 0.1f)
 			{
 				lastTime = Time.timeSinceLevelLoad;
 				DoIt();
@@ -93,10 +93,10 @@ namespace Lite
 			}
 			else
 			{
-				int startx = random.Next(0, 42);
-				int starty = random.Next(0, 42);
-				int endx = random.Next(0, 42);
-				int endy = random.Next(0, 42);
+				int startx = random.Next(2, 38);
+				int starty = random.Next(2, 38);
+				int endx = random.Next(2, 38);
+				int endy = random.Next(2, 38);
 				gridFindPath(startx, starty, endx, endy, ref result);
 			}
 			if (result.Count > 0)
