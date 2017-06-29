@@ -26,6 +26,7 @@ namespace Lite
 		//private Color blue = new Color(0, 0, 0.5f);
 
 
+#if UNITY_EDITOR
 		void OnDrawGizmosSelected()
 		{
 			Matrix4x4 defaultMatrix = Gizmos.matrix;
@@ -40,7 +41,6 @@ namespace Lite
 			var minPos = navData.buildConfig.worldMinPos;
 			int cellSize = navData.buildConfig.cellSize;
 			int cellRadius = cellSize / 2;*/
-
 
 			/*if (spaces != null)
 			{
@@ -73,21 +73,28 @@ namespace Lite
 				}
 			}*/
 
-			/*var smallSize = new Vector3(0.1f, 0.1f, 0.1f);
-			for (int i = 0; i < navData.nodeList.Count; ++i)
-			{
-				var node = navData.nodeList[i];
-				Gizmos.color = node.walkable ? green : red;
-				Gizmos.DrawWireCube(node.worldPosition.ToVector3(), smallSize);
-			}*/
 
-			for (int i = 0; i < navData.edgeList.Count; ++i)
+			if (navData.edgeList != null && navData.edgeList.Count > 0)
 			{
-				var edge = navData.edgeList[i];
-				var from = navData.nodeDic[edge.from];
-				var to = navData.nodeDic[edge.to];
-				Gizmos.color = (from.walkable && to.walkable) ? green : red;
-				Gizmos.DrawLine(from.worldPosition.ToVector3(), to.worldPosition.ToVector3());
+				for (int i = 0; i < navData.edgeList.Count; ++i)
+				{
+					var edge = navData.edgeList[i];
+					var from = navData.nodeDic[edge.from];
+					var to = navData.nodeDic[edge.to];
+					Gizmos.color = green;
+					Gizmos.DrawLine(from.worldPosition.ToVector3(), to.worldPosition.ToVector3());
+				}
+			}
+			else if (graphMap != null)
+			{
+				for (int i = 0; i < graphMap.edgeList.Count; ++i)
+				{
+					var edge = graphMap.edgeList[i];
+					var from = graphMap.nodeDic[edge.from];
+					var to = graphMap.nodeDic[edge.to];
+					Gizmos.color = green;
+					Gizmos.DrawLine(from.worldPosition.ToVector3(), to.worldPosition.ToVector3());
+				}
 			}
 
 			// end draw
@@ -95,6 +102,7 @@ namespace Lite
 			Gizmos.color = defaultColor;
 			Gizmos.matrix = defaultMatrix;
 		}
+#endif
 
 	}
 

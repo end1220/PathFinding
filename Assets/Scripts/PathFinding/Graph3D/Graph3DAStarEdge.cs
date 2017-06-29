@@ -13,6 +13,11 @@ namespace Lite.AStar
 		{
 		}
 
+		public Graph3DAStarEdge() :
+			base(0, 0, 0)
+		{
+		}
+
 	}
 
 }

@@ -1,4 +1,5 @@
 ﻿
+using System;
 using UnityEngine;
 
 using Lite;
@@ -23,16 +24,21 @@ namespace Lite.AStar.NavGraph
 		}
 	}
 
-	[System.Serializable]
+	[Serializable]
 	public class BuildConfig
 	{
+		[NonSerialized]
 		public int allTestMask;
+		[NonSerialized]
 		public int walkableMask;
+		[NonSerialized]
 		public int obstacleMask;
 		public int cellSize;
 		public float agentHeight;
 		public int agentHeightStep;
+		[NonSerialized]
 		public float tanSlope;
+		[NonSerialized]
 		public GameObject box;
 		public Int3 worldSize;
 		public Int3 worldCenterPos;

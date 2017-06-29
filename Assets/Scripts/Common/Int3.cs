@@ -35,6 +35,13 @@ namespace Lite
 			z = m2mm(vec.z);
 		}
 
+		public Int3(TwVector3 vec)
+		{
+			x = (int)(vec.x);
+			y = (int)(vec.y);
+			z = (int)(vec.z);
+		}
+
 		public Vector3 ToVector3()
 		{
 			return new Vector3(x / 1000.0f, y / 1000.0f, z / 1000.0f);

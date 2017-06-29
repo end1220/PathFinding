@@ -27,18 +27,9 @@ namespace Lite.AStar.NavGraph
 		
 		public void Stetup(GameObject box, float cellSize, float agentHeight, float tanSlope)
 		{
-			cfg = new BuildConfig();
-
-			if (box == null)
-			{
-				Debug.LogError("world box is null.");
-				return;
-			}
 			var render = box.GetComponent<MeshRenderer>();
-			if (render == null)
-			{
-				Debug.LogError("world box has no MeshRenderer");
-			}
+
+			cfg = new BuildConfig();
 
 			int terrainLayer = LayerMask.NameToLayer(AppConst.LayerTerrain);
 			int obstacleLayer = LayerMask.NameToLayer(AppConst.LayerObstacle);
@@ -303,11 +294,11 @@ namespace Lite.AStar.NavGraph
 
 				var node = new Graph3DAStarNode();
 				node.id = id;
-				node.x = x;
-				node.y = y;
-				node.z = z;
+				node.x = (ushort)x;
+				node.y = (ushort)y;
+				node.z = (ushort)z;
 				node.worldPosition = new Int3(cell.worldPosition);
-				node.walkable = cell.walkable;
+				//node.walkable = cell.walkable;
 				navData.AddNode(node);
 			}
 

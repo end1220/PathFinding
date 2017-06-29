@@ -30,11 +30,10 @@ public class NavgationMenuItems
 	}
 
 
-	/*[MenuItem(@"Tools/Navgation/Nav Mesh")]
+	[MenuItem(@"Tools/Navgation/Nav Mesh")]
 	public static void ShowWindowNavMeshEditor()
 	{
 		EditorWindow.GetWindow(typeof(NavMeshEditor));
 	}
-	*/
 
 }

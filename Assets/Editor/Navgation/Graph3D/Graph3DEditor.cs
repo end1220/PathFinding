@@ -17,12 +17,12 @@ public class Graph3DEditor : EditorWindow
 {
 	Graph3DBuilder builder = new Graph3DBuilder();
 
+	GameObject worldBoxObj;
 	float gridSize;
 	float agentHeight = 2;
-
 	float tan_slope;
 
-	string str_gridSize = "1";
+	string str_gridSize = "0.5";
 	string str_roleHeight = "2";
 	string str_slope = "45";
 
@@ -33,18 +33,11 @@ public class Graph3DEditor : EditorWindow
 
 	void OnEnable()
 	{
-		string sceneName = SceneManager.GetActiveScene().name;
-		string scenePath = "";
-		var paths = AssetDatabase.GetAllAssetPaths();
-		foreach (var v in paths)
-		{
-			if (Path.GetFileName(v) == sceneName + ".unity")
-			{
-				scenePath = v;
-				break;
-			}
-		}
+		string scenePath = EditorUtils.GetCurrentScenePath();
 		saveFilePath = scenePath.Substring(0, scenePath.IndexOf(".unity")) + "_navgraph.asset";
+
+		if (worldBoxObj == null)
+			worldBoxObj = GameObject.Find("worldbox");
 	}
 
 
@@ -52,18 +45,22 @@ public class Graph3DEditor : EditorWindow
 	{
 		float spaceSize = 3f;
 
-		GUILayout.Label("This tool generates Navigation Data from current scene.", EditorStyles.largeLabel);
+		GUILayout.Label("This tool generates 3d graph from current scene.", EditorStyles.largeLabel);
 		GUILayout.Space(spaceSize);
 
-		GUILayout.Label("Grid size(0.1m-1m)：", EditorStyles.boldLabel);
+		GUILayout.Label("world box：", EditorStyles.boldLabel);
+		worldBoxObj = EditorGUILayout.ObjectField(worldBoxObj, typeof(GameObject), true) as GameObject;
+		GUILayout.Space(spaceSize);
+
+		GUILayout.Label("Grid size(0.5-1.0)：", EditorStyles.boldLabel);
 		str_gridSize = GUILayout.TextField(str_gridSize);
 		GUILayout.Space(spaceSize);
 
-		GUILayout.Label("Role height(m)：", EditorStyles.boldLabel);
+		/*GUILayout.Label("Role height(m)：", EditorStyles.boldLabel);
 		str_roleHeight = GUILayout.TextField(str_roleHeight);
-		GUILayout.Space(spaceSize);
+		GUILayout.Space(spaceSize);*/
 
-		GUILayout.Label("Max slope(0°-80°)：", EditorStyles.boldLabel);
+		GUILayout.Label("Max slope(20°-80°)：", EditorStyles.boldLabel);
 		str_slope = GUILayout.TextField(str_slope);
 		GUILayout.Space(spaceSize);
 
@@ -94,17 +91,27 @@ public class Graph3DEditor : EditorWindow
 	{
 		try
 		{
+			if (worldBoxObj == null)
+			{
+				UnityEngine.Debug.LogError("There is no world box object in the scene ? ? ?");
+				return;
+			}
+			var render = worldBoxObj.GetComponent<MeshRenderer>();
+			if (render == null)
+			{
+				UnityEngine.Debug.LogError("World box has no MeshRenderer");
+			}
+
 			// parse settings
 			gridSize = float.Parse(str_gridSize);
 			agentHeight = float.Parse(str_roleHeight);
 			float slope = int.Parse(str_slope);
-			if (slope < 0 || slope > 80)
+			if (slope < 20 || slope > 80)
 				UnityEngine.Debug.LogError("Bad slope! XD");
 			tan_slope = Mathf.Tan(slope / 180.0f * Mathf.PI);
 
 			// build
-			var go = GameObject.Find("terrain/box");
-			builder.Stetup(go, gridSize, agentHeight, tan_slope);
+			builder.Stetup(worldBoxObj, gridSize, agentHeight, tan_slope);
 			builder.Build();
 
 			// gizmo
@@ -163,6 +170,7 @@ public class Graph3DEditor : EditorWindow
 			return;
 		}
 
+		builder.navData.SaveBytes();
 		var existingAsset = AssetDatabase.LoadAssetAtPath<NavGraph3DData>(saveFilePath);
 		if (existingAsset == null)
 		{

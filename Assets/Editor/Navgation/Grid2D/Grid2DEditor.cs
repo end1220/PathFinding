@@ -21,12 +21,12 @@ public class Grid2DEditor : EditorWindow
 		public int layer;
 	}
 
+	GameObject worldBoxObj;
+
 	float minX;
 	float minZ;
 	
 	float gridSize;
-	float lenWidth;
-	float lenHeight;
 	int width;
 	int height;
 	GridInfo[,] gridList;
@@ -34,9 +34,9 @@ public class Grid2DEditor : EditorWindow
 	float tan_slope;
 
 	string str_gridSize = "0.5";
-	string str_width = "50";
-	string str_height = "50";
-	string str_slope = "80";
+	//string str_width = "50";
+	//string str_height = "50";
+	string str_slope = "45";
 
 	NavGrid2DData navigation;
 	string saveFilePath = "Assets/{0}_navgrid.asset";
@@ -45,18 +45,11 @@ public class Grid2DEditor : EditorWindow
 
 	void OnEnable()
 	{
-		string sceneName = SceneManager.GetActiveScene().name;
-		string scenePath = "";
-		var paths = AssetDatabase.GetAllAssetPaths();
-		foreach (var v in paths)
-		{
-			if (Path.GetFileName(v) == sceneName + ".unity")
-			{
-				scenePath = v;
-				break;
-			}
-		}
+		string scenePath = EditorUtils.GetCurrentScenePath();
 		saveFilePath = scenePath.Substring(0, scenePath.IndexOf(".unity")) + "_navgrid.asset";
+
+		if (worldBoxObj == null)
+			worldBoxObj = GameObject.Find("worldbox");
 	}
 
 
@@ -67,22 +60,23 @@ public class Grid2DEditor : EditorWindow
 		GUILayout.Label("This tool generates Navigation Data from current scene.", EditorStyles.largeLabel);
 		GUILayout.Space(spaceSize);
 
-		GUILayout.Label("1.Make sure there're objects with layer 'Terrain' in the scene.", EditorStyles.boldLabel);
+		GUILayout.Label("world box：", EditorStyles.boldLabel);
+		worldBoxObj = EditorGUILayout.ObjectField(worldBoxObj, typeof(GameObject), true) as GameObject;
 		GUILayout.Space(spaceSize);
 
-		GUILayout.Label("2.Width(m)：", EditorStyles.boldLabel);
+		/*GUILayout.Label("Width(m)：", EditorStyles.boldLabel);
 		str_width = GUILayout.TextField(str_width);
 		GUILayout.Space(spaceSize);
 
-		GUILayout.Label("3.Height(m)：", EditorStyles.boldLabel);
+		GUILayout.Label("Height(m)：", EditorStyles.boldLabel);
 		str_height = GUILayout.TextField(str_height);
-		GUILayout.Space(spaceSize);
+		GUILayout.Space(spaceSize);*/
 
-		GUILayout.Label("4.Grid size(0.1m-1m)：", EditorStyles.boldLabel);
+		GUILayout.Label("Grid size(0.5m-1m)：", EditorStyles.boldLabel);
 		str_gridSize = GUILayout.TextField(str_gridSize);
 		GUILayout.Space(spaceSize);
 
-		GUILayout.Label("5.Max slope(0°-80°)：", EditorStyles.boldLabel);
+		GUILayout.Label("Max slope(20°-80°)：", EditorStyles.boldLabel);
 		str_slope = GUILayout.TextField(str_slope);
 		GUILayout.Space(spaceSize);
 
@@ -90,7 +84,7 @@ public class Grid2DEditor : EditorWindow
 			GenerateNav();
 		GUILayout.Space(spaceSize);
 
-		GUILayout.Label("5.Output file：", EditorStyles.boldLabel);
+		GUILayout.Label("Output file：", EditorStyles.boldLabel);
 		saveFilePath = GUILayout.TextField(saveFilePath);
 		GUILayout.Space(spaceSize);
 
@@ -98,7 +92,6 @@ public class Grid2DEditor : EditorWindow
 			SaveToFile();
 		GUILayout.Space(spaceSize);
 
-		GUILayout.Label("x.Apply the file to the scene.", EditorStyles.boldLabel);
 	}
 
 
@@ -114,25 +107,35 @@ public class Grid2DEditor : EditorWindow
 	{
 		try
 		{
+			if (worldBoxObj == null)
+			{
+				UnityEngine.Debug.LogError("There is no world box object in the scene ???");
+				return;
+			}
+			var render = worldBoxObj.GetComponent<MeshRenderer>();
+			if (render == null)
+			{
+				UnityEngine.Debug.LogError("world box has no MeshRenderer");
+			}
+
 			gridSize = float.Parse(str_gridSize);
-			lenWidth = float.Parse(str_width);
-			lenHeight = float.Parse(str_height);
+
+			var worldSize = render.bounds.size;
+			width = (int)(worldSize.x / gridSize);
+			height = (int)(worldSize.z / gridSize);
+			var worldMin = render.bounds.min;
+			minX = worldMin.x;
+			minZ = worldMin.z;
+			
 			slope = int.Parse(str_slope);
-
-			width = (int)(lenWidth / gridSize);
-			height = (int)(lenHeight / gridSize);
-
-			if (slope < 0 || slope > 80)
+			if (slope < 20 || slope > 80)
 			{
 				UnityEngine.Debug.LogError("Bad slope! XD");
 				return;
 			}
 			tan_slope = Mathf.Tan(slope / 180.0f * Mathf.PI);
 
-			UpdateMinMax();
-
 			Fill_Grid();
-
 			DrawGrid();
 
 			Selection.SetActiveObjectWithContext(GameObject.Find(drawObjectName), null);
@@ -146,27 +149,12 @@ public class Grid2DEditor : EditorWindow
 	}
 
 
-	private void UpdateMinMax()
-	{
-		Vector3 centerPos = Vector3.zero;
-		var go = GameObject.Find(drawObjectName);
-		if (go != null)
-			centerPos = go.transform.position;
-		float halfW = width * gridSize / 2;
-		float halfH = height * gridSize / 2;
-		minX = centerPos.x - halfW;
-		minZ = centerPos.z - halfH;
-	}
-
-
 	void Fill_Grid()
 	{
 		int terrainLayer = LayerMask.NameToLayer(AppConst.LayerTerrain);
 		int obstacleLayer = LayerMask.NameToLayer(AppConst.LayerObstacle);
 		int linkLayer = LayerMask.NameToLayer(AppConst.LayerLink);
 
-		//width = (int)((maxX - minX) / gridSize);
-		//height = (int)((maxZ - minZ) / gridSize);
 		gridList = new GridInfo[width, height];
 		for (int x = 0; x < width; ++x)
 		{
@@ -312,8 +300,6 @@ public class Grid2DEditor : EditorWindow
 			UnityEngine.Debug.LogError("You should click generate first...");
 			return;
 		}
-
-		UpdateMinMax();
 
 		var existingAsset = AssetDatabase.LoadAssetAtPath<NavGrid2DData>(saveFilePath);
 		if (existingAsset == null)

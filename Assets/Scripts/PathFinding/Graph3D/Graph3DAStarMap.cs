@@ -16,22 +16,42 @@ namespace Lite.AStar
 		private Graph3DAStarNode[, ,] nodeMatrix;
 		public Graph3DAStarNode[, ,] NodeMatrix { get { return nodeMatrix; } }
 
+#if UNITY_EDITOR
+		[NonSerialized]
+		public List<Graph3DAStarNode> nodeList = new List<Graph3DAStarNode>();
+		[NonSerialized]
+		public List<Graph3DAStarEdge> edgeList = new List<Graph3DAStarEdge>();
+		[NonSerialized]
+		public Dictionary<int, Graph3DAStarNode> nodeDic = new Dictionary<int, Graph3DAStarNode>();
+#endif
+
+
 		public void Init(NavGraph3DData navData)
 		{
 			navGraphData = navData;
 			nodeMatrix = new Graph3DAStarNode[navData.buildConfig.cellCount.x, navData.buildConfig.cellCount.y, navData.buildConfig.cellCount.z];
-			for (int i = 0; i < navData.nodeList.Count; ++i)
+			for (int i = 0; i < navData.nodeCount; ++i)
 			{
-				var node = navData.nodeList[i];
+				var node = navData.ParseNode(i);
 				nodeMatrix[node.x, node.y, node.z] = node;
-				navData.nodeDic.Add(node.id, node);
 				this.AddNode(node);
+#if UNITY_EDITOR
+				nodeList.Add(node);
+				nodeDic.Add(node.id, node);
+#endif
 			}
-			for (int i = 0; i < navData.edgeList.Count; ++i)
+			for (int i = 0; i < navData.edgeCount; ++i)
 			{
-				var edge = navData.edgeList[i];
+				var edge = navData.ParseEdge(i);
 				this.AddEdge(edge);
+#if UNITY_EDITOR
+				edgeList.Add(edge);
+#endif
 			}
+
+			// release memory
+			navData.nodeBytes = null;
+			navData.edgeBytes = null;
 		}
 
 
@@ -48,7 +68,7 @@ namespace Lite.AStar
 			if (IsIndexValid(x, y, z))
 			{
 				var grid = nodeMatrix[x, y, z];
-				return grid != null && grid.walkable;
+				return grid != null/* && grid.walkable*/;
 			}
 			else
 				return false;
@@ -116,7 +136,7 @@ namespace Lite.AStar
 		{
 			var pt = TwVector3ToPoint3D(pos);
 			var node = GetNodeAt(pt.x, pt.y, pt.z);
-			if (node != null && node.walkable)
+			if (node != null/* && node.walkable*/)
 				return node;
 
 			for (int ix = -1; ix <= 1; ix += 2)

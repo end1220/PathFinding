@@ -4,8 +4,8 @@ namespace Lite.AStar
 {
 	public class GraphAStarNode : AStarNode
 	{
-		public int x;
-		public int y;
+		public ushort x;
+		public ushort y;
 
 		public GraphAStarNode(int id) :
 			base(id)

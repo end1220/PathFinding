@@ -7,6 +7,8 @@ namespace Lite.AStar
 		public int x;
 		public int y;
 
+		public int blockValue;
+
 		public GridAStarNode(int id) :
 			base(id)
 		{
