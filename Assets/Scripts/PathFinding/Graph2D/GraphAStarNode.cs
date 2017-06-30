@@ -1,6 +1,6 @@
 
 
-namespace Lite.AStar
+namespace TwGame.AStar
 {
 	public class GraphAStarNode : AStarNode
 	{

@@ -2,12 +2,12 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
-using Lite.Graph;
-using Lite.AStar;
-using Lite.AStar.NavGraph;
+using TwGame.Graph;
+using TwGame.AStar;
+using TwGame.AStar.NavGraph;
 
 
-namespace Lite
+namespace TwGame
 {
 	public class NavGraph3DGizmo : MonoBehaviour
 	{
@@ -25,6 +25,8 @@ namespace Lite
 		private Color red = new Color(0.5f, 0.2f, 0.2f);
 		//private Color blue = new Color(0, 0, 0.5f);
 
+		private bool drawSpaces = false;
+		private bool drawNodes = false;
 
 #if UNITY_EDITOR
 		void OnDrawGizmosSelected()
@@ -37,45 +39,42 @@ namespace Lite
 			Gizmos.color = Color.cyan;
 			Gizmos.DrawWireCube(cfg.worldCenterPos.ToVector3(), cfg.worldSize.ToVector3());
 
-			/*var gridSize = new Vector3(cfg.cellSize / 1000f, cfg.cellSize / 1000f, cfg.cellSize / 1000f);
-			var minPos = navData.buildConfig.worldMinPos;
-			int cellSize = navData.buildConfig.cellSize;
-			int cellRadius = cellSize / 2;*/
+			//var gridSize = new Vector3(cfg.cellSize / 1000f, cfg.cellSize / 1000f, cfg.cellSize / 1000f);
+			//var minPos = navData.buildConfig.worldMinPos;
+			float cellSize = navData.buildConfig.cellSize / 1000f;
+			//float cellRadius = cellSize / 2;
+			Vector3 nodesz = new Vector3(0.05f, 0.05f, 0.05f);
 
-			/*if (spaces != null)
+			if (spaces != null && drawSpaces)
 			{
 				for (int i = 0; i < spaces.Count; ++i)
 				{
 					var space = spaces[i];
 					Gizmos.DrawWireCube(space.minPos.ToVector3() + (space.cellCount * cfg.cellSize).ToVector3() / 2f, (space.cellCount * cfg.cellSize).ToVector3());
 				}
-			}*/
+			}
 
-			/*if (graphMap != null)
+			if (cells != null && drawNodes)
 			{
-				for (int x = 0; x < cfg.cellCount.x; x++)
+				for (int i = 0; i < cells.Count; ++i)
 				{
-					for (int y = 0; y < cfg.cellCount.y; y++)
+					var cell = cells[i];
+					Gizmos.color = red;
+					Gizmos.DrawWireCube(cell.worldPosition, nodesz);
+				}
+			}
+
+			if (graphMap == null && navData.edgeList != null && navData.edgeList.Count > 0)
+			{
+				if (drawNodes)
+				{
+					for (int i = 0; i < navData.nodeList.Count; ++i)
 					{
-						for (int z = 0; z < cfg.cellCount.z; z++)
-						{
-							var node = graphMap.NodeMatrix[x, y, z];
-							if (node == null)
-								continue;
-							Gizmos.color = node.walkable ? green : red;
-							int posx = minPos.x + x * cellSize + cellRadius;
-							int posy = minPos.y + y * cellSize + cellRadius;
-							int posz = minPos.z + z * cellSize + cellRadius;
-							Vector3 pos = new Vector3(posx / 1000f, posy / 1000f, posz / 1000f);
-							Gizmos.DrawWireCube(pos, gridSize);
-						}
+						var node = navData.nodeList[i];
+						Gizmos.color = green;
+						Gizmos.DrawWireCube(node.worldPosition.ToVector3(), nodesz);
 					}
 				}
-			}*/
-
-
-			if (navData.edgeList != null && navData.edgeList.Count > 0)
-			{
 				for (int i = 0; i < navData.edgeList.Count; ++i)
 				{
 					var edge = navData.edgeList[i];

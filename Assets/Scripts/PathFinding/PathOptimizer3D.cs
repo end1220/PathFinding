@@ -2,11 +2,11 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using TwFramework;
+using TwGame.AStar;
 
-using Lite.AStar;
 
-
-namespace Lite
+namespace TwGame
 {
 
 	public static class PathOptimizer3D

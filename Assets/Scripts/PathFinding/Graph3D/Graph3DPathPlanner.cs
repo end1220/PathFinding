@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TwFramework;
 
 
-
-namespace Lite.AStar
+namespace TwGame.AStar
 {
 
 	public class Graph3DPathPlanner : GraphPathPlanner

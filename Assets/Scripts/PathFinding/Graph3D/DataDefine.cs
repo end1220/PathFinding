@@ -1,11 +1,11 @@
 ﻿
 using System;
 using UnityEngine;
+using TwFramework;
+using TwGame;
 
-using Lite;
 
-
-namespace Lite.AStar.NavGraph
+namespace TwGame.AStar.NavGraph
 {
 
 	public class Cell

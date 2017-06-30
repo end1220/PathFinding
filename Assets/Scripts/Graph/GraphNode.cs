@@ -1,6 +1,6 @@
 
 
-namespace Lite.Graph
+namespace TwGame.Graph
 {
 	public class GraphNode
 	{

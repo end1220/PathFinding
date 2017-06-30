@@ -3,11 +3,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TwFramework;
+using TwGame.Graph;
 
-using Lite.Graph;
 
-
-namespace Lite.AStar
+namespace TwGame.AStar
 {
 	public class Graph3DAStarMap : GraphAStarMap
 	{
@@ -32,7 +32,11 @@ namespace Lite.AStar
 			nodeMatrix = new Graph3DAStarNode[navData.buildConfig.cellCount.x, navData.buildConfig.cellCount.y, navData.buildConfig.cellCount.z];
 			for (int i = 0; i < navData.nodeCount; ++i)
 			{
-				var node = navData.ParseNode(i);
+				Graph3DAStarNode node = null;
+				if (navData.bytesMode)
+					node = navData.ParseNode(i);
+				else
+					node = navData.nodeList[i];
 				nodeMatrix[node.x, node.y, node.z] = node;
 				this.AddNode(node);
 #if UNITY_EDITOR
@@ -42,7 +46,11 @@ namespace Lite.AStar
 			}
 			for (int i = 0; i < navData.edgeCount; ++i)
 			{
-				var edge = navData.ParseEdge(i);
+				Graph3DAStarEdge edge = null;
+				if (navData.bytesMode)
+					edge = navData.ParseEdge(i);
+				else
+					edge = navData.edgeList[i];
 				this.AddEdge(edge);
 #if UNITY_EDITOR
 				edgeList.Add(edge);
@@ -50,8 +58,7 @@ namespace Lite.AStar
 			}
 
 			// release memory
-			navData.nodeBytes = null;
-			navData.edgeBytes = null;
+			navData.ReleaseMemory();
 		}
 
 

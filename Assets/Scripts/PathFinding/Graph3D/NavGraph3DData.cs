@@ -3,34 +3,41 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Lite.Graph;
-using Lite.AStar.NavGraph;
+using TwGame.Graph;
+using TwGame.AStar.NavGraph;
 
 
-namespace Lite.AStar
+namespace TwGame.AStar
 {
 	/// <summary>
 	/// 存储着3D网格稀疏图寻路数据
 	/// </summary>
 	public class NavGraph3DData : ScriptableObject
 	{
+		public bool bytesMode = false;// 序列化图的节点和边数据是否使用bytes
 
 		[HideInInspector]
 		public BuildConfig buildConfig;
-		//[HideInInspector]
+
+		[HideInInspector]
 		public byte[] nodeBytes = null;
+
+		[HideInInspector]
 		public byte[] edgeBytes = null;
+
 		public int nodeCount;
+
 		public int edgeCount;
 
-#if UNITY_EDITOR
-
-		[NonSerialized]
+		[HideInInspector]
 		public List<Graph3DAStarNode> nodeList = new List<Graph3DAStarNode>();
-		[NonSerialized]
+
+		[HideInInspector]
 		public List<Graph3DAStarEdge> edgeList = new List<Graph3DAStarEdge>();
+		
 		[NonSerialized]
 		public Dictionary<int, Graph3DAStarNode> nodeDic = new Dictionary<int, Graph3DAStarNode>();
+
 
 		public int NodeSize
 		{
@@ -50,6 +57,8 @@ namespace Lite.AStar
 			}
 		}
 
+
+#if UNITY_EDITOR
 
 		public void Init(BuildConfig cfg)
 		{
@@ -75,41 +84,69 @@ namespace Lite.AStar
 		{
 			nodeCount = nodeList.Count;
 			edgeCount = edgeList.Count;
-			nodeBytes = new byte[nodeList.Count * NodeSize];
-			edgeBytes = new byte[edgeList.Count * EdgeSize];
 
-			for (int i = 0; i < nodeList.Count; ++i)
+			if (bytesMode)
 			{
-				var node = nodeList[i];
-				int index = i * NodeSize;
-				IntToBytes(nodeBytes, index, node.id);
-				index += 4;
-				UshortToBytes(nodeBytes, index, node.x);
-				index += 2;
-				UshortToBytes(nodeBytes, index, node.y);
-				index += 2;
-				UshortToBytes(nodeBytes, index, node.z);
-				index += 2;
-				IntToBytes(nodeBytes, index, node.worldPosition.x);
-				index += 4;
-				IntToBytes(nodeBytes, index, node.worldPosition.y);
-				index += 4;
-				IntToBytes(nodeBytes, index, node.worldPosition.z);
-			}
+				nodeBytes = new byte[nodeList.Count * NodeSize];
+				edgeBytes = new byte[edgeList.Count * EdgeSize];
 
-			for (int i = 0; i < edgeList.Count; ++i)
-			{
-				var edge = edgeList[i];
-				int index = i * EdgeSize;
-				IntToBytes(edgeBytes, index, edge.from);
-				index += 4;
-				IntToBytes(edgeBytes, index, edge.to);
-				index += 4;
-				IntToBytes(edgeBytes, index, edge.cost);
+				for (int i = 0; i < nodeList.Count; ++i)
+				{
+					var node = nodeList[i];
+					int index = i * NodeSize;
+					IntToBytes(nodeBytes, index, node.id);
+					index += 4;
+					UshortToBytes(nodeBytes, index, node.x);
+					index += 2;
+					UshortToBytes(nodeBytes, index, node.y);
+					index += 2;
+					UshortToBytes(nodeBytes, index, node.z);
+					index += 2;
+					IntToBytes(nodeBytes, index, node.worldPosition.x);
+					index += 4;
+					IntToBytes(nodeBytes, index, node.worldPosition.y);
+					index += 4;
+					IntToBytes(nodeBytes, index, node.worldPosition.z);
+				}
+
+				for (int i = 0; i < edgeList.Count; ++i)
+				{
+					var edge = edgeList[i];
+					int index = i * EdgeSize;
+					IntToBytes(edgeBytes, index, edge.from);
+					index += 4;
+					IntToBytes(edgeBytes, index, edge.to);
+					index += 4;
+					IntToBytes(edgeBytes, index, edge.cost);
+				}
+
+				nodeList.Clear();
+				edgeList.Clear();
 			}
+			else
+			{
+
+			}
+			
 		}
 
 #endif
+
+
+		public void ReleaseMemory()
+		{
+			if (bytesMode)
+			{
+				nodeBytes = null;
+				edgeBytes = null;
+			}
+			else
+			{
+				nodeList.Clear();
+				edgeList.Clear();
+			}
+		}
+
 
 		public Graph3DAStarNode ParseNode(int index)
 		{

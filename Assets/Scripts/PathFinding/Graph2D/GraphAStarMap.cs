@@ -3,10 +3,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-using Lite.Graph;
+using TwGame.Graph;
 
 
-namespace Lite.AStar
+namespace TwGame.AStar
 {
 	public class GraphAStarMap : AStarMap
 	{

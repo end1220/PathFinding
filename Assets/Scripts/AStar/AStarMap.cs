@@ -4,10 +4,10 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-namespace Lite.AStar
+namespace TwGame.AStar
 {
 
-	public abstract class AStarMap : Lite.Graph.SparseGraph
+	public abstract class AStarMap : TwGame.Graph.SparseGraph
 	{
 		public abstract int GetNeighbourNodeCount(AStarNode node);
 

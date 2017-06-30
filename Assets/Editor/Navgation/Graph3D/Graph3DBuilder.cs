@@ -3,11 +3,11 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using TwFramework;
+using TwGame.Graph;
 
-using Lite.Graph;
 
-
-namespace Lite.AStar.NavGraph
+namespace TwGame.AStar.NavGraph
 {
 
 	public class Graph3DBuilder
@@ -110,16 +110,7 @@ namespace Lite.AStar.NavGraph
 						{
 							var space = new SubSpace();
 							subSpaces.Add(space);
-							if (x == xcount - 1 || y == ycount - 1 || z == zcount - 1)
-							{
-								space.cellCount = new Int3(cfg.cellCount.x - subGridCount * x,
-									cfg.cellCount.y - subGridCount * y,
-									cfg.cellCount.z - subGridCount * z);
-							}
-							else
-							{
-								space.cellCount = new Int3(subGridCount, subGridCount, subGridCount);
-							}
+							space.cellCount = new Int3(subGridCount, subGridCount, subGridCount);
 							space.startIndex = new Int3(x * subGridCount, y * subGridCount, z * subGridCount);
 							space.minPos = new Int3(cfg.worldMinPos.x + x * intSubSize, cfg.worldMinPos.y + y * intSubSize, cfg.worldMinPos.z + z * intSubSize);
 						}
@@ -204,7 +195,8 @@ namespace Lite.AStar.NavGraph
 					{
 						//Make new cell
 						actualWorldPoint = hit.point;
-						var cell = new Cell(idCounter++, new Int3(x, y, z), actualWorldPoint, walkable);
+						int id = CalcNodeId(x, y, z);
+						var cell = new Cell(id, new Int3(x, y, z), actualWorldPoint, walkable);
 						cellArray[x, y, z] = cell;
 						cells.Add(cell);
 					}
@@ -388,11 +380,12 @@ namespace Lite.AStar.NavGraph
 		}
 
 
-		/*private int CalcNodeId(int x, int y, int z)
+		private int CalcNodeId(int x, int y, int z)
 		{
-			int id = x * cfg.cellCount.y * cfg.cellCount.z + y * cfg.cellCount.z + z;
-			return id;
-		}*/
+			return idCounter++;
+			/*int id = x * cfg.cellCount.y * cfg.cellCount.z + y * cfg.cellCount.z + z;
+			return id;*/
+		}
 
 		#endregion
 
