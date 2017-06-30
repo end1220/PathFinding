@@ -269,6 +269,7 @@ namespace Lite.AStar.NavGraph
 			int count = 0;
 			float cellSize = cfg.cellSize / 1000f;
 
+			// make nodes
 			for (int i = 0; i < cells.Count; ++i)
 			{
 				count++;
@@ -282,7 +283,7 @@ namespace Lite.AStar.NavGraph
 				int x = cell.pos.x;
 				int y = cell.pos.y;
 				int z = cell.pos.z;
-				int id = cell.id;// CalcNodeId(x, y, z);
+				int id = cell.id;
 
 				var node = new Graph3DAStarNode();
 				node.id = id;
@@ -293,6 +294,9 @@ namespace Lite.AStar.NavGraph
 				//node.walkable = cell.walkable;
 				navData.AddNode(node);
 			}
+
+			// make edges
+			HashSet<string> edgeKeySet = new HashSet<string>();
 
 			for (int i = 0; i < cells.Count; ++i)
 			{
@@ -306,7 +310,7 @@ namespace Lite.AStar.NavGraph
 				int x = cell.pos.x;
 				int y = cell.pos.y;
 				int z = cell.pos.z;
-				int id = cell.id;// CalcNodeId(x, y, z);
+				int id = cell.id;
 
 				for (int ix = -1; ix <= 1; ix++)
 				{
@@ -330,10 +334,17 @@ namespace Lite.AStar.NavGraph
 								var neighbor = cellArray[realx, realy, realz];
 								if (neighbor != null)
 								{
+									int nbId = neighbor.id;
 									int cost = int.MaxValue;
 									int absDelta = Math.Abs(ix) + Math.Abs(iy) + Math.Abs(iz);
 									if (neighbor.walkable)
 									{
+										// to_from edge has been already added, so ignore it
+										if (edgeKeySet.Contains(string.Format("{0}_{1}", nbId, id)))
+											continue;
+										else
+											edgeKeySet.Add(string.Format("{0}_{1}", id, nbId));
+
 										float tan = 0;
 										float dx = cellSize;
 										float dy = Math.Abs(neighbor.worldPosition.y - cell.worldPosition.y);
@@ -365,7 +376,6 @@ namespace Lite.AStar.NavGraph
 
 										if (cost != int.MaxValue)
 										{
-											int nbId = neighbor.id;// CalcNodeId(realx, realy, realz);
 											var edge = new Graph3DAStarEdge(id, nbId, cost);
 											navData.AddEdge(edge);
 										}

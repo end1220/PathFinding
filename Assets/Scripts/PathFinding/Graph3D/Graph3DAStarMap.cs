@@ -51,9 +51,14 @@ namespace Lite.AStar
 					edge = navData.ParseEdge(i);
 				else
 					edge = navData.edgeList[i];
+
+				Graph3DAStarEdge edgeToFrom = new Graph3DAStarEdge(edge.to, edge.from, edge.cost);
+
 				this.AddEdge(edge);
+				this.AddEdge(edgeToFrom);
 #if UNITY_EDITOR
 				edgeList.Add(edge);
+				edgeList.Add(edgeToFrom);
 #endif
 			}
 
