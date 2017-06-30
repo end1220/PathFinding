@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-namespace TwGame.Graph
+namespace Lite.Graph
 {
 	using NodeList = List<GraphNode>;
 	using NodeTable = Dictionary<int,GraphNode>;

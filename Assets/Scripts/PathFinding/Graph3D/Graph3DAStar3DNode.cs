@@ -1,10 +1,10 @@
 
 using UnityEngine;
-using TwFramework;
-using TwGame;
+
+using Lite;
 
 
-namespace TwGame.AStar
+namespace Lite.AStar
 {
 	[System.Serializable]
 	public class Graph3DAStarNode : GraphAStarNode

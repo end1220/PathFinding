@@ -1,9 +1,9 @@
 
 using UnityEngine;
-using TwGame.Graph;
+using Lite.Graph;
 
 
-namespace TwGame.AStar
+namespace Lite.AStar
 {
 	[System.Serializable]
 	public class Graph3DAStarEdge : GraphEdge

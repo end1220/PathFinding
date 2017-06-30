@@ -3,11 +3,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TwFramework;
-using TwGame.Graph;
+using Lite;
+using Lite.Graph;
 
 
-namespace TwGame.AStar
+namespace Lite.AStar
 {
 	public class Graph3DAStarMap : GraphAStarMap
 	{

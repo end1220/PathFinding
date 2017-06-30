@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using TwFramework;
 
 
-namespace TwGame.AStar
+
+namespace Lite.AStar
 {
 	
 	public class GraphPathPlanner : AStarPathPlanner

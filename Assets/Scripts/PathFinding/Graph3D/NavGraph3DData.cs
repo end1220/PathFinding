@@ -3,11 +3,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TwGame.Graph;
-using TwGame.AStar.NavGraph;
+using Lite.Graph;
+using Lite.AStar.NavGraph;
 
 
-namespace TwGame.AStar
+namespace Lite.AStar
 {
 	/// <summary>
 	/// 存储着3D网格稀疏图寻路数据

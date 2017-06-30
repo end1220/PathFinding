@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 
-namespace TwGame.AStar
+namespace Lite.AStar
 {
 	/// <summary>
 	/// 存储着2D网格寻路数据

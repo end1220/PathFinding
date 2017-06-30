@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-namespace TwGame.AStar
+namespace Lite.AStar
 {
 	public abstract class AStarPathPlanner
 	{

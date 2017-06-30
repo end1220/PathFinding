@@ -2,7 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
-using TwGame.AStar;
+using Lite.AStar;
 
 
 public class NavGrid2DGizmo : MonoBehaviour
