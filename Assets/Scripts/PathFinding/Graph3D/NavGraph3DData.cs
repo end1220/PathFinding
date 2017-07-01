@@ -14,6 +14,7 @@ namespace Lite.AStar
 	/// </summary>
 	public class NavGraph3DData : ScriptableObject
 	{
+		[HideInInspector]
 		public bool bytesMode = false;// 序列化图的节点和边数据是否使用bytes
 
 		[HideInInspector]

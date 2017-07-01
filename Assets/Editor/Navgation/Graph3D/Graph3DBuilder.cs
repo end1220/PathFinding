@@ -115,8 +115,7 @@ namespace Lite.AStar.NavGraph
 							space.minPos = new Int3(cfg.worldMinPos.x + x * intSubSize, cfg.worldMinPos.y + y * intSubSize, cfg.worldMinPos.z + z * intSubSize);
 						}
 						count++;
-						if (count % 10 == 0)
-							EditorUtility.DisplayProgressBar(string.Format("Subdividing {0}/{1}", count, totalCount), "", (float)count / totalCount);
+						EditorUtility.DisplayProgressBar(string.Format("Subdividing {0}/{1}", count, totalCount), "", (float)count / totalCount);
 					}
 				}
 			}
@@ -153,8 +152,7 @@ namespace Lite.AStar.NavGraph
 					}
 				}
 
-				if (i % 10 == 0)
-					EditorUtility.DisplayProgressBar(string.Format("Voxelizing {0}/{1}", i+1, subSpaces.Count), "", (float)i+1 / subSpaces.Count);
+				EditorUtility.DisplayProgressBar(string.Format("Voxelizing {0}/{1}", i+1, subSpaces.Count), "", (float)i+1 / subSpaces.Count);
 			}
 
 		}
@@ -214,6 +212,7 @@ namespace Lite.AStar.NavGraph
 			int count = 0;
 			//int totalSize = cfg.cellCount.x * cfg.cellCount.y * cfg.cellCount.z;
 			float cellSize = cfg.cellSize / 1000f;
+			float stepOneSize = cellSize / 5;
 
 			for (int i = 0; i < cells.Count; ++i)
 			{
@@ -243,8 +242,8 @@ namespace Lite.AStar.NavGraph
 				float stepOne = 0;
 				while (stepOne < cellSize)
 				{
-					stepOne += cellSize / 5;
-					Collider[] obses = Physics.OverlapSphere(cell.worldPosition + Vector3.up * stepOne, stepOne, cfg.obstacleMask);
+					stepOne += stepOneSize;
+					Collider[] obses = Physics.OverlapSphere(cell.worldPosition + Vector3.up * stepOne, stepOneSize, cfg.obstacleMask);
 					if (obses.Length > 0)
 					{
 						cell.walkable = false;
@@ -274,7 +273,7 @@ namespace Lite.AStar.NavGraph
 			{
 				count++;
 				if (count % 10 == 0)
-					EditorUtility.DisplayProgressBar(string.Format("building nodes {0}/{1}", count, cells.Count), "", (float)count / cells.Count);
+					EditorUtility.DisplayProgressBar(string.Format("Building nodes {0}/{1}", count, cells.Count), "", (float)count / cells.Count);
 
 				var cell = cells[i];
 				if (cell == null || !cell.walkable)
