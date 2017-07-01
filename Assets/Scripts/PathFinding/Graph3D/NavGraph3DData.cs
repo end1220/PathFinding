@@ -94,30 +94,30 @@ namespace Lite.AStar
 				{
 					var node = nodeList[i];
 					int index = i * NodeSize;
-					IntToBytes(nodeBytes, index, node.id);
+					ByteTool.IntToBytes(nodeBytes, index, node.id);
 					index += 4;
-					UshortToBytes(nodeBytes, index, node.x);
+					ByteTool.UshortToBytes(nodeBytes, index, node.x);
 					index += 2;
-					UshortToBytes(nodeBytes, index, node.y);
+					ByteTool.UshortToBytes(nodeBytes, index, node.y);
 					index += 2;
-					UshortToBytes(nodeBytes, index, node.z);
+					ByteTool.UshortToBytes(nodeBytes, index, node.z);
 					index += 2;
-					IntToBytes(nodeBytes, index, node.worldPosition.x);
+					ByteTool.IntToBytes(nodeBytes, index, node.worldPosition.x);
 					index += 4;
-					IntToBytes(nodeBytes, index, node.worldPosition.y);
+					ByteTool.IntToBytes(nodeBytes, index, node.worldPosition.y);
 					index += 4;
-					IntToBytes(nodeBytes, index, node.worldPosition.z);
+					ByteTool.IntToBytes(nodeBytes, index, node.worldPosition.z);
 				}
 
 				for (int i = 0; i < edgeList.Count; ++i)
 				{
 					var edge = edgeList[i];
 					int index = i * EdgeSize;
-					IntToBytes(edgeBytes, index, edge.from);
+					ByteTool.IntToBytes(edgeBytes, index, edge.from);
 					index += 4;
-					IntToBytes(edgeBytes, index, edge.to);
+					ByteTool.IntToBytes(edgeBytes, index, edge.to);
 					index += 4;
-					IntToBytes(edgeBytes, index, edge.cost);
+					ByteTool.IntToBytes(edgeBytes, index, edge.cost);
 				}
 
 				nodeList.Clear();
@@ -152,19 +152,19 @@ namespace Lite.AStar
 		{
 			Graph3DAStarNode node = new Graph3DAStarNode();
 			int bytesIndex = index * NodeSize;
-			node.id = IntFromBytes(nodeBytes, bytesIndex);
+			node.id = ByteTool.IntFromBytes(nodeBytes, bytesIndex);
 			bytesIndex += 4;
-			node.x = UshortFromBytes(nodeBytes, bytesIndex);
+			node.x = ByteTool.UshortFromBytes(nodeBytes, bytesIndex);
 			bytesIndex += 2;
-			node.y = UshortFromBytes(nodeBytes, bytesIndex);
+			node.y = ByteTool.UshortFromBytes(nodeBytes, bytesIndex);
 			bytesIndex += 2;
-			node.z = UshortFromBytes(nodeBytes, bytesIndex);
+			node.z = ByteTool.UshortFromBytes(nodeBytes, bytesIndex);
 			bytesIndex += 2;
-			node.worldPosition.x = IntFromBytes(nodeBytes, bytesIndex);
+			node.worldPosition.x = ByteTool.IntFromBytes(nodeBytes, bytesIndex);
 			bytesIndex += 4;
-			node.worldPosition.y = IntFromBytes(nodeBytes, bytesIndex);
+			node.worldPosition.y = ByteTool.IntFromBytes(nodeBytes, bytesIndex);
 			bytesIndex += 4;
-			node.worldPosition.z = IntFromBytes(nodeBytes, bytesIndex);
+			node.worldPosition.z = ByteTool.IntFromBytes(nodeBytes, bytesIndex);
 
 			return node;
 		}
@@ -173,59 +173,13 @@ namespace Lite.AStar
 		{
 			Graph3DAStarEdge edge = new Graph3DAStarEdge();
 			int bytesIndex = index * EdgeSize;
-			edge.from = IntFromBytes(edgeBytes, bytesIndex);
+			edge.from = ByteTool.IntFromBytes(edgeBytes, bytesIndex);
 			bytesIndex += 4;
-			edge.to = IntFromBytes(edgeBytes, bytesIndex);
+			edge.to = ByteTool.IntFromBytes(edgeBytes, bytesIndex);
 			bytesIndex += 4;
-			edge.cost = IntFromBytes(edgeBytes, bytesIndex);
+			edge.cost = ByteTool.IntFromBytes(edgeBytes, bytesIndex);
 			
 			return edge;
-		}
-
-		private void IntToBytes(byte[] bt, int index, int value)
-		{
-			bt[index++] = (byte)(value >> 24);
-			bt[index++] = (byte)(value >> 16);
-			bt[index++] = (byte)(value >> 8);
-			bt[index] = (byte)(value >> 0);
-		}
-
-		private int IntFromBytes(byte[] bt, int index)
-		{
-			int value = 0;
-			value |= (int)bt[index++] << 24;
-			value |= (int)bt[index++] << 16;
-			value |= (int)bt[index++] << 8;
-			value |= (int)bt[index] << 0;
-			return value;
-		}
-
-		private void ShortToBytes(byte[] bt, int index, short value)
-		{
-			bt[index++] = (byte)(value >> 8);
-			bt[index] = (byte)(value >> 0);
-		}
-
-		private short ShortFromBytes(byte[] bt, int index)
-		{
-			short value = 0;
-			value |= (short)((int)bt[index++] << 8);
-			value |= (short)((int)bt[index] << 0);
-			return value;
-		}
-
-		private void UshortToBytes(byte[] bt, int index, ushort value)
-		{
-			bt[index++] = (byte)(value >> 8);
-			bt[index] = (byte)(value >> 0);
-		}
-
-		private ushort UshortFromBytes(byte[] bt, int index)
-		{
-			ushort value = 0;
-			value |= (ushort)((int)bt[index++] << 8);
-			value |= (ushort)((int)bt[index] << 0);
-			return value;
 		}
 
 	}
