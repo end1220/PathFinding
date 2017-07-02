@@ -24,8 +24,8 @@ namespace Lite.AStar.NavGraph
 
 		private bool Enable8Directions = true;
 
-		
-		public void Stetup(GameObject box, float cellSize, float agentHeight, float tanSlope)
+
+		public void Stetup(GameObject box, float cellSize, float agentHeight, float agentRadius, float tanSlope)
 		{
 			var render = box.GetComponent<MeshRenderer>();
 
@@ -45,6 +45,7 @@ namespace Lite.AStar.NavGraph
 			cfg.worldMinPos = new Int3(render.bounds.min);
 			cfg.cellSize = (int)TwMath.m2mm(cellSize);
 			cfg.agentHeight = agentHeight;
+			cfg.agentRadius = agentRadius;
 			cfg.agentHeightStep = (int)Math.Round(agentHeight / cellSize);
 			cfg.tanSlope = tanSlope;
 			cfg.cellCount.x = Mathf.RoundToInt(worldSize.x / cellSize);
@@ -63,6 +64,7 @@ namespace Lite.AStar.NavGraph
 				BuildSubSpace();
 				BuildCells();
 				RoleHeightTesting();
+				RoleRadiusTesting();
 				CellsToGraph();
 				
 				EditorUtility.ClearProgressBar();
@@ -115,7 +117,7 @@ namespace Lite.AStar.NavGraph
 							space.minPos = new Int3(cfg.worldMinPos.x + x * intSubSize, cfg.worldMinPos.y + y * intSubSize, cfg.worldMinPos.z + z * intSubSize);
 						}
 						count++;
-						EditorUtility.DisplayProgressBar(string.Format("Subdividing {0}/{1}", count, totalCount), "", (float)count / totalCount);
+						EditorUtility.DisplayProgressBar(string.Format("Subdividing scene{0}/{1}", count, totalCount), "", (float)count / totalCount);
 					}
 				}
 			}
@@ -205,7 +207,7 @@ namespace Lite.AStar.NavGraph
 		#endregion
 
 
-		#region ------角色高度测试------
+		#region ------角色测试------
 
 		private void RoleHeightTesting()
 		{
@@ -218,7 +220,7 @@ namespace Lite.AStar.NavGraph
 			{
 				count++;
 				if (count % 10 == 0)
-					EditorUtility.DisplayProgressBar(string.Format("Role Height Testing {0}/{1}", count, cells.Count), "", (float)count / cells.Count);
+					EditorUtility.DisplayProgressBar(string.Format("Testing role height {0}/{1}", count, cells.Count), "", (float)count / cells.Count);
 
 				var cell = cells[i];
 				if (cell == null || !cell.walkable)
@@ -238,7 +240,7 @@ namespace Lite.AStar.NavGraph
 					}
 					stepY--;
 				}
-				// inside one step
+				// inside one up-cell
 				float stepOne = 0;
 				while (stepOne < cellSize)
 				{
@@ -249,6 +251,39 @@ namespace Lite.AStar.NavGraph
 						cell.walkable = false;
 						break;
 					}
+				}
+			}
+		}
+
+
+		private void RoleRadiusTesting()
+		{
+			int count = 0;
+			float cellSize = cfg.cellSize / 1000f;
+			float stepOneSize = cellSize / 2;
+			float maxHeight = cfg.agentHeightStep * cellSize;
+			float roleRadius = cfg.agentRadius;
+
+			for (int i = 0; i < cells.Count; ++i)
+			{
+				count++;
+				if (count % 10 == 0)
+					EditorUtility.DisplayProgressBar(string.Format("Testing role radius {0}/{1}", count, cells.Count), "", (float)count / cells.Count);
+
+				var cell = cells[i];
+				if (cell == null || !cell.walkable)
+					continue;
+
+				float height = roleRadius * 2;
+				while (height < maxHeight)
+				{
+					Collider[] obses = Physics.OverlapSphere(cell.worldPosition + Vector3.up * height, roleRadius, cfg.allTestMask);
+					if (obses.Length > 0)
+					{
+						cell.walkable = false;
+						break;
+					}
+					height += stepOneSize;
 				}
 			}
 		}
@@ -273,7 +308,7 @@ namespace Lite.AStar.NavGraph
 			{
 				count++;
 				if (count % 10 == 0)
-					EditorUtility.DisplayProgressBar(string.Format("Building nodes {0}/{1}", count, cells.Count), "", (float)count / cells.Count);
+					EditorUtility.DisplayProgressBar(string.Format("Building graph nodes {0}/{1}", count, cells.Count), "", (float)count / cells.Count);
 
 				var cell = cells[i];
 				if (cell == null || !cell.walkable)
@@ -300,7 +335,7 @@ namespace Lite.AStar.NavGraph
 			for (int i = 0; i < cells.Count; ++i)
 			{
 				if (i % 10 == 0)
-					EditorUtility.DisplayProgressBar(string.Format("Building edges {0}/{1}", i, cells.Count), "", (float)i / cells.Count);
+					EditorUtility.DisplayProgressBar(string.Format("Building graph edges {0}/{1}", i, cells.Count), "", (float)i / cells.Count);
 
 				var cell = cells[i];
 				if (cell == null || !cell.walkable)

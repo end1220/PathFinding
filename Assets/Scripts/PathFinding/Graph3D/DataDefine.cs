@@ -35,6 +35,7 @@ namespace Lite.AStar.NavGraph
 		public int obstacleMask;
 		public int cellSize;
 		public float agentHeight;
+		public float agentRadius;
 		public int agentHeightStep;
 		[NonSerialized]
 		public float tanSlope;

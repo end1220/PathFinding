@@ -20,10 +20,12 @@ public class Graph3DEditor : EditorWindow
 	GameObject worldBoxObj;
 	float gridSize;
 	float agentHeight = 2;
+	float agentRadius = 0.5f;
 	float tan_slope;
 
 	string str_gridSize = "0.5";
 	string str_roleHeight = "2";
+	string str_roleRadius = "0.5";
 	string str_slope = "45";
 
 	string saveFilePath = "Assets/{0}_navgraph.asset";
@@ -105,13 +107,14 @@ public class Graph3DEditor : EditorWindow
 			// parse settings
 			gridSize = float.Parse(str_gridSize);
 			agentHeight = float.Parse(str_roleHeight);
+			agentRadius = float.Parse(str_roleRadius);
 			float slope = int.Parse(str_slope);
 			if (slope < 20 || slope > 80)
 				UnityEngine.Debug.LogError("Bad slope! XD");
 			tan_slope = Mathf.Tan(slope / 180.0f * Mathf.PI);
 
 			// build
-			builder.Stetup(worldBoxObj, gridSize, agentHeight, tan_slope);
+			builder.Stetup(worldBoxObj, gridSize, agentHeight, agentRadius, tan_slope);
 			builder.Build();
 
 			// gizmo
