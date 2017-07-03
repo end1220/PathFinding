@@ -88,19 +88,19 @@ namespace Lite.AStar.NavGraph
 			float halfSubSize = subSize / 2f;
 			Vector3 worldMinPos = cfg.worldMinPos.ToVector3();
 
-			int xcount = cfg.cellCount.x / subGridCount + ((cfg.cellCount.x % subGridCount) == 0 ? 0 : 1);
-			int ycount = cfg.cellCount.y / subGridCount + ((cfg.cellCount.y % subGridCount) == 0 ? 0 : 1);
-			int zcount = cfg.cellCount.z / subGridCount + ((cfg.cellCount.z % subGridCount) == 0 ? 0 : 1);
-			int totalCount = xcount * ycount * zcount;
+			int xSpaceCount = cfg.cellCount.x / subGridCount + ((cfg.cellCount.x % subGridCount) == 0 ? 0 : 1);
+			int ySpaceCount = cfg.cellCount.y / subGridCount + ((cfg.cellCount.y % subGridCount) == 0 ? 0 : 1);
+			int zSpaceCount = cfg.cellCount.z / subGridCount + ((cfg.cellCount.z % subGridCount) == 0 ? 0 : 1);
+			int totalCount = xSpaceCount * ySpaceCount * zSpaceCount;
 
 			subSpaces.Clear();
 
 			int count = 0;
-			for (int x = 0; x < xcount; ++x)
+			for (int x = 0; x < xSpaceCount; ++x)
 			{
-				for (int y = 0; y < ycount; ++y)
+				for (int y = 0; y < ySpaceCount; ++y)
 				{
-					for (int z = 0; z < zcount; ++z)
+					for (int z = 0; z < zSpaceCount; ++z)
 					{
 						float startx = worldMinPos.x + x * subSize;
 						float starty = worldMinPos.y + y * subSize;
@@ -112,7 +112,22 @@ namespace Lite.AStar.NavGraph
 						{
 							var space = new SubSpace();
 							subSpaces.Add(space);
-							space.cellCount = new Int3(subGridCount, subGridCount, subGridCount);
+							int xGrid = subGridCount;
+							int yGrid = subGridCount;
+							int zGrid = subGridCount;
+							if (x == xSpaceCount - 1)
+							{
+								xGrid = cfg.cellCount.x - x * subGridCount;
+							}
+							if (y == ySpaceCount - 1)
+							{
+								yGrid = cfg.cellCount.y - y * subGridCount;
+							}
+							if (z == zSpaceCount - 1)
+							{
+								zGrid = cfg.cellCount.z - z * subGridCount;
+							}
+							space.cellCount = new Int3(xGrid, yGrid, zGrid);
 							space.startIndex = new Int3(x * subGridCount, y * subGridCount, z * subGridCount);
 							space.minPos = new Int3(cfg.worldMinPos.x + x * intSubSize, cfg.worldMinPos.y + y * intSubSize, cfg.worldMinPos.z + z * intSubSize);
 						}
