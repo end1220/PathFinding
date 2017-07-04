@@ -9,7 +9,7 @@ namespace Lite.AStar
 	/// <summary>
 	/// 存储着2D网格寻路数据
 	/// </summary>
-	//[CreateAssetMenu(menuName = "Lite/Navigation Data", order = 2)]
+	//[CreateAssetMenu(menuName = "TwGame/Navigation Data", order = 2)]
 	public class NavGrid2DData : ScriptableObject
 	{
 		[SerializeField]
@@ -36,15 +36,15 @@ namespace Lite.AStar
 		public int[] mask = null;
 
 
-		public int At(int x, int y)
+		public ushort At(int x, int y)
 		{
 			int bitSize = y * width + x;
 			int left = bitSize % 32;
 			int index = bitSize / 32;
-			return mask[index] >> left & 1;
+			return (ushort)(mask[index] >> left & 1);
 		}
 
-		private void _setPoint(int x, int y, int value)
+		private void _setPoint(int x, int y, ushort value)
 		{
 			int bitSize = y * width + x;
 			int left = bitSize % 32;
@@ -53,7 +53,7 @@ namespace Lite.AStar
 		}
 
 
-		public void _setData(int[,] msk, int w, int h, int grid, int minx, int minz)
+		public void _setData(ushort[,] msk, int w, int h, int grid, int minx, int minz)
 		{
 			width = w;
 			height = h;

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-
+using Lite;
 using Lite.Graph;
 
 
@@ -438,17 +438,15 @@ namespace Lite.AStar.NavGraph
 
 		}
 
+		#endregion
+
 
 		private int CalcNodeId(int x, int y, int z)
 		{
 			return idCounter++;
-			/*int id = x * cfg.cellCount.y * cfg.cellCount.z + y * cfg.cellCount.z + z;
-			return id;*/
+			//int id = x * cfg.cellCount.y * cfg.cellCount.z + y * cfg.cellCount.z + z;
+			//return id;
 		}
-
-		#endregion
-
-
 
 	}
 

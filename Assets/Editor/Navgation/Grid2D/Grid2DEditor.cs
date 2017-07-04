@@ -16,7 +16,7 @@ public class Grid2DEditor : EditorWindow
 {
 	class GridInfo
 	{
-		public int mask;
+		public ushort mask;
 		public Vector3 point;
 		public int layer;
 	}
@@ -174,25 +174,30 @@ public class Grid2DEditor : EditorWindow
 			| 1 << obstacleLayer
 			| 1 << linkLayer;
 
+		float sideLen = (gridSize/2.0f) * 0.5f;
 		float badY = 10000;
 		for (int x = 0; x < width; ++x)
 		{
 			for (int y = 0; y < height; ++y)
 			{
+				// center
+				float centerx = minX + gridSize * (x + 0.5f);
+				float centerz = minZ + gridSize * (y + 0.5f);
+
 				// sides
 				float[] sidex = new float[]
 				{
-					minX + gridSize * x - gridSize * 0.5f,
-					minX + gridSize * x - gridSize * 0.5f,
-					minX + gridSize * x + gridSize * 0.5f,
-					minX + gridSize * x + gridSize * 0.5f,
+					centerx - sideLen,
+					centerx - sideLen,
+					centerx + sideLen,
+					centerx + sideLen,
 				};
 				float[] sidez = new float[]
 				{
-					minZ + gridSize * y - gridSize * 0.5f,
-					minZ + gridSize * y + gridSize * 0.5f,
-					minZ + gridSize * y + gridSize * 0.5f,
-					minZ + gridSize * y - gridSize * 0.5f,
+					centerz - sideLen,
+					centerz + sideLen,
+					centerz + sideLen,
+					centerz - sideLen,
 				};
 				bool hitObstacle = false;
 				for (int s = 0; s < 4; s++)
@@ -208,11 +213,7 @@ public class Grid2DEditor : EditorWindow
 					}
 				}
 
-				// center
-				float fx = minX + gridSize * x;
-				float fz = minZ + gridSize * y;
-
-				ray.origin = new Vector3(fx, 500, fz);
+				ray.origin = new Vector3(centerx, 500, centerz);
 				float fposy = badY;
 				int hitLayer = -1;
 				if (Physics.Raycast(ray, out hit, 1000, layerMask))
@@ -220,7 +221,7 @@ public class Grid2DEditor : EditorWindow
 					fposy = hit.point.y;
 					hitLayer = hit.collider.gameObject.layer;
 				}
-				gridList[x, y].point = new Vector3(fx, fposy, fz);
+				gridList[x, y].point = new Vector3(centerx, fposy, centerz);
 				gridList[x, y].layer = hitObstacle ? obstacleLayer : hitLayer;
 			}
 			UpdateProgress(x, width, "");
@@ -272,14 +273,14 @@ public class Grid2DEditor : EditorWindow
 					if (zrLayer == linkLayer || zlLayer == linkLayer)
 						tanz = 0;
 					float maxTan = Mathf.Max(tanx, tanz);
-					cp.mask = maxTan > tan_slope ? 1 : 0;
+					cp.mask = (ushort)(maxTan > tan_slope ? 1 : 0);
 				}
 			}
 			UpdateProgress(x, width, "");
 		}
 
 		NavGrid2DData nav = ScriptableObject.CreateInstance<NavGrid2DData>();
-		int[,] maskList = new int[width, height];
+		ushort[,] maskList = new ushort[width, height];
 		for (int x = 0; x < width; ++x)
 			for (int y = 0; y < height; ++y)
 				maskList[x, y] = gridList[x, y].mask;
@@ -335,8 +336,8 @@ public class Grid2DEditor : EditorWindow
 		{
 			for (int y = 0; y < height; ++y)
 			{
-				float fposx = minX + gridSize * x;
-				float fposz = minZ + gridSize * y;
+				float fposx = minX + gridSize * (x + 0.5f);
+				float fposz = minZ + gridSize * (y + 0.5f);
 				pos[x,y] = new Vector3(fposx, 1, fposz);
 			}
 		}

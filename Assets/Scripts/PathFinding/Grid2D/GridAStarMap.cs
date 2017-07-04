@@ -2,7 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using Lite;
 
 
 namespace Lite.AStar
@@ -37,14 +37,14 @@ namespace Lite.AStar
 				{
 					GridAStarNode node = new GridAStarNode(nodeIdCounter++);
 					nodes[x, y] = node;
-					node.x = x;
-					node.y = y;
-					node.blockValue = data.At(x, y);
+					node.x = (ushort)x;
+					node.y = (ushort)y;
+					node.blockValue = (ushort)data.At(x, y);
 				}
 			}
 		}
 
-		public void InitMap(int width, int height, int[,] mask)
+		public void InitMap(int width, int height, ushort[,] mask)
 		{
 			nodeIdCounter = 0;
 			this.width = width;
@@ -58,9 +58,9 @@ namespace Lite.AStar
 				{
 					GridAStarNode node = new GridAStarNode(nodeIdCounter++);
 					nodes[x, y] = node;
-					node.x = x;
-					node.y = y;
-					node.blockValue = mask != null ? mask[x, y] : 0;
+					node.x = (ushort)x;
+					node.y = (ushort)y;
+					node.blockValue = (ushort)(mask != null ? mask[x, y] : 0);
 				}
 			}
 		}
@@ -70,7 +70,7 @@ namespace Lite.AStar
 			if (x >= 0 && x < width && y >= 0 && y <= height)
 			{
 				GridAStarNode node = nodes[x, y];
-				node.blockValue = passable ? 0 : 1;
+				node.blockValue = (ushort)(passable ? 0 : 1);
 			}
 		}
 
@@ -163,7 +163,7 @@ namespace Lite.AStar
 		public TwVector3 RayCast2D(TwVector3 from, TwVector3 to)
 		{
 			TwVector3 blockPoint = from;
-			int stepLen = Math.Min(300, navGridData.GridSize);
+			int stepLen = Math.Min(200, navGridData.GridSize);
 			bool blocked = false;
 
 			// y = a*x + b

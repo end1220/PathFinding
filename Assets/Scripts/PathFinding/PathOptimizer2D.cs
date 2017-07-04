@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Lite;
 using Lite.AStar;
 
 
@@ -100,24 +100,19 @@ namespace Lite
 			int dx = to.x - from.x;
 			int dy = to.y - from.y;
 
-			int fromx = from.x;
-			int fromy = from.y;
-			int tox = to.x;
-			int toy = to.y;
-
 			if (Math.Abs(dx) > Math.Abs(dy))
 			{
 				a_xy = (Fix64)dy / (Fix64)dx;
-				if (fromx > tox)
+				if (from.x > to.x)
 				{
 					Int2 tmp = from;
 					from = to;
 					to = tmp;
 				}
-				for (int x = fromx + 1; x < tox + 1; x++)
+				for (int x = from.x + 1; x < to.x + 1; x++)
 				{
 					Fix64 cx = (Fix64)x - (Fix64)0.5f;
-					Fix64 y = (Fix64)fromy + a_xy * (cx - (Fix64)fromx);
+					Fix64 y = (Fix64)from.y + a_xy * (cx - (Fix64)from.x);
 					int neary = y % (Fix64)1 > (Fix64)0.5f ? (int)(y + (Fix64)0.5f) : (int)y;
 
 					if (Mathf.Approximately(neary, (float)y))
@@ -152,16 +147,16 @@ namespace Lite
 			else
 			{
 				a_xy = (Fix64)dx / (Fix64)dy;
-				if (fromy > toy)
+				if (from.y > to.y)
 				{
 					Int2 tmp = from;
 					from = to;
 					to = tmp;
 				}
-				for (int y = fromy + 1; y < toy + 1; y++)
+				for (int y = from.y + 1; y < to.y + 1; y++)
 				{
 					Fix64 cy = (Fix64)y - (Fix64)0.5f;
-					Fix64 x = (Fix64)fromx + a_xy * (cy - (Fix64)fromy);
+					Fix64 x = (Fix64)from.x + a_xy * (cy - (Fix64)from.y);
 					int nearx = (Fix64)x % (Fix64)1 > (Fix64)0.5f ? (int)((Fix64)x + (Fix64)0.5f) : (int)x;
 
 					if (Mathf.Approximately(nearx, (float)x))

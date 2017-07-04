@@ -4,10 +4,10 @@ namespace Lite.AStar
 {
 	public class GridAStarNode : AStarNode
 	{
-		public int x;
-		public int y;
+		public ushort x;
+		public ushort y;
 
-		public int blockValue;
+		public ushort blockValue;
 
 		public GridAStarNode(int id) :
 			base(id)

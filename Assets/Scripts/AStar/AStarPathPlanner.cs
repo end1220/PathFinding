@@ -48,7 +48,7 @@ namespace Lite.AStar
 				{
 					arriveNode = curNode;
 					if (count > 50)
-						UnityEngine.Debug.LogError("AStar : take step " + count);
+						UnityEngine.Debug.Log("AStar : take step " + count);
 					break;
 				}
 				EvaluateAllNeighbours(curNode);
