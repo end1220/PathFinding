@@ -1,4 +1,4 @@
-
+﻿
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -124,7 +124,7 @@ namespace Lite.AStar
 		}
 
 
-		public Int3 TwVector3ToPoint3D(TwVector3 position)
+		public Int3 TwVector3ToInt3(TwVector3 position)
 		{
 			int cellSize = navGraphData.buildConfig.cellSize;
 			int dx = position.x - navGraphData.buildConfig.worldMinPos.x;
@@ -139,7 +139,7 @@ namespace Lite.AStar
 
 		public bool IsPassable(TwVector3 position)
 		{
-			Int3 pt3d = TwVector3ToPoint3D(position);
+			Int3 pt3d = TwVector3ToInt3(position);
 			bool ret = this.IsNodePassable(pt3d.x, pt3d.y, pt3d.z);
 			return ret;
 		}
@@ -147,7 +147,7 @@ namespace Lite.AStar
 
 		public Graph3DAStarNode GetNearbyWalkableNode(TwVector3 pos)
 		{
-			var pt = TwVector3ToPoint3D(pos);
+			var pt = TwVector3ToInt3(pos);
 			var node = GetNodeAt(pt.x, pt.y, pt.z);
 			if (node != null/* && node.walkable*/)
 				return node;
@@ -202,7 +202,7 @@ namespace Lite.AStar
 					for (int iy = halfAgentHeightStep; iy >= -halfAgentHeightStep; iy--)
 					{
 						int tmpy = y + iy * navGraphData.buildConfig.cellSize;
-						Int3 pt3d = TwVector3ToPoint3D(new TwVector3(x, tmpy, (int)z));
+						Int3 pt3d = TwVector3ToInt3(new TwVector3(x, tmpy, (int)z));
 						var node = GetNodeAt(pt3d.x, pt3d.y, pt3d.z);
 						if (IsNodePassable(pt3d.x, pt3d.y, pt3d.z))
 						{
@@ -243,7 +243,7 @@ namespace Lite.AStar
 					for (int iy = halfAgentHeightStep; iy >= -halfAgentHeightStep; iy--)
 					{
 						int tmpy = y + iy * navGraphData.buildConfig.cellSize;
-						Int3 pt3d = TwVector3ToPoint3D(new TwVector3((int)x, tmpy, z));
+						Int3 pt3d = TwVector3ToInt3(new TwVector3((int)x, tmpy, z));
 						var node = GetNodeAt(pt3d.x, pt3d.y, pt3d.z);
 						if (IsNodePassable(pt3d.x, pt3d.y, pt3d.z))
 						{
@@ -278,6 +278,38 @@ namespace Lite.AStar
 			return retPos;
 		}
 
+
+		public TwVector3 SlideByObstacles(TwVector3 fromPos, TwVector3 oldTargetPos)
+		{
+			Int3 fromPoint = this.TwVector3ToInt3(fromPos);
+			Int3 targetPoint = this.TwVector3ToInt3(oldTargetPos);
+			TwVector3 newDirection = oldTargetPos - fromPos;
+			if (fromPoint.x == targetPoint.x)
+			{
+				// 去掉y方向分量
+				newDirection.z = 0;
+			}
+			else if (fromPoint.z == targetPoint.z)
+			{
+				// 去掉x方向分量
+				newDirection.x = 0;
+			}
+			else
+			{
+				// 选择去掉xy方向分量
+				if (Math.Abs(newDirection.x) > Math.Abs(newDirection.z))
+				{
+					newDirection.z = 0;
+				}
+				else
+				{
+					newDirection.x = 0;
+				}
+			}
+
+			TwVector3 retPosition = fromPos + newDirection;
+			return retPosition;
+		}
 
 
 	}

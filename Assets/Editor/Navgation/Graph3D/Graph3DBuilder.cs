@@ -64,7 +64,7 @@ namespace Lite.AStar.NavGraph
 				BuildSubSpace();
 				BuildCells();
 				RoleHeightTesting();
-				RoleRadiusTesting();
+				RoleCliffTesting();
 				CellsToGraph();
 				
 				EditorUtility.ClearProgressBar();
@@ -180,12 +180,12 @@ namespace Lite.AStar.NavGraph
 			float heightStep = cfg.cellSize / 1000f;
 			float nodeDiameter = cfg.cellSize / 1000f;
 			float nodeRadius = cfg.cellSize / 1000f / 2;
+			float roleRadius = cfg.agentRadius;
+			float checkRadius = nodeRadius + roleRadius;
 
 			Vector3 raycastPoint = worldPoint + Vector3.up * nodeRadius;
 			Ray cray = new Ray(raycastPoint, Vector3.down);
 			RaycastHit cRayHit;
-
-			//bool overlapWalkable = Physics.CheckSphere(worldPoint, nodeRadius, cfg.walkableMask);
 
 			if (Physics.Raycast(cray, out cRayHit, heightStep, cfg.allTestMask))
 			{
@@ -194,9 +194,17 @@ namespace Lite.AStar.NavGraph
 
 				bool walkable = ((1 << hitLayer) & cfg.walkableMask) > 0;
 
-				// test if there're obstacles besides
-				Collider[] obses = Physics.OverlapSphere(actualWorldPoint, nodeRadius, cfg.obstacleMask);
+				// test if obstacles in range
+				Collider[] obses = Physics.OverlapSphere(actualWorldPoint, checkRadius, cfg.obstacleMask);
 				if (obses.Length > 0)
+				{
+					walkable = false;
+				}
+
+				// test if walkables in range
+				float upDistance = Math.Max(checkRadius * 1.45f, nodeDiameter);
+				bool overlapWalkable = Physics.CheckSphere(actualWorldPoint + Vector3.up * upDistance, checkRadius, cfg.walkableMask);
+				if (overlapWalkable)
 				{
 					walkable = false;
 				}
@@ -222,7 +230,6 @@ namespace Lite.AStar.NavGraph
 		#endregion
 
 
-		#region ------角色测试------
 
 		private void RoleHeightTesting()
 		{
@@ -271,7 +278,10 @@ namespace Lite.AStar.NavGraph
 		}
 
 
-		private void RoleRadiusTesting()
+		/// <summary>
+		/// 角色和悬崖边界的距离至少是角色半径
+		/// </summary>
+		private void RoleCliffTesting()
 		{
 			int count = 0;
 			float cellSize = cfg.cellSize / 1000f;
@@ -279,18 +289,24 @@ namespace Lite.AStar.NavGraph
 			float maxHeight = cfg.agentHeightStep * cellSize;
 			float roleRadius = cfg.agentRadius;
 
+			Ray ray = new Ray();
+			ray.direction = new Vector3(0, -1, 0);
+			RaycastHit hit;
+
 			for (int i = 0; i < cells.Count; ++i)
 			{
 				count++;
 				if (count % 10 == 0)
-					EditorUtility.DisplayProgressBar(string.Format("Testing role radius {0}/{1}", count, cells.Count), "", (float)count / cells.Count);
+					EditorUtility.DisplayProgressBar(string.Format("Testing cliff {0}/{1}", count, cells.Count), "", (float)count / cells.Count);
 
 				var cell = cells[i];
 				if (cell == null || !cell.walkable)
 					continue;
 
+				// test cell against walls and other objects, to avoid role overlapping with walls.
+				float distance = roleRadius + cellSize / 2;
 				float height = roleRadius * 2;
-				while (height < maxHeight)
+				/*while (height < maxHeight)
 				{
 					Collider[] obses = Physics.OverlapSphere(cell.worldPosition + Vector3.up * height, roleRadius, cfg.allTestMask);
 					if (obses.Length > 0)
@@ -299,11 +315,54 @@ namespace Lite.AStar.NavGraph
 						break;
 					}
 					height += stepOneSize;
+				}*/
+
+				// test cells against cliffs, to avoid walking in air.
+				if (cell.walkable)
+				{
+					distance = cellSize / 2 + roleRadius;
+					height = distance * 1.45f;
+					if (cell.walkable)
+					{
+						ray.origin = cell.worldPosition + Vector3.up * cellSize + Vector3.left * distance;
+						if (Physics.Raycast(ray, out hit, 10, cfg.allTestMask))
+						{
+							if (Math.Abs(hit.point.y - cell.worldPosition.y) > height)
+								cell.walkable = false;
+						}
+					}
+					if (cell.walkable)
+					{
+						ray.origin = cell.worldPosition + Vector3.up * cellSize + Vector3.right * distance;
+						if (Physics.Raycast(ray, out hit, 10, cfg.allTestMask))
+						{
+							if (Math.Abs(hit.point.y - cell.worldPosition.y) > height)
+								cell.walkable = false;
+						}
+					}
+					if (cell.walkable)
+					{
+						ray.origin = cell.worldPosition + Vector3.up * cellSize + Vector3.forward * distance;
+						if (Physics.Raycast(ray, out hit, 10, cfg.allTestMask))
+						{
+							if (Math.Abs(hit.point.y - cell.worldPosition.y) > height)
+								cell.walkable = false;
+						}
+					}
+					if (cell.walkable)
+					{
+						ray.origin = cell.worldPosition + Vector3.up * cellSize + Vector3.back * distance;
+						if (Physics.Raycast(ray, out hit, 10, cfg.allTestMask))
+						{
+							if (Math.Abs(hit.point.y - cell.worldPosition.y) > height)
+								cell.walkable = false;
+						}
+					}
 				}
 			}
 		}
 
-		#endregion
+		
 
 
 

@@ -1,4 +1,4 @@
-
+ï»¿
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -159,7 +159,7 @@ namespace Lite.AStar
 		}
 
 
-		// ÉäÏßÅö×²£¬¼ÆËãÆðµãµ½ÖÕµã¼äµÄ×îÔ¶¿Éµ½´ïµã
+		// å°„çº¿ç¢°æ’žï¼Œè®¡ç®—èµ·ç‚¹åˆ°ç»ˆç‚¹é—´çš„æœ€è¿œå¯åˆ°è¾¾ç‚¹
 		public TwVector3 RayCast2D(TwVector3 from, TwVector3 to)
 		{
 			TwVector3 blockPoint = from;
@@ -210,6 +210,39 @@ namespace Lite.AStar
 				return blockPoint;
 			else
 				return to;
+		}
+
+
+		public TwVector3 SlideByObstacles(TwVector3 fromPos, TwVector3 oldTargetPos)
+		{
+			Int2 fromPoint = this.TwVector3ToInt2(fromPos);
+			Int2 targetPoint = this.TwVector3ToInt2(oldTargetPos);
+			TwVector3 newDirection = oldTargetPos - fromPos;
+			if (fromPoint.x == targetPoint.x)
+			{
+				// åŽ»æŽ‰zæ–¹å‘åˆ†é‡
+				newDirection.z = 0;
+			}
+			else if (fromPoint.y == targetPoint.y)
+			{
+				// åŽ»æŽ‰xæ–¹å‘åˆ†é‡
+				newDirection.x = 0;
+			}
+			else
+			{
+				// é€‰æ‹©åŽ»æŽ‰xyæ–¹å‘åˆ†é‡
+				if (Math.Abs(newDirection.x) > Math.Abs(newDirection.z))
+				{
+					newDirection.z = 0;
+				}
+				else
+				{
+					newDirection.x = 0;
+				}
+			}
+
+			TwVector3 retPosition = fromPos + newDirection;
+			return retPosition;
 		}
 
 
