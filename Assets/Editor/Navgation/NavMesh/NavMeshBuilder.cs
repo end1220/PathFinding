@@ -162,7 +162,7 @@ namespace Lite.AStar.NavGraph
 
 		private void PerformCellTest(Vector3 worldPoint, int x, int y, int z)
 		{
-			float heightStep = cfg.cellSize / 1000f;
+			/*float heightStep = cfg.cellSize / 1000f;
 			float nodeDiameter = cfg.cellSize / 1000f;
 			float nodeRadius = cfg.cellSize / 1000f / 2;
 
@@ -201,7 +201,7 @@ namespace Lite.AStar.NavGraph
 						cells.Add(cell);
 					}
 				}
-			}
+			}*/
 		}
 
 		#endregion

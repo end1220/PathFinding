@@ -16,11 +16,13 @@ namespace Lite.AStar.NavGraph
 
 		public List<SubSpace> subSpaces = new List<SubSpace>();
 
-		public List<Cell> cells;
+		public List<Cell> rawCells;
+		public List<Cell> finalCells;
 		public Cell[, ,] cellArray;
 		private int idCounter = 0;
 
 		public NavGraph3DData navData;
+		public Graph3DAStarMap graphMap;
 
 		private bool Enable8Directions = true;
 
@@ -64,8 +66,8 @@ namespace Lite.AStar.NavGraph
 				BuildSubSpace();
 				BuildCells();
 				RoleHeightTesting();
-				RoleCliffTesting();
 				CellsToGraph();
+				BuildFinalCells();
 				
 				EditorUtility.ClearProgressBar();
 			}
@@ -147,7 +149,7 @@ namespace Lite.AStar.NavGraph
 		private void BuildCells()
 		{
 			idCounter = 0;
-			cells = new List<Cell>();
+			rawCells = new List<Cell>();
 			cellArray = new Cell[cfg.cellCount.x, cfg.cellCount.y, cfg.cellCount.z];
 
 			float cellSize = cfg.cellSize / 1000f;
@@ -201,7 +203,8 @@ namespace Lite.AStar.NavGraph
 					walkable = false;
 				}
 
-				// test if walkables in range
+				// test if walkables in nodeRadius + roleRadius. 
+				// Affect the min distance to walls.
 				float upDistance = Math.Max(checkRadius * 1.45f, nodeDiameter);
 				bool overlapWalkable = Physics.CheckSphere(actualWorldPoint + Vector3.up * upDistance, checkRadius, cfg.walkableMask);
 				if (overlapWalkable)
@@ -209,20 +212,71 @@ namespace Lite.AStar.NavGraph
 					walkable = false;
 				}
 
-				//Raycasting for walkable regions
+				// center and corner point
+				Vector3 centerPos = Vector3.zero;
+				Vector3 pos1 = Vector3.zero;
+				Vector3 pos2 = Vector3.zero;
+				Vector3 pos3 = Vector3.zero;
+				Vector3 pos4 = Vector3.zero;
+
+				//Raycasting for walkable regions, checking if the cell's conrers are in walkable areas.
+				//Checking if there's enough space for agent radius.
 				if (walkable)
 				{
 					RaycastHit hit;
-					Ray ray = new Ray(actualWorldPoint + Vector3.up * nodeRadius, Vector3.down);
+					Vector3 upperPos = actualWorldPoint + Vector3.up * nodeRadius;
+					Ray ray = new Ray(upperPos, Vector3.down);
 					if (Physics.Raycast(ray, out hit, nodeDiameter, cfg.walkableMask))
 					{
-						//Make new cell
-						actualWorldPoint = hit.point;
-						int id = CalcNodeId(x, y, z);
-						var cell = new Cell(id, new Int3(x, y, z), actualWorldPoint, walkable);
-						cellArray[x, y, z] = cell;
-						cells.Add(cell);
+						// center pos
+						centerPos = hit.point;
+						// conrers pos
+						ray.origin = upperPos + Vector3.up * nodeRadius + (Vector3.left + Vector3.back) * nodeRadius;
+						if (Physics.Raycast(ray, out hit, nodeDiameter * 2, cfg.walkableMask))
+							pos1 = hit.point;
+						ray.origin = upperPos + Vector3.up * nodeRadius + (Vector3.left + Vector3.forward) * nodeRadius;
+						if (Physics.Raycast(ray, out hit, nodeDiameter * 2, cfg.walkableMask))
+							pos2 = hit.point;
+						ray.origin = upperPos + Vector3.up * nodeRadius + (Vector3.right + Vector3.forward) * nodeRadius;
+						if (Physics.Raycast(ray, out hit, nodeDiameter * 2, cfg.walkableMask))
+							pos3 = hit.point;
+						ray.origin = upperPos + Vector3.up * nodeRadius + (Vector3.right + Vector3.back) * nodeRadius;
+						if (Physics.Raycast(ray, out hit, nodeDiameter * 2, cfg.walkableMask))
+							pos4 = hit.point;
+
+						if (pos1 == Vector3.zero || pos2 == Vector3.zero || pos3 == Vector3.zero || pos4 == Vector3.zero)
+						{
+							walkable = false;
+						}
+						else
+						{
+							// cliff test
+							ray.origin = pos1 + Vector3.up * nodeDiameter + (Vector3.left + Vector3.back) * roleRadius;
+							if (walkable && !Physics.Raycast(ray, out hit, nodeDiameter * 2, cfg.walkableMask))
+								walkable = false;
+							ray.origin = pos2 + Vector3.up * nodeDiameter + (Vector3.left + Vector3.forward) * roleRadius;
+							if (walkable && !Physics.Raycast(ray, out hit, nodeDiameter * 2, cfg.walkableMask))
+								walkable = false;
+							ray.origin = pos3 + Vector3.up * nodeDiameter + (Vector3.right + Vector3.forward) * roleRadius;
+							if (walkable && !Physics.Raycast(ray, out hit, nodeDiameter * 2, cfg.walkableMask))
+								walkable = false;
+							ray.origin = pos4 + Vector3.up * nodeDiameter + (Vector3.right + Vector3.back) * roleRadius;
+							if (walkable && !Physics.Raycast(ray, out hit, nodeDiameter * 2, cfg.walkableMask))
+								walkable = false;
+						}
 					}
+					else
+					{
+						walkable = false;
+					}
+				}
+
+				if (walkable)
+				{
+					int id = CalcNodeId(x, y, z);
+					var cell = new Cell(id, new Int3(x, y, z), centerPos, walkable, pos1, pos2, pos3, pos4);
+					cellArray[x, y, z] = cell;
+					rawCells.Add(cell);
 				}
 			}
 		}
@@ -234,17 +288,16 @@ namespace Lite.AStar.NavGraph
 		private void RoleHeightTesting()
 		{
 			int count = 0;
-			//int totalSize = cfg.cellCount.x * cfg.cellCount.y * cfg.cellCount.z;
 			float cellSize = cfg.cellSize / 1000f;
 			float stepOneSize = cellSize / 5;
 
-			for (int i = 0; i < cells.Count; ++i)
+			for (int i = 0; i < rawCells.Count; ++i)
 			{
 				count++;
 				if (count % 10 == 0)
-					EditorUtility.DisplayProgressBar(string.Format("Testing role height {0}/{1}", count, cells.Count), "", (float)count / cells.Count);
+					EditorUtility.DisplayProgressBar(string.Format("Testing role height {0}/{1}", count, rawCells.Count), "", (float)count / rawCells.Count);
 
-				var cell = cells[i];
+				var cell = rawCells[i];
 				if (cell == null || !cell.walkable)
 					continue;
 
@@ -278,113 +331,22 @@ namespace Lite.AStar.NavGraph
 		}
 
 
-		/// <summary>
-		/// 角色和悬崖边界的距离至少是角色半径
-		/// </summary>
-		private void RoleCliffTesting()
-		{
-			int count = 0;
-			float cellSize = cfg.cellSize / 1000f;
-			float stepOneSize = cellSize / 2;
-			float maxHeight = cfg.agentHeightStep * cellSize;
-			float roleRadius = cfg.agentRadius;
-
-			Ray ray = new Ray();
-			ray.direction = new Vector3(0, -1, 0);
-			RaycastHit hit;
-
-			for (int i = 0; i < cells.Count; ++i)
-			{
-				count++;
-				if (count % 10 == 0)
-					EditorUtility.DisplayProgressBar(string.Format("Testing cliff {0}/{1}", count, cells.Count), "", (float)count / cells.Count);
-
-				var cell = cells[i];
-				if (cell == null || !cell.walkable)
-					continue;
-
-				// test cell against walls and other objects, to avoid role overlapping with walls.
-				float distance = roleRadius + cellSize / 2;
-				float height = roleRadius * 2;
-				/*while (height < maxHeight)
-				{
-					Collider[] obses = Physics.OverlapSphere(cell.worldPosition + Vector3.up * height, roleRadius, cfg.allTestMask);
-					if (obses.Length > 0)
-					{
-						cell.walkable = false;
-						break;
-					}
-					height += stepOneSize;
-				}*/
-
-				// test cells against cliffs, to avoid walking in air.
-				if (cell.walkable)
-				{
-					distance = cellSize / 2 + roleRadius;
-					height = distance * 1.45f;
-					if (cell.walkable)
-					{
-						ray.origin = cell.worldPosition + Vector3.up * cellSize + Vector3.left * distance;
-						if (Physics.Raycast(ray, out hit, 10, cfg.allTestMask))
-						{
-							if (Math.Abs(hit.point.y - cell.worldPosition.y) > height)
-								cell.walkable = false;
-						}
-					}
-					if (cell.walkable)
-					{
-						ray.origin = cell.worldPosition + Vector3.up * cellSize + Vector3.right * distance;
-						if (Physics.Raycast(ray, out hit, 10, cfg.allTestMask))
-						{
-							if (Math.Abs(hit.point.y - cell.worldPosition.y) > height)
-								cell.walkable = false;
-						}
-					}
-					if (cell.walkable)
-					{
-						ray.origin = cell.worldPosition + Vector3.up * cellSize + Vector3.forward * distance;
-						if (Physics.Raycast(ray, out hit, 10, cfg.allTestMask))
-						{
-							if (Math.Abs(hit.point.y - cell.worldPosition.y) > height)
-								cell.walkable = false;
-						}
-					}
-					if (cell.walkable)
-					{
-						ray.origin = cell.worldPosition + Vector3.up * cellSize + Vector3.back * distance;
-						if (Physics.Raycast(ray, out hit, 10, cfg.allTestMask))
-						{
-							if (Math.Abs(hit.point.y - cell.worldPosition.y) > height)
-								cell.walkable = false;
-						}
-					}
-				}
-			}
-		}
-
-		
-
-
-
-		#region -------graph化--------
-
 		private void CellsToGraph()
 		{
 			navData = ScriptableObject.CreateInstance<NavGraph3DData>();
 			navData.Init(cfg);
 			
-			//int totalSize = cfg.cellCount.x * cfg.cellCount.y * cfg.cellCount.z;
 			int count = 0;
 			float cellSize = cfg.cellSize / 1000f;
 
 			// make nodes
-			for (int i = 0; i < cells.Count; ++i)
+			for (int i = 0; i < rawCells.Count; ++i)
 			{
 				count++;
 				if (count % 10 == 0)
-					EditorUtility.DisplayProgressBar(string.Format("Building graph nodes {0}/{1}", count, cells.Count), "", (float)count / cells.Count);
+					EditorUtility.DisplayProgressBar(string.Format("Building graph nodes {0}/{1}", count, rawCells.Count), "", (float)count / rawCells.Count);
 
-				var cell = cells[i];
+				var cell = rawCells[i];
 				if (cell == null || !cell.walkable)
 					continue;
 
@@ -406,12 +368,12 @@ namespace Lite.AStar.NavGraph
 			// make edges
 			HashSet<string> edgeKeySet = new HashSet<string>();
 
-			for (int i = 0; i < cells.Count; ++i)
+			for (int i = 0; i < rawCells.Count; ++i)
 			{
 				if (i % 10 == 0)
-					EditorUtility.DisplayProgressBar(string.Format("Building graph edges {0}/{1}", i, cells.Count), "", (float)i / cells.Count);
+					EditorUtility.DisplayProgressBar(string.Format("Building graph edges {0}/{1}", i, rawCells.Count), "", (float)i / rawCells.Count);
 
-				var cell = cells[i];
+				var cell = rawCells[i];
 				if (cell == null || !cell.walkable)
 					continue;
 
@@ -495,9 +457,22 @@ namespace Lite.AStar.NavGraph
 				}
 			}
 
+			graphMap = new Graph3DAStarMap();
+			graphMap.Init(navData);
 		}
 
-		#endregion
+
+		private void BuildFinalCells()
+		{
+			finalCells = new List<Cell>();
+			for (int i = 0; i < rawCells.Count; ++i)
+			{
+				var cell = rawCells[i];
+				if (cell == null || !cell.walkable)
+					continue;
+				finalCells.Add(cell);
+			}
+		}
 
 
 		private int CalcNodeId(int x, int y, int z)

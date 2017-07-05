@@ -152,7 +152,6 @@ namespace Lite
 					gizmo = gameObject.AddComponent<NavGraph3DGizmo>();
 
 				gizmo.cfg = navGraph.buildConfig;
-				gizmo.navData = navGraph;
 				gizmo.graphMap = graphMap;
 			}
 			else

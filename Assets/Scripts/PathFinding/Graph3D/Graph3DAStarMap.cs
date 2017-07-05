@@ -29,9 +29,20 @@ namespace Lite.AStar
 
 		public void Init(NavGraph3DData navData)
 		{
+			ParseNavData(navData);
+
+#if !UNITY_EDITOR
+			// release memory
+			navData.ReleaseMemory();
+#endif
+		}
+
+
+		private void ParseNavData(NavGraph3DData navData)
+		{
 			navGraphData = navData;
 			nodeMatrix = new Graph3DAStarNode[navData.buildConfig.cellCount.x, navData.buildConfig.cellCount.y, navData.buildConfig.cellCount.z];
-			for (int i = 0; i < navData.nodeCount; ++i)
+			for (int i = 0; i < navData.nodeList.Count; ++i)
 			{
 				Graph3DAStarNode node = null;
 				if (navData.bytesMode)
@@ -45,7 +56,7 @@ namespace Lite.AStar
 				nodeDic.Add(node.id, node);
 #endif
 			}
-			for (int i = 0; i < navData.edgeCount; ++i)
+			for (int i = 0; i < navData.edgeList.Count; ++i)
 			{
 				Graph3DAStarEdge edge = null;
 				if (navData.bytesMode)
@@ -62,9 +73,6 @@ namespace Lite.AStar
 				edgeList.Add(edgeToFrom);
 #endif
 			}
-
-			// release memory
-			navData.ReleaseMemory();
 		}
 
 

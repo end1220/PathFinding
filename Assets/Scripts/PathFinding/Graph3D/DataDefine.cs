@@ -12,15 +12,23 @@ namespace Lite.AStar.NavGraph
 	{
 		public Int3 pos;
 		public Vector3 worldPosition;
+		public Vector3 worldPos1;
+		public Vector3 worldPos2;
+		public Vector3 worldPos3;
+		public Vector3 worldPos4;
 		public bool walkable;
 		public int id;
 
-		public Cell(int id, Int3 pos, Vector3 worldPos, bool walkable)
+		public Cell(int id, Int3 pos, Vector3 worldPos, bool walkable, Vector3 worldPos1, Vector3 worldPos2, Vector3 worldPos3, Vector3 worldPos4)
 		{
 			this.id = id;
 			this.pos = pos;
 			this.worldPosition = worldPos;
 			this.walkable = walkable;
+			this.worldPos1 = worldPos1;
+			this.worldPos2 = worldPos2;
+			this.worldPos3 = worldPos3;
+			this.worldPos4 = worldPos4;
 		}
 	}
 

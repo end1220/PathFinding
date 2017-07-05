@@ -57,35 +57,35 @@ public class Graph3DNavEditor : EditorWindow
 
 		GUILayout.BeginHorizontal();
 		GUILayout.Space(leftSpace);
-		GUILayout.Label("world box：", EditorStyles.label, GUILayout.Width(titleLen));
+		GUILayout.Label("world box", EditorStyles.label, GUILayout.Width(titleLen));
 		worldBoxObj = EditorGUILayout.ObjectField(worldBoxObj, typeof(GameObject), true, GUILayout.Width(textLen+20)) as GameObject;
 		GUILayout.EndHorizontal();
 		GUILayout.Space(spaceSize);
 
 		GUILayout.BeginHorizontal();
 		GUILayout.Space(leftSpace);
-		GUILayout.Label("Grid size(m)：", EditorStyles.label, GUILayout.Width(titleLen));
+		GUILayout.Label("Grid size(m)", EditorStyles.label, GUILayout.Width(titleLen));
 		str_gridSize = GUILayout.TextField(str_gridSize, GUILayout.Width(textLen));
 		GUILayout.EndHorizontal();
 		GUILayout.Space(spaceSize);
 
 		GUILayout.BeginHorizontal();
 		GUILayout.Space(leftSpace);
-		GUILayout.Label("Role height(m)：", EditorStyles.label, GUILayout.Width(titleLen));
+		GUILayout.Label("Role height(m)", EditorStyles.label, GUILayout.Width(titleLen));
 		str_roleHeight = GUILayout.TextField(str_roleHeight, GUILayout.Width(textLen));
 		GUILayout.EndHorizontal();
 		GUILayout.Space(spaceSize);
 
 		GUILayout.BeginHorizontal();
 		GUILayout.Space(leftSpace);
-		GUILayout.Label("Role radius(m)：", EditorStyles.label, GUILayout.Width(titleLen));
+		GUILayout.Label("Role radius(m)", EditorStyles.label, GUILayout.Width(titleLen));
 		str_roleRadius = GUILayout.TextField(str_roleRadius, GUILayout.Width(textLen));
 		GUILayout.EndHorizontal();
 		GUILayout.Space(spaceSize);
 
 		GUILayout.BeginHorizontal();
 		GUILayout.Space(leftSpace);
-		GUILayout.Label("Max slope(°)：", EditorStyles.label, GUILayout.Width(titleLen));
+		GUILayout.Label("Max slope(°)", EditorStyles.label, GUILayout.Width(titleLen));
 		str_slope = GUILayout.TextField(str_slope, GUILayout.Width(textLen));
 		GUILayout.EndHorizontal();
 		GUILayout.Space(spaceSize);
@@ -99,7 +99,7 @@ public class Graph3DNavEditor : EditorWindow
 
 		GUILayout.BeginHorizontal();
 		GUILayout.Space(leftSpace);
-		GUILayout.Label("Output file：", EditorStyles.label, GUILayout.Width(titleLen));
+		GUILayout.Label("Output file", EditorStyles.label, GUILayout.Width(titleLen));
 		saveFilePath = GUILayout.TextField(saveFilePath, GUILayout.Width(textLen));
 		GUILayout.EndHorizontal();
 		GUILayout.Space(spaceSize);
@@ -176,9 +176,10 @@ public class Graph3DNavEditor : EditorWindow
 		{
 			NavGraph3DGizmo gizmo = go.GetComponent<NavGraph3DGizmo>();
 			gizmo.cfg = builder.cfg;
-			gizmo.cells = builder.cells;
-			gizmo.navData = builder.navData;
+			gizmo.cells = builder.rawCells;
 			gizmo.spaces = builder.subSpaces;
+			gizmo.graphMap = builder.graphMap;
+			gizmo.finalCells = builder.finalCells;
 		}
 		catch(System.Exception e)
 		{

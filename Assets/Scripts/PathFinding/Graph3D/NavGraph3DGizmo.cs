@@ -11,22 +11,31 @@ namespace Lite
 {
 	public class NavGraph3DGizmo : MonoBehaviour
 	{
+		struct EdgeData
+		{
+			public Vector3 from;
+			public Vector3 to;
+
+			public EdgeData(Vector3 from, Vector3 to)
+			{
+				this.from = from;
+				this.to = to;
+			}
+		}
 
 		public BuildConfig cfg;
-
 		public List<Cell> cells;
+		public List<Cell> finalCells;
 		public List<SubSpace> spaces;
-
-		public NavGraph3DData navData;
-
 		public Graph3DAStarMap graphMap;
 
 		private Color green = new Color(0.2f, 0.5f, 0.2f);
 		private Color red = new Color(0.5f, 0.2f, 0.2f);
-		//private Color blue = new Color(0, 0, 0.5f);
 
-		private bool drawSpaces = false;
-		private bool drawNodes = false;
+		public bool drawSpaces = false;
+		public bool drawNodes = false;
+		public bool drawGraph = false;
+
 
 #if UNITY_EDITOR
 		void OnDrawGizmosSelected()
@@ -41,7 +50,7 @@ namespace Lite
 
 			//var gridSize = new Vector3(cfg.cellSize / 1000f, cfg.cellSize / 1000f, cfg.cellSize / 1000f);
 			//var minPos = navData.buildConfig.worldMinPos;
-			float cellSize = navData.buildConfig.cellSize / 1000f;
+			float cellSize = cfg.cellSize / 1000f;
 			//float cellRadius = cellSize / 2;
 			Vector3 nodesz = new Vector3(0.05f, 0.05f, 0.05f);
 
@@ -64,28 +73,25 @@ namespace Lite
 				}
 			}
 
-			if (graphMap == null && navData.edgeList != null && navData.edgeList.Count > 0)
+			if (finalCells != null)
 			{
-				if (drawNodes)
+				for (int i = 0; i < finalCells.Count; ++i)
 				{
-					for (int i = 0; i < navData.nodeList.Count; ++i)
-					{
-						var node = navData.nodeList[i];
-						Gizmos.color = green;
-						Gizmos.DrawWireCube(node.worldPosition.ToVector3(), nodesz);
-					}
-				}
-				for (int i = 0; i < navData.edgeList.Count; ++i)
-				{
-					var edge = navData.edgeList[i];
-					var from = navData.nodeDic[edge.from];
-					var to = navData.nodeDic[edge.to];
+					var cell = finalCells[i];
+					if (cell.worldPos1 == Vector3.zero || cell.worldPos2 == Vector3.zero || cell.worldPos3 == Vector3.zero || cell.worldPos4 == Vector3.zero)
+						continue;
 					Gizmos.color = green;
-					Gizmos.DrawLine(from.worldPosition.ToVector3(), to.worldPosition.ToVector3());
+					Gizmos.DrawLine(cell.worldPos1, cell.worldPos2);
+					Gizmos.DrawLine(cell.worldPos2, cell.worldPos3);
+					Gizmos.DrawLine(cell.worldPos3, cell.worldPos4);
+					Gizmos.DrawLine(cell.worldPos4, cell.worldPos1);
 				}
 			}
-			else if (graphMap != null)
+
+			if (graphMap != null && drawGraph)
 			{
+				List<EdgeData> borderEdges = new List<EdgeData>();
+
 				for (int i = 0; i < graphMap.edgeList.Count; ++i)
 				{
 					var edge = graphMap.edgeList[i];
@@ -102,6 +108,18 @@ namespace Lite
 			Gizmos.matrix = defaultMatrix;
 		}
 #endif
+
+		private void DrawWireBorder()
+		{
+			Matrix4x4 defaultMatrix = Gizmos.matrix;
+			Gizmos.matrix = transform.localToWorldMatrix;
+			Color defaultColor = Gizmos.color;
+			// begin draw
+
+			// end draw
+			Gizmos.color = defaultColor;
+			Gizmos.matrix = defaultMatrix;
+		}
 
 	}
 
