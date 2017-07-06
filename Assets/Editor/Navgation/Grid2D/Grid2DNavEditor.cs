@@ -51,7 +51,7 @@ public class Grid2DNavEditor : EditorWindow
 		GUILayout.BeginHorizontal();
 		GUILayout.Space(leftSpace);
 		GUILayout.Label("World box", EditorStyles.label, GUILayout.Width(titleLen));
-		builder.worldBoxObj = EditorGUILayout.ObjectField(builder.worldBoxObj, typeof(MeshRenderer), true, GUILayout.Width(textLen+20)) as GameObject;
+		builder.worldBoxObj = EditorGUILayout.ObjectField(builder.worldBoxObj, typeof(GameObject), true, GUILayout.Width(textLen+20)) as GameObject;
 		GUILayout.EndHorizontal();
 		GUILayout.Space(spaceSize);
 

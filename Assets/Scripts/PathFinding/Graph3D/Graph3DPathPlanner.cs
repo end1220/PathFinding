@@ -15,7 +15,7 @@ namespace Lite.AStar
 		private List<Int3> resultCache = new List<Int3>();
 
 
-		public bool FindPath3D(TwVector3 from, TwVector3 to, ref List<TwVector3> result)
+		public bool FindPath3D(FixVector3 from, FixVector3 to, ref List<FixVector3> result)
 		{
 			Graph3DAStarMap graphMap = this.map as Graph3DAStarMap;
 			var startNode = graphMap.GetNearbyWalkableNode(from);
@@ -32,7 +32,7 @@ namespace Lite.AStar
 			{
 				var point = points[i];
 				var node = graphMap.GetNodeAt(point.x, point.y, point.z);
-				result.Add(new TwVector3(node.worldPosition.x, node.worldPosition.y, node.worldPosition.z));
+				result.Add(new FixVector3(node.worldPosition.x, node.worldPosition.y, node.worldPosition.z));
 			}
 			if (result.Count >= 2)
 			{

@@ -43,7 +43,7 @@ namespace Lite.AStar.NavGraph
 			cfg.worldSize = new Int3(worldSize);
 			cfg.worldCenterPos = new Int3(render.bounds.center);
 			cfg.worldMinPos = new Int3(render.bounds.min);
-			cfg.cellSize = (int)TwMath.m2mm(cellSize);
+			cfg.cellSize = (int)FixMath.m2mm(cellSize);
 			cfg.agentHeight = agentHeight;
 			cfg.agentHeightStep = (int)Math.Round(agentHeight / cellSize);
 			cfg.tanSlope = tanSlope;

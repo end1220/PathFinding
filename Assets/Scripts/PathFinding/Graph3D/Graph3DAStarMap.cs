@@ -115,24 +115,24 @@ namespace Lite.AStar
 		}
 
 
-		public int GetGroundHeight3D(TwVector3 position)
+		public int GetGroundHeight3D(FixVector3 position)
 		{
 			int stepHeight = navGraphData.buildConfig.agentHeightStep * navGraphData.buildConfig.cellSize;
-			float posY = TwMath.mm2m(position.y);
-			TwVector3 upperPosition = new TwVector3(position.x, position.y + stepHeight, position.z);
+			float posY = FixMath.mm2m(position.y);
+			FixVector3 upperPosition = new FixVector3(position.x, position.y + stepHeight, position.z);
 			Ray ray = new Ray(upperPosition.ToVector3(), Vector3.down);
 			RaycastHit hit;
-			float distance = TwMath.mm2m(stepHeight) * 2;
+			float distance = FixMath.mm2m(stepHeight) * 2;
 			int layerMask = 1 << LayerMask.NameToLayer(AppConst.LayerTerrain) | 1 << LayerMask.NameToLayer(AppConst.LayerLink);
 			if (Physics.Raycast(ray, out hit, distance, layerMask))
 			{
 				posY = hit.point.y;
 			}
-			return TwMath.m2mm(posY);
+			return FixMath.m2mm(posY);
 		}
 
 
-		public Int3 TwVector3ToInt3(TwVector3 position)
+		public Int3 FixVector3ToInt3(FixVector3 position)
 		{
 			int cellSize = navGraphData.buildConfig.cellSize;
 			int dx = position.x - navGraphData.buildConfig.worldMinPos.x;
@@ -145,17 +145,17 @@ namespace Lite.AStar
 		}
 
 
-		public bool IsPassable(TwVector3 position)
+		public bool IsPassable(FixVector3 position)
 		{
-			Int3 pt3d = TwVector3ToInt3(position);
+			Int3 pt3d = FixVector3ToInt3(position);
 			bool ret = this.IsNodePassable(pt3d.x, pt3d.y, pt3d.z);
 			return ret;
 		}
 
 
-		public Graph3DAStarNode GetNearbyWalkableNode(TwVector3 pos)
+		public Graph3DAStarNode GetNearbyWalkableNode(FixVector3 pos)
 		{
-			var pt = TwVector3ToInt3(pos);
+			var pt = FixVector3ToInt3(pos);
 			var node = GetNodeAt(pt.x, pt.y, pt.z);
 			if (node != null/* && node.walkable*/)
 				return node;
@@ -182,11 +182,11 @@ namespace Lite.AStar
 		}
 
 		
-		public TwVector3 RayCast3D(TwVector3 from, TwVector3 to)
+		public FixVector3 RayCast3D(FixVector3 from, FixVector3 to)
 		{
 			int halfAgentHeightStep = Math.Max(1, navGraphData.buildConfig.agentHeightStep / 2);
 
-			TwVector3 blockPoint = from;
+			FixVector3 blockPoint = from;
 			int stepLen = navGraphData.buildConfig.cellSize / 5;
 			bool blocked = false;
 
@@ -210,7 +210,7 @@ namespace Lite.AStar
 					for (int iy = halfAgentHeightStep; iy >= -halfAgentHeightStep; iy--)
 					{
 						int tmpy = y + iy * navGraphData.buildConfig.cellSize;
-						Int3 pt3d = TwVector3ToInt3(new TwVector3(x, tmpy, (int)z));
+						Int3 pt3d = FixVector3ToInt3(new FixVector3(x, tmpy, (int)z));
 						var node = GetNodeAt(pt3d.x, pt3d.y, pt3d.z);
 						if (IsNodePassable(pt3d.x, pt3d.y, pt3d.z))
 						{
@@ -226,7 +226,7 @@ namespace Lite.AStar
 						break;
 					}
 
-					/*if (!IsPassable(new TwVector3(x, (long)y, (long)z)))
+					/*if (!IsPassable(new FixVector3(x, (long)y, (long)z)))
 					{
 						blocked = true;
 						break;
@@ -251,7 +251,7 @@ namespace Lite.AStar
 					for (int iy = halfAgentHeightStep; iy >= -halfAgentHeightStep; iy--)
 					{
 						int tmpy = y + iy * navGraphData.buildConfig.cellSize;
-						Int3 pt3d = TwVector3ToInt3(new TwVector3((int)x, tmpy, z));
+						Int3 pt3d = FixVector3ToInt3(new FixVector3((int)x, tmpy, z));
 						var node = GetNodeAt(pt3d.x, pt3d.y, pt3d.z);
 						if (IsNodePassable(pt3d.x, pt3d.y, pt3d.z))
 						{
@@ -267,7 +267,7 @@ namespace Lite.AStar
 						break;
 					}
 
-					/*if (!IsPassable(new TwVector3((long)x, (long)y, z)))
+					/*if (!IsPassable(new FixVector3((long)x, (long)y, z)))
 					{
 						blocked = true;
 						break;
@@ -277,7 +277,7 @@ namespace Lite.AStar
 				}
 			}
 
-			TwVector3 retPos;
+			FixVector3 retPos;
 			if (blockPoint != from || blocked)
 				retPos = blockPoint;
 			else
@@ -287,11 +287,11 @@ namespace Lite.AStar
 		}
 
 
-		public TwVector3 SlideByObstacles(TwVector3 fromPos, TwVector3 oldTargetPos)
+		public FixVector3 SlideByObstacles(FixVector3 fromPos, FixVector3 oldTargetPos)
 		{
-			Int3 fromPoint = this.TwVector3ToInt3(fromPos);
-			Int3 targetPoint = this.TwVector3ToInt3(oldTargetPos);
-			TwVector3 newDirection = oldTargetPos - fromPos;
+			Int3 fromPoint = this.FixVector3ToInt3(fromPos);
+			Int3 targetPoint = this.FixVector3ToInt3(oldTargetPos);
+			FixVector3 newDirection = oldTargetPos - fromPos;
 			if (fromPoint.x == targetPoint.x)
 			{
 				// 去掉y方向分量
@@ -315,7 +315,7 @@ namespace Lite.AStar
 				}
 			}
 
-			TwVector3 retPosition = fromPos + newDirection;
+			FixVector3 retPosition = fromPos + newDirection;
 			return retPosition;
 		}
 

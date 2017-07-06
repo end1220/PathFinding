@@ -19,12 +19,12 @@ namespace Lite.AStar
 		private List<Int2> resultCache = new List<Int2>();
 
 
-		public bool FindPath(TwVector3 from, TwVector3 to, ref List<TwVector3> result)
+		public bool FindPath(FixVector3 from, FixVector3 to, ref List<FixVector3> result)
 		{
 			GridAStarMap gridMap = this.map as GridAStarMap;
 
-			Int2 start = gridMap.TwVector3ToInt2(from);
-			Int2 end = gridMap.TwVector3ToInt2(to);
+			Int2 start = gridMap.FixVector3ToInt2(from);
+			Int2 end = gridMap.FixVector3ToInt2(to);
 
 			var path = FindPath(start.x, start.y, end.x, end.y);
 
@@ -33,7 +33,7 @@ namespace Lite.AStar
 			result.Clear();
 			for (int i = 0; i < path.Count; ++i)
 			{
-				result.Add(gridMap.Int2ToTwVector3(path[i]));
+				result.Add(gridMap.Int2ToFixVector3(path[i]));
 			}
 			
 			if (result.Count > 0)

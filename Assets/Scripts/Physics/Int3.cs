@@ -35,7 +35,7 @@ namespace Lite
 			z = m2mm(vec.z);
 		}
 
-		public Int3(TwVector3 vec)
+		public Int3(FixVector3 vec)
 		{
 			x = (int)(vec.x);
 			y = (int)(vec.y);

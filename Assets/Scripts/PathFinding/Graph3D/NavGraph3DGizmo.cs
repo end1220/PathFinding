@@ -29,8 +29,8 @@ namespace Lite
 		public List<SubSpace> spaces;
 		public Graph3DAStarMap graphMap;
 
-		private Color green = new Color(0.2f, 0.5f, 0.2f);
-		private Color red = new Color(0.5f, 0.2f, 0.2f);
+		private Color green = new Color(0f, 1f, 0f);
+		private Color red = new Color(1f, 0f, 0f);
 
 		public bool drawSpaces = false;
 		public bool drawNodes = false;

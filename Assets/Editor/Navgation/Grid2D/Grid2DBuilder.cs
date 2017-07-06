@@ -178,7 +178,7 @@ public class Grid2DBuilder
 		for (int x = 0; x < width; ++x)
 			for (int y = 0; y < height; ++y)
 				maskList[x, y] = gridList[x, y].mask;
-		nav._setData(maskList, width, height, (int)TwMath.m2mm(gridSize), (int)TwMath.m2mm(minX), (int)TwMath.m2mm(minZ));
+		nav._setData(maskList, width, height, (int)FixMath.m2mm(gridSize), (int)FixMath.m2mm(minX), (int)FixMath.m2mm(minZ));
 		navigation = nav;
 
 		EditorUtility.ClearProgressBar();

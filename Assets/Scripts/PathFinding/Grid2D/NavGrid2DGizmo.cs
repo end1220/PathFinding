@@ -46,7 +46,7 @@ public class NavGrid2DGizmo : MonoBehaviour
 
 		Color defaultColor = Gizmos.color;
 
-		float a = TwMath.mm2m(navigation.GridSize)/2;
+		float a = FixMath.mm2m(navigation.GridSize)/2;
 
 		// passables
 		for (int i = 0; i < width; ++i)
@@ -64,7 +64,7 @@ public class NavGrid2DGizmo : MonoBehaviour
 		}
 
 		// unpassables
-		for (int i = 0; i < width; ++i)
+		/*for (int i = 0; i < width; ++i)
 		{
 			for (int j = 0; j < height; ++j)
 			{
@@ -76,7 +76,7 @@ public class NavGrid2DGizmo : MonoBehaviour
 					DrawRect(c, a);
 				}
 			}
-		}
+		}*/
 
 		// border lines
 		Gizmos.DrawLine(gridPosList[0, 0], gridPosList[width-1, 0]);

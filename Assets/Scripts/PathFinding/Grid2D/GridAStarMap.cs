@@ -132,7 +132,7 @@ namespace Lite.AStar
 		}
 
 
-		public Int2 TwVector3ToInt2(TwVector3 position)
+		public Int2 FixVector3ToInt2(FixVector3 position)
 		{
 			int gridSize = navGridData.GridSize;
 			int dx = position.x - navGridData.MinX;
@@ -143,26 +143,26 @@ namespace Lite.AStar
 		}
 
 
-		public TwVector3 Int2ToTwVector3(Int2 point)
+		public FixVector3 Int2ToFixVector3(Int2 point)
 		{
 			int x = navGridData.MinX + navGridData.GridSize * point.x;
 			int z = navGridData.MinZ + navGridData.GridSize * point.y;
-			return new TwVector3(x, 0, z);;
+			return new FixVector3(x, 0, z);;
 		}
 
 
-		public bool IsPassable(TwVector3 position)
+		public bool IsPassable(FixVector3 position)
 		{
-			Int2 pt2d = TwVector3ToInt2(position);
+			Int2 pt2d = FixVector3ToInt2(position);
 			bool ret = this.IsNodePassable(pt2d.x, pt2d.y);
 			return ret;
 		}
 
 
 		// 射线碰撞，计算起点到终点间的最远可到达点
-		public TwVector3 RayCast2D(TwVector3 from, TwVector3 to)
+		public FixVector3 RayCast2D(FixVector3 from, FixVector3 to)
 		{
-			TwVector3 blockPoint = from;
+			FixVector3 blockPoint = from;
 			int stepLen = Math.Min(200, navGridData.GridSize);
 			bool blocked = false;
 
@@ -179,7 +179,7 @@ namespace Lite.AStar
 					x = step > 0 ? System.Math.Min(x, to.x) : System.Math.Max(x, to.x);
 					Fix64 z = (Fix64)from.z + a * (Fix64)(x - from.x);
 
-					if (!IsPassable(new TwVector3(x, 0, (int)z)))
+					if (!IsPassable(new FixVector3(x, 0, (int)z)))
 					{
 						blocked = true;
 						break;
@@ -196,7 +196,7 @@ namespace Lite.AStar
 				{
 					z = step > 0 ? System.Math.Min(z, to.z) : System.Math.Max(z, to.z);
 					Fix64 x = (Fix64)from.x + a * (Fix64)(z - from.z);
-					if (!IsPassable(new TwVector3((int)x, 0, z)))
+					if (!IsPassable(new FixVector3((int)x, 0, z)))
 					{
 						blocked = true;
 						break;
@@ -213,11 +213,11 @@ namespace Lite.AStar
 		}
 
 
-		public TwVector3 SlideByObstacles(TwVector3 fromPos, TwVector3 oldTargetPos)
+		public FixVector3 SlideByObstacles(FixVector3 fromPos, FixVector3 oldTargetPos)
 		{
-			Int2 fromPoint = this.TwVector3ToInt2(fromPos);
-			Int2 targetPoint = this.TwVector3ToInt2(oldTargetPos);
-			TwVector3 newDirection = oldTargetPos - fromPos;
+			Int2 fromPoint = this.FixVector3ToInt2(fromPos);
+			Int2 targetPoint = this.FixVector3ToInt2(oldTargetPos);
+			FixVector3 newDirection = oldTargetPos - fromPos;
 			if (fromPoint.x == targetPoint.x)
 			{
 				// 去掉z方向分量
@@ -241,7 +241,7 @@ namespace Lite.AStar
 				}
 			}
 
-			TwVector3 retPosition = fromPos + newDirection;
+			FixVector3 retPosition = fromPos + newDirection;
 			return retPosition;
 		}
 
