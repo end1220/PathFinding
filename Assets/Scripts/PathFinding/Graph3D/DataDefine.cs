@@ -1,11 +1,11 @@
 ﻿
 using System;
 using UnityEngine;
-using Lite;
-using Lite;
+using FixedPoint;
+using FixedPoint;
 
 
-namespace Lite.AStar.NavGraph
+namespace AStar.NavGraph
 {
 
 	public class Cell

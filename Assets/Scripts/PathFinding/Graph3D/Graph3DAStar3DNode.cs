@@ -1,10 +1,10 @@
 
 using UnityEngine;
-using Lite;
-using Lite;
+using FixedPoint;
+using FixedPoint;
 
 
-namespace Lite.AStar
+namespace AStar
 {
 	[System.Serializable]
 	public class Graph3DAStarNode : GraphAStarNode

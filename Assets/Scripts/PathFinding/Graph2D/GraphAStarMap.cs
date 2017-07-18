@@ -3,10 +3,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-using Lite.Graph;
+using Graph;
 
 
-namespace Lite.AStar
+namespace AStar
 {
 	public class GraphAStarMap : AStarMap
 	{

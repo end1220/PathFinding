@@ -6,11 +6,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using UnityEngine;
-using Lite;
-using Lite.AStar;
+using FixedPoint;
+using AStar;
 
 
-namespace Lite
+namespace FixedPoint
 {
 
 	public class PathTest : MonoBehaviour

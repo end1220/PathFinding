@@ -2,12 +2,12 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
-using Lite.Graph;
-using Lite.AStar;
-using Lite.AStar.NavGraph;
+using Graph;
+using AStar;
+using AStar.NavGraph;
 
 
-namespace Lite
+namespace FixedPoint
 {
 	public class NavGraph3DGizmo : MonoBehaviour
 	{

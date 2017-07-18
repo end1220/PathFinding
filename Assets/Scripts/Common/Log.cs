@@ -4,7 +4,7 @@ using System.IO;
 using UnityEngine;
 
 
-namespace Lite
+namespace FixedPoint
 {
 	public class Log
 	{

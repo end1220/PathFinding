@@ -1,7 +1,6 @@
 ﻿
 using System;
-using UnityEngine;
-using Lite;
+using FixedPoint;
 
 
 
@@ -29,18 +28,18 @@ public class FixMath
 
 
 
-	#region--------------计算距离--------------
+	#region--------------距离--------------
 
 	public static long DistanceSqr(FixVector3 p1, FixVector3 p2)
 	{
-		return p1.DistanceSqr(p2);
+		return (p1 - p2).sqrLength;
 	}
 
 	public static long DistanceSqr2D(FixVector3 p1, FixVector3 p2)
 	{
 		p1.Set(p1.x, 0, p1.z);
 		p2.Set(p2.x, 0, p2.z);
-		return p1.DistanceSqr(p2);
+		return DistanceSqr(p1, p2);
 	}
 
 	public static FixVector3 ScaleFixVector3(FixVector3 vec, Fix64 scale)
@@ -56,31 +55,28 @@ public class FixMath
 
 	#region--------------计算角度--------------
 
+	public static ushort fullAngle = 65535;
+
+	public static ushort halfAngle = 65535 / 2;
+
+	public static ushort quarterAngle = 65535 / 4;
+
+
 	public static ushort AngleOfLine(FixVector3 origin, FixVector3 target)
 	{
 		FixVector3 delta = target - origin;
 		Fix64 other = Fix64.Atan2((Fix64)delta.z, (Fix64)delta.x)
-			/ (Fix64.Pi * (Fix64)2) * (Fix64)65535;
+			/ (Fix64.Pi * (Fix64)2) * (Fix64)fullAngle;
 		//Debug.Log((ushort)(32768.0 + System.Math.Atan((float)delta.z / (float)delta.x) / pi / 2 * 65535));
 		//Debug.Log((ushort)other);
 
 		return (ushort)other;
 	}
 
-
-	public static ushort AngleOfLine(FixVector3 vec)
-	{
-		Fix64 other = Fix64.Atan2((Fix64)vec.z, (Fix64)vec.x)
-			/ (Fix64.Pi * (Fix64)2) * (Fix64)65535;
-
-		return (ushort)other;
-	}
-
-
-	public static ushort ToAngle(FixVector3 direction)
+	public static ushort VectorToAngle(FixVector3 direction)
 	{
 		Fix64 other = Fix64.Atan2((Fix64)direction.z, (Fix64)direction.x)
-			/ (Fix64.Pi * (Fix64)2) * (Fix64)65535;
+			/ (Fix64.Pi * (Fix64)2) * (Fix64)fullAngle;
 		return (ushort)other;
 	}
 
@@ -89,30 +85,36 @@ public class FixMath
 		if (Math.Abs(direction.x) < 200)
 		{
 			Fix64 other = Fix64.Atan2((Fix64)direction.y, (Fix64)direction.z)
-				/ (Fix64.Pi * (Fix64)2) * (Fix64)65535;
+				/ (Fix64.Pi * (Fix64)2) * (Fix64)fullAngle;
 			return (ushort)other;
 
 		}
 		else
 		{
 			Fix64 other = Fix64.Atan2((Fix64)direction.y, (Fix64)direction.x)
-				/ (Fix64.Pi * (Fix64)2) * (Fix64)65535;
+				/ (Fix64.Pi * (Fix64)2) * (Fix64)fullAngle;
 			return (ushort)other;
 		}
 	}
 
-	public static float ToDegree(ushort angle)
+	public static float AngleToDegree(ushort angle)
 	{
 		//float dgr = (-(float)(angle - ushort.MaxValue / 4) / (float)ushort.MaxValue) * 360;
 		float dgr = -(float)(angle) / (float)ushort.MaxValue * 360 + 90;
 		return dgr;
 	}
 
+	public static ushort DegreeToAngle(float degree)
+	{
+		ushort angle = (ushort)((degree - 90) / -360 * ushort.MaxValue);
+		return angle;
+	}
+
 	public static FixVector3 DecomposeAngle(int length, ushort angle)
 	{
 		FixVector3 result = new FixVector3();
 
-		Fix64 radian = (Fix64)angle / (Fix64)65535 * (Fix64)2 * Fix64.Pi;
+		Fix64 radian = (Fix64)angle / (Fix64)fullAngle * (Fix64)2 * Fix64.Pi;
 
 		result.x = (int)(Fix64.FastCos(radian) * (Fix64)length);
 		result.z = (int)(Fix64.FastSin(radian) * (Fix64)length);
@@ -123,10 +125,10 @@ public class FixMath
 	public static ushort AddAngle(ushort angle, ushort delta)
 	{
 		if (angle + delta < 0)
-			return (ushort)(65535 + angle + delta);
+			return (ushort)(fullAngle + angle + delta);
 
-		if (angle + delta > 65535)
-			return (ushort)(angle + delta - 65535);
+		if (angle + delta > fullAngle)
+			return (ushort)(angle + delta - fullAngle);
 
 		return (ushort)(angle + delta);
 	}
@@ -134,7 +136,7 @@ public class FixMath
 	public static ushort DecAngle(ushort angle, ushort delta)
 	{
 		if (angle - delta < 0)
-			return (ushort)(65535 + angle - delta);
+			return (ushort)(fullAngle + angle - delta);
 
 		return (ushort)(angle - delta);
 	}
@@ -159,11 +161,11 @@ public class FixMath
 		{
 			//计算三条边  
 			//计算三条边
-			Fix64 a = (Fix64)directionPoint.DistanceSqr(point);
+			Fix64 a = (Fix64)DistanceSqr(directionPoint, point);
 			a = Fix64.Sqrt(a);
-			Fix64 b = (Fix64)point.DistanceSqr(originPoint);
+			Fix64 b = (Fix64)DistanceSqr(point, originPoint);
 			b = Fix64.Sqrt(b);
-			Fix64 c = (Fix64)directionPoint.DistanceSqr(originPoint);
+			Fix64 c = (Fix64)DistanceSqr(directionPoint, originPoint);
 			c = Fix64.Sqrt(c);
 
 			Fix64 cosA = (b * b + c * c - a * a) / ((Fix64)2 * b * c);//余弦 
@@ -175,6 +177,7 @@ public class FixMath
 		}
 		return rePoint;
 	}
+
 
 
 	#endregion

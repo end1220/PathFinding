@@ -1,6 +1,6 @@
 
 
-namespace Lite.Graph
+namespace Graph
 {
 	public class GraphEdge
 	{

@@ -1,4 +1,4 @@
-namespace Lite
+namespace FixedPoint
 {
     partial struct Fix64 {
         public static readonly long[] SinLut = new[] {

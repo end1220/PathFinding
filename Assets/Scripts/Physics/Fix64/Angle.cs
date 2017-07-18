@@ -1,4 +1,4 @@
-﻿namespace Lite
+﻿namespace FixedPoint
 {
     public class AngleTable
     {

@@ -7,10 +7,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 
-using Lite;
-using Lite.AStar;
-using Lite.Graph;
-using Lite.AStar.NavGraph;
+using FixedPoint;
+using AStar;
+using Graph;
+using AStar.NavGraph;
 
 
 public class Graph3DNavEditor : EditorWindow

@@ -3,11 +3,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Lite.Graph;
-using Lite.AStar.NavGraph;
+using Graph;
+using AStar.NavGraph;
 
 
-namespace Lite.AStar
+namespace AStar
 {
 	/// <summary>
 	/// 存储着3D网格稀疏图寻路数据

@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-namespace Lite.Graph
+namespace Graph
 {
 	using NodeList = List<GraphNode>;
 	using NodeTable = Dictionary<int,GraphNode>;

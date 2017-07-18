@@ -2,7 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
-using Lite.AStar;
+using AStar;
 
 
 public class NavGrid2DGizmo : MonoBehaviour
@@ -54,7 +54,7 @@ public class NavGrid2DGizmo : MonoBehaviour
 			for (int j = 0; j < height; ++j)
 			{
 				Vector3 c = gridPosList[i, j];
-				bool passable = navigation.At(i, j) == 0;
+				bool passable = navigation.GetMask(i, j) == 0;
 				if (passable)
 				{
 					Gizmos.color = Color.green;

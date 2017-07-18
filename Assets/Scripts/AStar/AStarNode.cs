@@ -2,10 +2,10 @@
 using System;
 
 
-namespace Lite.AStar
+namespace AStar
 {
 
-	public abstract class AStarNode : Lite.Graph.GraphNode
+	public abstract class AStarNode : Graph.GraphNode
 	{
 		[NonSerialized]
 		public int g;

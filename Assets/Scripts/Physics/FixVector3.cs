@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace Lite
+namespace FixedPoint
 {
 
 	/*
@@ -42,7 +42,9 @@ namespace Lite
 
 		public static FixVector3 one { get { return new FixVector3(1, 1, 1); } }
 
-		public long sqrMagnitude { get { return (long)x * (long)x + (long)y * (long)y + (long)z * (long)z; } }
+		public int Length { get { return (int)Fix64.Sqrt((Fix64)sqrLength); } }
+
+		public long sqrLength { get { return (long)x * (long)x + (long)y * (long)y + (long)z * (long)z; } }
 
 		public static FixVector3 operator +(FixVector3 vec1, FixVector3 vec2)
 		{
@@ -74,15 +76,10 @@ namespace Lite
 			return vec1.x != vec2.x || vec1.y != vec2.y || vec1.z != vec2.z;
 		}
 
-		public int Length()
-		{
-			return (int)Fix64.Sqrt((Fix64)sqrMagnitude);
-		}
-
 		// 1000, not 1
 		public void Normalize()
 		{
-			int len = Length();
+			int len = this.Length;
 
 			this.x *= 1000;
 			this.y *= 1000;
@@ -91,19 +88,6 @@ namespace Lite
 			this.x /= len;
 			this.y /= len;
 			this.z /= len;
-
-		}
-
-		public long DistanceSqr(FixVector3 vec)
-		{
-			return (this - vec).sqrMagnitude;
-		}
-
-		public long DistancePlaneSqr(FixVector3 vec)
-		{
-			var tmp = this - vec;
-			tmp.y = 0;
-			return tmp.sqrMagnitude;
 		}
 
 		public UnityEngine.Vector3 ToVector3()

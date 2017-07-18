@@ -1,6 +1,6 @@
 
 
-namespace Lite.AStar
+namespace AStar
 {
 	public class GraphAStarNode : AStarNode
 	{

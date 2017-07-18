@@ -1,9 +1,10 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace Lite
+namespace FixedPoint
 {
 	/*
 	 * 只使用整数运算的Transform组件
@@ -12,16 +13,52 @@ namespace Lite
 	 */
 	public class FixTransform : MonoBehaviour
 	{
-		public FixVector3 position = FixVector3.zero;
-		public FixVector3 scale = new FixVector3(FixMath.m2mm(1), FixMath.m2mm(1), FixMath.m2mm(1));
-		public ushort angle = 0;
+		private Transform transform_u3d = null;
+
+		private FixTransform parent;
+		private List<FixTransform> children = new List<FixTransform>();
+
+		[SerializeField]
+		private FixVector3 position = FixVector3.zero;// world position
+		[SerializeField]
+		public FixVector3 scale = new FixVector3(FixMath.m2mm(1), FixMath.m2mm(1), FixMath.m2mm(1));// local scale
+		[SerializeField]
+		private ushort angle = 0;// local angle?
 
 		private FixVector3 old_position = FixVector3.zero;
 		private FixVector3 old_scale = new FixVector3(FixMath.m2mm(1), FixMath.m2mm(1), FixMath.m2mm(1));
 		private ushort old_angle = 0;
 
-		private Transform transform_u3d = null;
 
+		public FixVector3 Position
+		{
+			set
+			{
+				FixVector3 old = position;
+				position = value;
+				if (old != value)
+					UpdateChildrenPosition(this, value - old);
+			}
+			get
+			{
+				return position;
+			}
+		}
+
+		public ushort Angle
+		{
+			set
+			{
+				angle = value;
+			}
+			get
+			{
+				return angle;
+			}
+		}
+
+		// lerp rotatation
+		private bool lerpRotation = true;
 		private const int MaxLerpRotationTimes = 10;
 		private int lerpRotationTimes = MaxLerpRotationTimes;
 		private Quaternion startRotation;
@@ -34,13 +71,20 @@ namespace Lite
 		void Awake()
 		{
 			transform_u3d = GetComponent<Transform>();
-
-			if (!aglin)
-			{
-				ApplyPosition();
-				ApplyRotation();
-			}
 			old_position = position;
+			if (aglin)
+			{
+				this.Position = new FixVector3(transform_u3d.position);
+				this.Angle = FixMath.VectorToAngle(new FixVector3(transform_u3d.forward));
+				this.scale = new FixVector3(transform_u3d.localScale);
+			}
+		}
+
+
+		void Start()
+		{
+			FixTransform prt = transform_u3d.parent.GetComponent<FixTransform>();
+			SetParent(prt);
 		}
 
 
@@ -54,12 +98,18 @@ namespace Lite
 
 			if (angle != old_angle)
 			{
-				lerpRotationTimes = 0;
+				if (lerpRotation)
+				{
+					lerpRotationTimes = 0;
+					startRotation = transform_u3d.rotation;
+					targetRotation = Quaternion.Euler(0, FixMath.AngleToDegree(angle), 0);
+				}
+				else
+				{
+					transform_u3d.rotation = Quaternion.Euler(0, FixMath.AngleToDegree(angle), 0);
+				}
 				old_angle = angle;
-				startRotation = transform_u3d.rotation;
-				targetRotation = Quaternion.Euler(0, FixMath.ToDegree(angle), 0);
 			}
-
 
 			if (scale != old_scale)
 			{
@@ -94,7 +144,7 @@ namespace Lite
 		}
 
 
-		public Vector3 GetU3DPosition()
+		private Vector3 GetU3DPosition()
 		{
 			return new Vector3(FixMath.mm2m(position.x),
 				FixMath.mm2m(position.y),
@@ -103,22 +153,15 @@ namespace Lite
 		}
 
 
-		public Vector3 GetU3DForwards()
+		private Vector3 GetU3DForwards()
 		{
 			FixVector3 perform = FixMath.DecomposeAngle(1000, angle);
-			return new Vector3(FixMath.mm2m(perform.x),
-				FixMath.mm2m(perform.y),
-				FixMath.mm2m(perform.z)
-				);
-
+			return perform.ToVector3();
 		}
 
-		public Vector3 GetU3DScale()
+		private Vector3 GetU3DScale()
 		{
-			return new Vector3(FixMath.mm2m(scale.x),
-				FixMath.mm2m(scale.y),
-				FixMath.mm2m(scale.z)
-				);
+			return scale.ToVector3();
 		}
 
 
@@ -135,9 +178,71 @@ namespace Lite
 		public void _aglin()
 		{
 			aglin = true;
-			var tran = transform;
-			angle = FixMath.ToAngle(new FixVector3(tran.forward));
 		}
+
+
+		public void SetParent(FixTransform tran)
+		{
+			if (parent != null)
+				parent.DettachChild(this);
+			if (tran != null)
+				tran.AttachChild(this);
+		}
+
+
+		private void AttachChild(FixTransform child)
+		{
+			if (children.Contains(child))
+			{
+				Log.Error("FixTransfrom.AttachChild: repeated child.");
+				return;
+			}
+			children.Add(child);
+			child.parent = this;
+		}
+
+
+		private void DettachChild(FixTransform child)
+		{
+			if (!children.Contains(child))
+			{
+				Log.Error("FixTransfrom.DettachChild: not a child.");
+				return;
+			}
+			children.Remove(child);
+			child.parent = null;
+		}
+
+
+		private void _TryRefreshChildren(FixTransform trans)
+		{
+			int childrenCount = trans.children.Count;
+			if (childrenCount != trans.transform.childCount)
+			{
+				for (int i = 0; i < trans.transform.childCount; ++i)
+				{
+					FixTransform fixChild = trans.transform.GetChild(i).GetComponent<FixTransform>();
+					if (fixChild != null && !children.Contains(fixChild))
+					{
+						children.Add(fixChild);
+						fixChild.parent = this;
+					}
+				}
+			}
+		}
+
+
+		private void UpdateChildrenPosition(FixTransform trans, FixVector3 delta)
+		{
+			_TryRefreshChildren(trans);
+			int count = trans.children.Count;
+			for (int i = 0; i < count; ++i)
+			{
+				FixTransform child = trans.children[i];
+				child.position = child.position + delta;
+			}
+		}
+
 
 	}
 

@@ -1,13 +1,9 @@
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
 
-
-namespace Lite.AStar
+namespace AStar
 {
 
-	public abstract class AStarMap : Lite.Graph.SparseGraph
+	public abstract class AStarMap : Graph.SparseGraph
 	{
 		public abstract int GetNeighbourNodeCount(AStarNode node);
 

@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Lite;
+using FixedPoint;
 
 
-namespace Lite.AStar
+namespace AStar
 {
 	
 	public class GraphPathPlanner : AStarPathPlanner

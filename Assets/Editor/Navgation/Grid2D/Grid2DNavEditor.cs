@@ -7,9 +7,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 
-using Lite;
-using Lite.AStar;
-using Lite.Graph;
+using FixedPoint;
+using AStar;
+using Graph;
 
 
 public class Grid2DNavEditor : EditorWindow

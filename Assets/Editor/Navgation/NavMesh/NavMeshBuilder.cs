@@ -3,11 +3,11 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using Lite;
-using Lite.Graph;
+using FixedPoint;
+using Graph;
 
 
-namespace Lite.AStar.NavGraph
+namespace AStar.NavGraph
 {
 
 	public class NavMeshBuilder

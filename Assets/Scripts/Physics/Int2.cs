@@ -1,12 +1,11 @@
 
 
 using System;
-using UnityEngine;
 
 
-namespace Lite
+namespace FixedPoint
 {
-	[System.Serializable]
+	[Serializable]
 	public struct Int2
 	{
 		public int x;

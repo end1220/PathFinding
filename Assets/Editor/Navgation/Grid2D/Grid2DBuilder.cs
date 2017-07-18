@@ -7,9 +7,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 
-using Lite;
-using Lite.AStar;
-using Lite.Graph;
+using FixedPoint;
+using AStar;
+using Graph;
 
 
 public class Grid2DBuilder
@@ -19,6 +19,7 @@ public class Grid2DBuilder
 		public ushort mask;
 		public Vector3 point;
 		public int layer;
+		public string tag;
 	}
 
 	public GameObject worldBoxObj;
@@ -110,13 +111,16 @@ public class Grid2DBuilder
 				ray.origin = new Vector3(centerx, 500, centerz);
 				float fposy = badY;
 				int hitLayer = -1;
+				string tag = null;
 				if (Physics.Raycast(ray, out hit, 1000, layerMask))
 				{
 					fposy = hit.point.y;
 					hitLayer = hit.collider.gameObject.layer;
+					tag = hit.collider.gameObject.tag;
 				}
 				gridList[x, y].point = new Vector3(centerx, fposy, centerz);
 				gridList[x, y].layer = hitObstacle ? obstacleLayer : hitLayer;
+				gridList[x, y].tag = tag;
 			}
 			UpdateProgress(x, width, "");
 		}
@@ -175,13 +179,37 @@ public class Grid2DBuilder
 
 		NavGrid2DData nav = ScriptableObject.CreateInstance<NavGrid2DData>();
 		ushort[,] maskList = new ushort[width, height];
+		int[,] terrain = new int[width, height];
 		for (int x = 0; x < width; ++x)
+		{
 			for (int y = 0; y < height; ++y)
+			{
 				maskList[x, y] = gridList[x, y].mask;
-		nav._setData(maskList, width, height, (int)FixMath.m2mm(gridSize), (int)FixMath.m2mm(minX), (int)FixMath.m2mm(minZ));
+				terrain[x, y] = (byte)GetTerrainType(gridList[x, y].mask, gridList[x, y].tag);
+			}
+		}
+		nav._setData(maskList, terrain, width, height, (int)FixMath.m2mm(gridSize), (int)FixMath.m2mm(minX), (int)FixMath.m2mm(minZ));
 		navigation = nav;
 
 		EditorUtility.ClearProgressBar();
+	}
+
+
+	private static TerrainType GetTerrainType(int mask, string tag)
+	{
+		TerrainType tr = mask > 0 ? TerrainType.Unwalkable : TerrainType.Walkable;
+		if (mask > 0)
+		{
+			if (tag == "ShortWall")
+			{
+				tr = TerrainType.ShortWall;
+			}
+			else if (tag == "TallWall")
+			{
+				tr = TerrainType.TallWall;
+			}
+		}
+		return tr;
 	}
 
 

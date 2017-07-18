@@ -2,10 +2,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Lite;
+using FixedPoint;
 
 
-namespace Lite.AStar
+namespace AStar
 {
 	public class GridAStarMap : AStarMap
 	{
@@ -39,7 +39,8 @@ namespace Lite.AStar
 					nodes[x, y] = node;
 					node.x = (ushort)x;
 					node.y = (ushort)y;
-					node.blockValue = (ushort)data.At(x, y);
+					node.blockValue = data.GetMask(x, y);
+					node.terrainType = (byte)data.GetTerrain(x, y);
 				}
 			}
 		}

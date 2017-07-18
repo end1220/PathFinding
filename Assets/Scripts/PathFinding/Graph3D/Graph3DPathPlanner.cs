@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Lite;
+using FixedPoint;
 
 
-namespace Lite.AStar
+namespace AStar
 {
 
 	public class Graph3DPathPlanner : GraphPathPlanner
@@ -42,9 +42,9 @@ namespace Lite.AStar
 			if (result.Count >= 4)
 			{
 				int cellSize = graphMap.navGraphData.buildConfig.cellSize;
-				if ((result[1] - from).sqrMagnitude < cellSize * cellSize)
+				if ((result[1] - from).sqrLength < cellSize * cellSize)
 					result.RemoveAt(1);
-				if ((result[result.Count - 2] - to).sqrMagnitude < cellSize * cellSize)
+				if ((result[result.Count - 2] - to).sqrLength < cellSize * cellSize)
 					result.RemoveAt(result.Count - 2);
 			}
 			return result.Count >= 2;

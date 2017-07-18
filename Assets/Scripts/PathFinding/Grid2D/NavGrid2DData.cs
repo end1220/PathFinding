@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 
-namespace Lite.AStar
+namespace AStar
 {
 	/// <summary>
 	/// 存储着2D网格寻路数据
@@ -35,13 +35,21 @@ namespace Lite.AStar
 		[HideInInspector]
 		public int[] mask = null;
 
+		[HideInInspector]
+		public int[,] terrainType = null;
 
-		public ushort At(int x, int y)
+
+		public ushort GetMask(int x, int y)
 		{
 			int bitSize = y * width + x;
 			int left = bitSize % 32;
 			int index = bitSize / 32;
 			return (ushort)(mask[index] >> left & 1);
+		}
+
+		public int GetTerrain(int x, int y)
+		{
+			return terrainType[x, y];
 		}
 
 		private void _setPoint(int x, int y, ushort value)
@@ -53,7 +61,7 @@ namespace Lite.AStar
 		}
 
 
-		public void _setData(ushort[,] msk, int w, int h, int grid, int minx, int minz)
+		public void _setData(ushort[,] msk, int[,] terrain, int w, int h, int grid, int minx, int minz)
 		{
 			width = w;
 			height = h;
@@ -64,6 +72,7 @@ namespace Lite.AStar
 			for (int y = 0; y < height; ++y)
 				for (int x = 0; x < width; ++x)
 					_setPoint(x, y, msk[x, y]);
+			terrainType = terrain;
 		}
 
 

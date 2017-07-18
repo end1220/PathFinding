@@ -2,11 +2,11 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Lite;
-using Lite.AStar;
+using FixedPoint;
+using AStar;
 
 
-namespace Lite
+namespace FixedPoint
 {
 
 	public static class PathOptimizer2D

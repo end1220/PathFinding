@@ -3,12 +3,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Lite;
-using Lite;
-using Lite.Graph;
+using FixedPoint;
+using FixedPoint;
+using Graph;
 
 
-namespace Lite.AStar
+namespace AStar
 {
 	public class Graph3DAStarMap : GraphAStarMap
 	{
