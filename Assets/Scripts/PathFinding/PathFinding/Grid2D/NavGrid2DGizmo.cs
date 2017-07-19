@@ -28,12 +28,60 @@ namespace PathFinding
 		public Vector3 block = Vector3.zero;
 
 
+		private float Angle = 60;
+		private float Radius = 5;
+		private int segmentDigree = 10;
+		private Mesh mesh;
+
+		private void RegenerateMesh()
+		{
+			int segmentCount = (int)(Angle / segmentDigree) + 1;
+
+			int vertexCount = segmentCount + 2;
+			int triangleCount = segmentCount;
+
+			Vector3[] vertices = new Vector3[vertexCount];
+			int[] triangles = new int[triangleCount * 3];
+
+			float maxDigree = 90 + Angle * 0.5f;
+			float minDigree = 90 - Angle * 0.5f;
+			float height = 0.25f;
+			vertices[0] = new Vector3(0, height, 0);
+			//遵循顺时针三点确定一面
+			for (int i = 1; i < vertices.Length; ++i)
+			{
+				float deltaDigree = vertices.Length - i == 1 ? minDigree : (i - 1) * segmentDigree;
+				float digree = maxDigree - deltaDigree;
+				float x = Radius * (float)System.Math.Cos(digree / 180 * System.Math.PI);
+				float y = height;
+				float z = Radius * (float)System.Math.Sin(digree / 180 * System.Math.PI);
+				vertices[i] = new Vector3(x, y, z);
+			}
+
+			int index = 0;
+			for (int i = 0; i < triangles.Length;)
+			{
+				triangles[i++] = 0;
+				triangles[i++] = index + 1;
+				triangles[i++] = index + 2;
+				index++;
+			}
+
+			mesh = new Mesh();
+			mesh.vertices = vertices;
+			mesh.triangles = triangles;
+			mesh.RecalculateNormals();
+		}
+
+
 		public void SetGridPosList(NavGrid2DData mask, Vector3[,] grids, int w, int h)
 		{
 			navigation = mask;
 			gridPosList = grids;
 			width = w;
 			height = h;
+
+			RegenerateMesh();
 		}
 
 
@@ -47,6 +95,8 @@ namespace PathFinding
 			Color defaultColor = Gizmos.color;
 
 			float a = FixMath.mm2m(navigation.GridSize) / 2;
+
+			Gizmos.DrawMesh(mesh);
 
 			// passables
 			for (int i = 0; i < width; ++i)
