@@ -1,5 +1,4 @@
-namespace FixedPoint
-{
+
     partial struct Fix64 {
         public static readonly long[] TanLut = new[] {
             0x0L, 0x8000L, 0x10000L, 0x18000L, 0x20000L, 0x28001L, 0x30001L, 0x38001L, 
@@ -25740,4 +25739,3 @@ namespace FixedPoint
             0x55552EDD09BCL, 0x6666383CD0AFL, 0x7FFFC64C623DL, 0xAAAA5DBB927EL, 0xFFFF8C99BA45L, 0x1FFFF19342BB8L, 0x7FFFFFFFFFFFFFFFL, 
         };
     }
-}

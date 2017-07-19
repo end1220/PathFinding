@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace FixedPoint
 {
+
 	[RequireComponent(typeof(FixTransform), typeof(FixCollider))]
 	public abstract class FixTriggerReceiver : MonoBehaviour
 	{

@@ -1,5 +1,4 @@
-namespace FixedPoint
-{
+
     partial struct Fix64 {
         public static readonly long[] SinLut = new[] {
             0x0L, 0x8000L, 0x10000L, 0x18000L, 0x20000L, 0x28001L, 0x30001L, 0x38001L, 
@@ -25740,4 +25739,3 @@ namespace FixedPoint
             0xFFFFFFFBL, 0xFFFFFFFCL, 0xFFFFFFFDL, 0xFFFFFFFEL, 0xFFFFFFFFL, 0xFFFFFFFFL, 0x100000000L, 
         };
     }
-}

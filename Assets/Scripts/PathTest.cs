@@ -1,13 +1,9 @@
 ﻿
-using System;
-using System.Collections;
+
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Text;
 using UnityEngine;
-using FixedPoint;
-using AStar;
+using PathFinding;
 
 
 namespace FixedPoint

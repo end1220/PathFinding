@@ -6,7 +6,7 @@ using UnityEngine;
 namespace FixedPoint
 {
 
-	public class FixColliderManager
+	public class FixColliderManager/* : MonoBehaviour, TwFramework.IManager*/
 	{
 		public static FixColliderManager Instance { get; private set; }
 

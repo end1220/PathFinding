@@ -163,10 +163,10 @@ namespace FixedPoint
 			{
 				triggerReceiver.OnFixTriggerEnter(trigger as FixCollider);
 			}
-			else
+			/*else
 			{
 				Log.Error("FixCollider.OnFixTriggerEnter: You are probably missing a FixTriggerReceiver component.");
-			}
+			}*/
 		}
 
 
@@ -176,10 +176,10 @@ namespace FixedPoint
 			{
 				triggerReceiver.OnFixTriggerExit(trigger as FixCollider);
 			}
-			else
+			/*else
 			{
 				Log.Error("FixCollider.OnFixTriggerExit: You are probably missing a FixTriggerReceiver component.");
-			}
+			}*/
 		}
 
 	}
