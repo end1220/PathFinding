@@ -7,7 +7,7 @@ using Pathfinding.Voxels;
 namespace Pathfinding.Voxels {
 	public partial class Voxelize {
 		public ushort[] ExpandRegions (int maxIterations, uint level, ushort[] srcReg, ushort[] srcDist, ushort[] dstReg, ushort[] dstDist, List<int> stack) {
-			AstarProfiler.StartProfile("---Expand 1");
+			//AstarProfiler.StartProfile("---Expand 1");
 			int w = voxelArea.width;
 			int d = voxelArea.depth;
 
@@ -53,8 +53,8 @@ namespace Pathfinding.Voxels {
 				}
 			}
 
-			AstarProfiler.EndProfile("---Expand 1");
-			AstarProfiler.StartProfile("---Expand 2");
+			//AstarProfiler.EndProfile("---Expand 1");
+			//AstarProfiler.StartProfile("---Expand 2");
 
 			int iter = 0;
 
@@ -63,13 +63,13 @@ namespace Pathfinding.Voxels {
 			if (stCount > 0) while (true) {
 					int failed = 0;
 
-					AstarProfiler.StartProfile("---- Copy");
+					//AstarProfiler.StartProfile("---- Copy");
 
 					// Copy srcReg and srcDist to dstReg and dstDist (but faster than a normal loop)
 					System.Buffer.BlockCopy(srcReg, 0, dstReg, 0, srcReg.Length*sizeof(ushort));
 					System.Buffer.BlockCopy(srcDist, 0, dstDist, 0, dstDist.Length*sizeof(ushort));
 
-					AstarProfiler.EndProfile("---- Copy");
+					//AstarProfiler.EndProfile("---- Copy");
 
 					for (int j = 0; j < stCount; j += 3) {
 						if (j >= stCount) break;
@@ -142,7 +142,7 @@ namespace Pathfinding.Voxels {
 					}
 				}
 
-			AstarProfiler.EndProfile("---Expand 2");
+			//AstarProfiler.EndProfile("---Expand 2");
 
 			return srcReg;
 #endif
@@ -533,7 +533,7 @@ namespace Pathfinding.Voxels {
 		}
 
 		public void BuildRegions () {
-			AstarProfiler.StartProfile("Build Regions");
+			//AstarProfiler.StartProfile("Build Regions");
 
 			int w = voxelArea.width;
 			int d = voxelArea.depth;
@@ -756,7 +756,7 @@ namespace Pathfinding.Voxels {
 			while (level > 0) {
 				level = level >= 2 ? level-2 : 0;
 
-				AstarProfiler.StartProfile("--Expand Regions");
+				//AstarProfiler.StartProfile("--Expand Regions");
 				if (ExpandRegions(expandIterations, level, srcReg, srcDist, dstReg, dstDist, stack) != srcReg) {
 					ushort[] tmp = srcReg;
 					srcReg = dstReg;
@@ -767,9 +767,9 @@ namespace Pathfinding.Voxels {
 					dstDist = tmp;
 				}
 
-				AstarProfiler.EndProfile("--Expand Regions");
+				//AstarProfiler.EndProfile("--Expand Regions");
 
-				AstarProfiler.StartProfile("--Mark Regions");
+				//AstarProfiler.StartProfile("--Mark Regions");
 
 
 				// Mark new regions with IDs.
@@ -789,7 +789,7 @@ namespace Pathfinding.Voxels {
 				}
 
 
-				AstarProfiler.EndProfile("--Mark Regions");
+				//AstarProfiler.EndProfile("--Mark Regions");
 
 				count++;
 			}
@@ -861,7 +861,7 @@ namespace Pathfinding.Voxels {
 			 *
 			 * DebugUtility.DrawCubes (debugPointsTop,debugPointsBottom,debugColors, cellSize);*/
 #endif
-			AstarProfiler.EndProfile("Build Regions");
+			//AstarProfiler.EndProfile("Build Regions");
 		}
 
 		static int union_find_find (int[] arr, int x) {

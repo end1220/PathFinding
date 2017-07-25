@@ -170,6 +170,15 @@ public struct Int3
 		return lhs;
 	}
 
+	public static Int3 operator *(Int3 lhs, double rhs)
+	{
+		lhs.x = (int)System.Math.Round(lhs.x * rhs);
+		lhs.y = (int)System.Math.Round(lhs.y * rhs);
+		lhs.z = (int)System.Math.Round(lhs.z * rhs);
+
+		return lhs;
+	}
+
 	public static int Dot(Int3 lhs, Int3 rhs)
 	{
 		return
@@ -193,6 +202,14 @@ public struct Int3
 	public Int3 Normal2D()
 	{
 		return new Int3(z, y, -x);
+	}
+
+	public static float Angle(Int3 lhs, Int3 rhs)
+	{
+		double cos = Dot(lhs, rhs) / ((double)lhs.magnitude * (double)rhs.magnitude);
+
+		cos = cos < -1 ? -1 : (cos > 1 ? 1 : cos);
+		return (float)System.Math.Acos(cos);
 	}
 
 	public override bool Equals(object o)

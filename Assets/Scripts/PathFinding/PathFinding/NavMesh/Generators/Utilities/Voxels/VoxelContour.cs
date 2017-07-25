@@ -7,9 +7,7 @@ using Pathfinding.Voxels;
 namespace Pathfinding.Voxels {
 	public partial class Voxelize {
 		public void BuildContours (float maxError, int maxEdgeLength, VoxelContourSet cset, int buildFlags) {
-			AstarProfiler.StartProfile("Build Contours");
 
-			AstarProfiler.StartProfile("- Init");
 			int w = voxelArea.width;
 			int d = voxelArea.depth;
 
@@ -23,10 +21,6 @@ namespace Pathfinding.Voxels {
 			//cset.conts = new VoxelContour[maxContours];
 			List<VoxelContour> contours = new List<VoxelContour>(maxContours);
 
-			AstarProfiler.EndProfile("- Init");
-			AstarProfiler.StartProfile("- Mark Boundaries");
-
-			//cset.nconts = 0;
 
 			//NOTE: This array may contain any data, but since we explicitly set all data in it before we use it, it's OK.
 			ushort[] flags = voxelArea.tmpUShortArr;
@@ -71,9 +65,6 @@ namespace Pathfinding.Voxels {
 				}
 			}
 
-			AstarProfiler.EndProfile("- Mark Boundaries");
-
-			AstarProfiler.StartProfile("- Simplify Contours");
 			List<int> verts = Pathfinding.Util.ListPool<int>.Claim(256);//new List<int> (256);
 			List<int> simplified = Pathfinding.Util.ListPool<int>.Claim(64);//new List<int> (64);
 
@@ -157,9 +148,6 @@ namespace Pathfinding.Voxels {
 			Pathfinding.Util.ListPool<int>.Release(verts);
 			Pathfinding.Util.ListPool<int>.Release(simplified);
 
-			AstarProfiler.EndProfile("- Simplify Contours");
-
-			AstarProfiler.StartProfile("- Fix Contours");
 
 			// Check and merge droppings.
 			// Sometimes the previous algorithms can fail and create several contours
@@ -264,9 +252,6 @@ namespace Pathfinding.Voxels {
 
 			cset.conts = contours;
 
-			AstarProfiler.EndProfile("- Fix Contours");
-
-			AstarProfiler.EndProfile("Build Contours");
 		}
 
 		void GetClosestIndices (int[] vertsa, int nvertsa,

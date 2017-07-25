@@ -25,6 +25,14 @@ public struct Int2
 
 	public int sqrMagnitude { get { return x * x + y * y; } }
 
+	public long sqrMagnitudeLong
+	{
+		get
+		{
+			return (long)x * (long)x + (long)y * (long)y;
+		}
+	}
+
 	public static Int2 operator +(Int2 vec1, Int2 vec2)
 	{
 		return new Int2(vec1.x + vec2.x, vec1.y + vec2.y);
@@ -53,6 +61,11 @@ public struct Int2
 	public static bool operator !=(Int2 vec1, Int2 vec2)
 	{
 		return vec1.x != vec2.x || vec1.y != vec2.y;
+	}
+
+	public static long DotLong(Int2 a, Int2 b)
+	{
+		return (long)a.x * (long)b.x + (long)a.y * (long)b.y;
 	}
 
 	public override bool Equals(object o)
