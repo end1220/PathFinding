@@ -448,7 +448,7 @@ namespace Pathfinding
 			base.OnDestroy();
 
 			// Cleanup
-			TriangleMeshNode.SetNavmeshHolder(active.astarData.GetGraphIndex(this), null);
+			TriangleMeshNode.SetNavmeshHolder(0, null);
 		}
 
 		/** Relocates the nodes in this graph.
@@ -1423,7 +1423,7 @@ namespace Pathfinding
 			//Create nodes and assign triangle indices
 			for (int i = 0; i < nodes.Length; i++)
 			{
-				var node = new TriangleMeshNode(active);
+				var node = new TriangleMeshNode();
 				nodes[i] = node;
 				node.GraphIndex = (uint)graphIndex;
 				node.v0 = tile.tris[i * 3 + 0] | tileIndex;
@@ -1835,7 +1835,7 @@ namespace Pathfinding
 			//Create nodes and assign triangle indices
 			for (int i = 0; i < nodes.Length; i++)
 			{
-				var node = new TriangleMeshNode(active);
+				var node = new TriangleMeshNode();
 				nodes[i] = node;
 				node.GraphIndex = (uint)graphIndex;
 				node.v0 = tile.tris[i * 3 + 0] | tileIndex;

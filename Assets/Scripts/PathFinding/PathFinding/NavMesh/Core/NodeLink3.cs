@@ -119,7 +119,7 @@ namespace Pathfinding
 
 		public override void OnPostScan()
 		{
-			if (AstarPath.active.isScanning)
+			/*if (AstarPath.active.isScanning)
 			{
 				InternalOnPostScan();
 			}
@@ -130,12 +130,12 @@ namespace Pathfinding
 					InternalOnPostScan();
 					return true;
 				}));
-			}
+			}*/
 		}
 
 		public void InternalOnPostScan()
 		{
-#if !ASTAR_NO_POINT_GRAPH
+/*#if !ASTAR_NO_POINT_GRAPH
 			if (AstarPath.active.astarData.pointGraph == null)
 			{
 				AstarPath.active.astarData.AddGraph(new PointGraph());
@@ -148,7 +148,7 @@ namespace Pathfinding
 			endNode.link = this;
 #else
 			throw new System.Exception("Point graphs are not included. Check your A* Optimization settings.");
-#endif
+#endif*/
 			connectedNode1 = null;
 			connectedNode2 = null;
 
@@ -162,12 +162,12 @@ namespace Pathfinding
 			postScanCalled = true;
 			reference[startNode] = this;
 			reference[endNode] = this;
-			Apply(true);
+			//Apply(true);
 		}
 
 		public override void OnGraphsPostUpdate()
 		{
-			if (!AstarPath.active.isScanning)
+			/*if (!AstarPath.active.isScanning)
 			{
 				if (connectedNode1 != null && connectedNode1.Destroyed)
 				{
@@ -187,19 +187,19 @@ namespace Pathfinding
 					//OnPostScan will also call this method
 					Apply(false);
 				}
-			}
+			}*/
 		}
 
 		protected override void OnEnable()
 		{
 			base.OnEnable();
 
-#if !ASTAR_NO_POINT_GRAPH
+/*#if !ASTAR_NO_POINT_GRAPH
 			if (Application.isPlaying && AstarPath.active != null && AstarPath.active.astarData != null && AstarPath.active.astarData.pointGraph != null)
 			{
 				OnGraphsPostUpdate();
 			}
-#endif
+#endif*/
 		}
 
 		protected override void OnDisable()

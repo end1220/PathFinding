@@ -132,6 +132,14 @@ public struct Int3
 		return new Int3(vec1.x - vec2.x, vec1.y - vec2.y, vec1.z - vec2.z);
 	}
 
+	public static Int3 operator -(Int3 lhs)
+	{
+		lhs.x = -lhs.x;
+		lhs.y = -lhs.y;
+		lhs.z = -lhs.z;
+		return lhs;
+	}
+
 	public static Int3 operator *(Int3 vec, int n)
 	{
 		return new Int3(vec.x * n, vec.y * n, vec.z * n);
