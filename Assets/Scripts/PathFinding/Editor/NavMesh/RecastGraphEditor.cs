@@ -8,7 +8,7 @@ namespace PathFinding
 
 	public class RecastGraphEditor : EditorWindow
 	{
-		RecastGraph target;
+		RecastGraph recastGraph;
 
 		public static bool tagMaskFoldout;
 
@@ -62,6 +62,8 @@ namespace PathFinding
 
 		void OnEnable()
 		{
+			if (recastGraph == null)
+				recastGraph = new RecastGraph();
 			navmeshMaterial = AssetDatabase.LoadAssetAtPath("Assets/Scripts/PathFinding/Editor/EditorAssets/Materials/Navmesh.mat", typeof(Material)) as Material;
 			navmeshOutlineMaterial = AssetDatabase.LoadAssetAtPath("Assets/Scripts/PathFinding/Editor/EditorAssets/Materials/NavmeshOutline.mat", typeof(Material)) as Material;
 
@@ -82,7 +84,7 @@ namespace PathFinding
 		/** Updates the meshes used in OnDrawGizmos to visualize the navmesh */
 		void UpdateDebugMeshes()
 		{
-			var graph = target as RecastGraph;
+			var graph = recastGraph as RecastGraph;
 
 			var tiles = graph.GetTiles();
 
@@ -323,7 +325,7 @@ namespace PathFinding
 
 		void OnDrawGizmos()
 		{
-			var graph = target as RecastGraph;
+			var graph = recastGraph as RecastGraph;
 
 			if (graph.showMeshSurface)
 			{
@@ -349,7 +351,7 @@ namespace PathFinding
 
 		public void OnGUI()
 		{
-			var graph = target as RecastGraph;
+			var graph = recastGraph as RecastGraph;
 
 			if (graph == null)
 				return;
@@ -535,6 +537,12 @@ namespace PathFinding
 
 			graph.nearestSearchOnlyXZ = EditorGUILayout.Toggle(new GUIContent("Nearest node queries in XZ space",
 					"Recomended for single-layered environments.\nFaster but can be inacurate esp. in multilayered contexts."), graph.nearestSearchOnlyXZ);
+
+
+			if (GUILayout.Button("Scan"))
+			{
+				recastGraph.ScanInternal();
+			}
 		}
 
 		/** Exports the INavmesh graph to a .obj file */
