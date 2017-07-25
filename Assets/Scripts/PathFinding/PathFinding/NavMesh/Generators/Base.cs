@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 
-namespace Pathfinding
+namespace PathFinding
 {
 	/**  Base class for all graphs */
 	public abstract class NavGraph

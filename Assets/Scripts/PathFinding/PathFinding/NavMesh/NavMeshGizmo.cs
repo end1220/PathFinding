@@ -1,6 +1,6 @@
 
 using UnityEngine;
-using PathFinding.NavGraph;
+using PathFinding.Graph3d;
 
 
 namespace PathFinding

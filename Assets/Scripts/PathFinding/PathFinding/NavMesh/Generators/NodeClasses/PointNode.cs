@@ -1,7 +1,7 @@
 using UnityEngine;
 
 
-namespace Pathfinding
+namespace PathFinding
 {
 	public class PointNode : GraphNode
 	{

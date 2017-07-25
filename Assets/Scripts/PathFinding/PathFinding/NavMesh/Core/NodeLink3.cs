@@ -1,12 +1,12 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using Pathfinding;
+using PathFinding;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-namespace Pathfinding
+namespace PathFinding
 {
 	public class NodeLink3Node : PointNode
 	{

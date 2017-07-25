@@ -4,9 +4,9 @@ using System.IO;
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace Pathfinding
+namespace PathFinding
 {
-	using Pathfinding.Voxels;
+	using PathFinding.Voxels;
 
 
 	public class RecastGraph : NavGraph, INavmesh, IRaycastableGraph, IUpdatableGraph, INavmeshHolder
@@ -1462,8 +1462,8 @@ namespace Pathfinding
 		 */
 		void CreateNodeConnections(TriangleMeshNode[] nodes)
 		{
-			List<MeshNode> connections = Pathfinding.Util.ListPool<MeshNode>.Claim();
-			List<uint> connectionCosts = Pathfinding.Util.ListPool<uint>.Claim();
+			List<MeshNode> connections = PathFinding.Util.ListPool<MeshNode>.Claim();
+			List<uint> connectionCosts = PathFinding.Util.ListPool<uint>.Claim();
 
 			Dictionary<Int2, int> nodeRefs = cachedInt2_int_dict;
 			nodeRefs.Clear();
@@ -1528,8 +1528,8 @@ namespace Pathfinding
 				node.connectionCosts = connectionCosts.ToArray();
 			}
 
-			Pathfinding.Util.ListPool<MeshNode>.Release(connections);
-			Pathfinding.Util.ListPool<uint>.Release(connectionCosts);
+			PathFinding.Util.ListPool<MeshNode>.Release(connections);
+			PathFinding.Util.ListPool<uint>.Release(connectionCosts);
 		}
 
 		/** Generate connections between the two tiles.

@@ -1,14 +1,14 @@
 using UnityEngine;
 using System.Collections.Generic;
-using Pathfinding;
+using PathFinding;
 
 // Empty namespace declaration to avoid errors in the free version
 // Which does not have any classes in the RVO namespace
-namespace Pathfinding.RVO { }
+namespace PathFinding.RVO { }
 
-namespace Pathfinding
+namespace PathFinding
 {
-	using Pathfinding.Util;
+	using PathFinding.Util;
 
 #if UNITY_5_0
 	/** Used in Unity 5.0 since the HelpURLAttribute was first added in Unity 5.1 */

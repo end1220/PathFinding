@@ -1,10 +1,10 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using Pathfinding;
-using Pathfinding.Voxels;
+using PathFinding;
+using PathFinding.Voxels;
 
-namespace Pathfinding.Voxels
+namespace PathFinding.Voxels
 {
 	/** Voxelizer for recast graphs.
 	 *
@@ -723,7 +723,7 @@ namespace Pathfinding.Voxels
 				src = voxelArea.tmpUShortArr = new ushort[voxelArea.compactSpanCount];
 			}
 
-			Pathfinding.Util.Memory.MemSet<ushort>(src, 0xffff, sizeof(ushort));
+			PathFinding.Util.Memory.MemSet<ushort>(src, 0xffff, sizeof(ushort));
 			//for (int i=0;i<src.Length;i++) {
 			//	src[i] = 0xffff;
 			//}
@@ -752,7 +752,7 @@ namespace Pathfinding.Voxels
 				src = voxelArea.tmpUShortArr = new ushort[voxelArea.compactSpanCount];
 			}
 
-			Pathfinding.Util.Memory.MemSet<ushort>(src, 0xffff, sizeof(ushort));
+			PathFinding.Util.Memory.MemSet<ushort>(src, 0xffff, sizeof(ushort));
 			//for (int i=0;i<src.Length;i++) {
 			//	src[i] = 0xffff;
 			//}

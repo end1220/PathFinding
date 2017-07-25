@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace Pathfinding {
+namespace PathFinding {
 	/** Axis Aligned Bounding Box Tree.
 	 * Holds a bounding box tree of RecastMeshObj components.\n
 	 * Note that it assumes that once an object has been added, it stays at the same

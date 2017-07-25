@@ -3,8 +3,8 @@
 using System;
 using UnityEngine;
 
-namespace Pathfinding {
-	using Pathfinding;
+namespace PathFinding {
+	using PathFinding;
 
 	/** Axis Aligned Bounding Box Tree.
 	 * Holds a bounding box tree of triangles.

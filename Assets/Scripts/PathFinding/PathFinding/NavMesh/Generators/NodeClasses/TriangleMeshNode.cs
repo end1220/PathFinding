@@ -1,7 +1,7 @@
 using UnityEngine;
 
 
-namespace Pathfinding
+namespace PathFinding
 {
 	public interface INavmeshHolder
 	{
@@ -85,7 +85,7 @@ namespace Pathfinding
 		{
 			INavmeshHolder g = GetNavmeshHolder(GraphIndex);
 
-			return Pathfinding.Polygon.ClosestPointOnTriangle((Vector3)g.GetVertex(v0), (Vector3)g.GetVertex(v1), (Vector3)g.GetVertex(v2), p);
+			return PathFinding.Polygon.ClosestPointOnTriangle((Vector3)g.GetVertex(v0), (Vector3)g.GetVertex(v1), (Vector3)g.GetVertex(v2), p);
 		}
 
 		public override Vector3 ClosestPointOnNodeXZ(Vector3 p)

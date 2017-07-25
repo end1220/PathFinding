@@ -1,8 +1,8 @@
 using UnityEngine;
-using Pathfinding;
-using Pathfinding.Voxels;
+using PathFinding;
+using PathFinding.Voxels;
 
-namespace Pathfinding.Voxels
+namespace PathFinding.Voxels
 {
 	public partial class Voxelize
 	{
@@ -199,7 +199,7 @@ namespace Pathfinding.Voxels
 			/** \todo Could be cached to avoid allocations */
 			int[] polys = new int[maxTris * nvp];
 
-			Pathfinding.Util.Memory.MemSet<int>(polys, 0xff, sizeof(int));
+			PathFinding.Util.Memory.MemSet<int>(polys, 0xff, sizeof(int));
 
 			int[] indices = new int[maxVertsPerCont];
 

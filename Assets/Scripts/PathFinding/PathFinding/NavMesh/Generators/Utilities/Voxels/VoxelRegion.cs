@@ -1,10 +1,10 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using Pathfinding;
-using Pathfinding.Voxels;
+using PathFinding;
+using PathFinding.Voxels;
 
-namespace Pathfinding.Voxels {
+namespace PathFinding.Voxels {
 	public partial class Voxelize {
 		public ushort[] ExpandRegions (int maxIterations, uint level, ushort[] srcReg, ushort[] srcDist, ushort[] dstReg, ushort[] dstDist, List<int> stack) {
 			//AstarProfiler.StartProfile("---Expand 1");
@@ -548,11 +548,11 @@ namespace Pathfinding.Voxels {
 			if (srcReg.Length < spanCount) {
 				srcReg = voxelArea.tmpUShortArr = new ushort[spanCount];
 			}
-			Pathfinding.Util.Memory.MemSet<ushort>(srcReg, 0, sizeof(ushort));
+			PathFinding.Util.Memory.MemSet<ushort>(srcReg, 0, sizeof(ushort));
 #else
 			int expandIterations = 8;
 
-			List<int> stack = Pathfinding.Util.ListPool<int>.Claim(1024);
+			List<int> stack = PathFinding.Util.ListPool<int>.Claim(1024);
 			ushort[] srcReg = new ushort[spanCount];
 			ushort[] srcDist = new ushort[spanCount];
 			ushort[] dstReg = new ushort[spanCount];
@@ -572,7 +572,7 @@ namespace Pathfinding.Voxels {
 #if ASTAR_RECAST_BFS
 			uint level = 0;
 
-			List<Int3> basins = Pathfinding.Util.ListPool<Int3>.Claim(100);
+			List<Int3> basins = PathFinding.Util.ListPool<Int3>.Claim(100);
 
 			// Find "basins"
 			for (int z = 0, pz = 0; z < wd; z += w, pz++) {
@@ -613,8 +613,8 @@ namespace Pathfinding.Voxels {
 			level = (uint)((level+1) & ~1);
 
 
-			List<Int3> st1 = Pathfinding.Util.ListPool<Int3>.Claim(300);
-			List<Int3> st2 = Pathfinding.Util.ListPool<Int3>.Claim(300);
+			List<Int3> st1 = PathFinding.Util.ListPool<Int3>.Claim(300);
+			List<Int3> st2 = PathFinding.Util.ListPool<Int3>.Claim(300);
 
 			// Some debug code
 			//bool visited = new bool[voxelArea.compactSpanCount];
@@ -730,9 +730,9 @@ namespace Pathfinding.Voxels {
 			}
 
 
-			Pathfinding.Util.ListPool<Int3>.Release(st1);
-			Pathfinding.Util.ListPool<Int3>.Release(st2);
-			Pathfinding.Util.ListPool<Int3>.Release(basins);
+			PathFinding.Util.ListPool<Int3>.Release(st1);
+			PathFinding.Util.ListPool<Int3>.Release(st2);
+			PathFinding.Util.ListPool<Int3>.Release(basins);
 			// Filter out small regions.
 			voxelArea.maxRegions = regionId;
 
@@ -814,7 +814,7 @@ namespace Pathfinding.Voxels {
 				voxelArea.compactSpans[i].reg = srcReg[i];
 			}
 
-			Pathfinding.Util.ListPool<int>.Release(stack);
+			PathFinding.Util.ListPool<int>.Release(stack);
 
 
 			// Some debug code not currently used

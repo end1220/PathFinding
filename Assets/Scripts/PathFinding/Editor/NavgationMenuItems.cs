@@ -27,11 +27,20 @@ namespace PathFinding
 		}
 
 
-		[MenuItem(@"Tools/Navgation/Nav Mesh")]
+		/*[MenuItem(@"Tools/Navgation/Nav Mesh")]
 		public static void ShowWindowNavMeshEditor()
 		{
 			Rect wr = new Rect(100, 100, 400, 300);
 			var window = (NavMeshEditor)EditorWindow.GetWindowWithRect(typeof(NavMeshEditor), wr, true, "Nav Mesh Editor");
+			window.Show();
+		}*/
+
+
+		[MenuItem(@"Tools/Navgation/Nav Mesh")]
+		public static void ShowWindowNavMeshEditor()
+		{
+			Rect wr = new Rect(100, 100, 400, 300);
+			var window = (RecastGraphEditor)EditorWindow.GetWindowWithRect(typeof(RecastGraphEditor), wr, true, "Recast Nav Mesh");
 			window.Show();
 		}
 

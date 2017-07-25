@@ -14,7 +14,7 @@ using System.Text;
 //using MarkerMetro.Unity.WinLegacy.IO;
 #endif
 
-namespace Pathfinding {
+namespace PathFinding {
 	public class ObjImporter {
 		private struct meshStruct {
 			public Vector3[] vertices;

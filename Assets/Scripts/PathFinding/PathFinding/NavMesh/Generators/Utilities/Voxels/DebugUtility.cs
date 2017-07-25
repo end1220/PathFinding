@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-namespace Pathfinding {
+namespace PathFinding {
 	/**
 	 * Helper for drawing debug information for the recast graph.
 	 * \astarpro

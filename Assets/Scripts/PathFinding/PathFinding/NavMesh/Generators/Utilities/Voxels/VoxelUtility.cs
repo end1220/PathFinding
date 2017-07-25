@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-namespace Pathfinding.Voxels
+namespace PathFinding.Voxels
 {
 	/** \astarpro */
 	public class Utility

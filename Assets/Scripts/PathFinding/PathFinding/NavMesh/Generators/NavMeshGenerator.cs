@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 
-namespace Pathfinding
+namespace PathFinding
 {
 	public interface INavmesh
 	{
@@ -460,8 +460,8 @@ namespace Pathfinding
 			}
 
 
-			List<Vector3> left = Pathfinding.Util.ListPool<Vector3>.Claim();//new List<Vector3>(1);
-			List<Vector3> right = Pathfinding.Util.ListPool<Vector3>.Claim();//new List<Vector3>(1);
+			List<Vector3> left = PathFinding.Util.ListPool<Vector3>.Claim();//new List<Vector3>(1);
+			List<Vector3> right = PathFinding.Util.ListPool<Vector3>.Claim();//new List<Vector3>(1);
 
 			int counter = 0;
 			while (true)
@@ -470,8 +470,8 @@ namespace Pathfinding
 				if (counter > 2000)
 				{
 					Debug.LogError("Linecast was stuck in infinite loop. Breaking.");
-					Pathfinding.Util.ListPool<Vector3>.Release(left);
-					Pathfinding.Util.ListPool<Vector3>.Release(right);
+					PathFinding.Util.ListPool<Vector3>.Release(left);
+					PathFinding.Util.ListPool<Vector3>.Release(right);
 					return true;
 				}
 
@@ -481,8 +481,8 @@ namespace Pathfinding
 
 				if (node.ContainsPoint(end))
 				{
-					Pathfinding.Util.ListPool<Vector3>.Release(left);
-					Pathfinding.Util.ListPool<Vector3>.Release(right);
+					PathFinding.Util.ListPool<Vector3>.Release(left);
+					PathFinding.Util.ListPool<Vector3>.Release(right);
 					return false;
 				}
 
@@ -560,8 +560,8 @@ namespace Pathfinding
 								hit.tangent = b - a;
 								hit.tangentOrigin = a;
 
-								Pathfinding.Util.ListPool<Vector3>.Release(left);
-								Pathfinding.Util.ListPool<Vector3>.Release(right);
+								PathFinding.Util.ListPool<Vector3>.Release(left);
+								PathFinding.Util.ListPool<Vector3>.Release(right);
 								return true;
 							}
 						}
@@ -570,8 +570,8 @@ namespace Pathfinding
 					//Ok, this is wrong...
 					Debug.LogWarning("Linecast failing because point not inside node, and line does not hit any edges of it");
 
-					Pathfinding.Util.ListPool<Vector3>.Release(left);
-					Pathfinding.Util.ListPool<Vector3>.Release(right);
+					PathFinding.Util.ListPool<Vector3>.Release(left);
+					PathFinding.Util.ListPool<Vector3>.Release(right);
 					return false;
 				}
 

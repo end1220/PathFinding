@@ -6,7 +6,7 @@ using Pathfinding;
 using Pathfinding.ClipperLib;
 using Pathfinding.Poly2Tri;
 
-namespace Pathfinding.Util
+namespace PathFinding.Util
 {
 	public class TileHandler
 	{
@@ -443,7 +443,7 @@ namespace Pathfinding.Util
 			}
 		}
 
-		Vector3 Point2D2V3(Poly2Tri.TriangulationPoint p)
+		Vector3 Point2D2V3(Pathfinding.Poly2Tri.TriangulationPoint p)
 		{
 			return new Vector3((float)p.X, 0, (float)p.Y) * Int3.PrecisionFactor;
 		}

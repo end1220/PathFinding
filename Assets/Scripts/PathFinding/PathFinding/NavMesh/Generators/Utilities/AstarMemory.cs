@@ -1,6 +1,6 @@
 using System;
 
-namespace Pathfinding.Util {
+namespace PathFinding.Util {
 	public static class Memory {
 		/** Sets all values in an array to a specific value faster than a loop.
 		 * Only faster for large arrays. Slower for small ones.

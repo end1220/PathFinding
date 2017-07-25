@@ -1,10 +1,10 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using Pathfinding;
-using Pathfinding.Voxels;
+using PathFinding;
+using PathFinding.Voxels;
 
-namespace Pathfinding.Voxels {
+namespace PathFinding.Voxels {
 	public partial class Voxelize {
 		public void BuildContours (float maxError, int maxEdgeLength, VoxelContourSet cset, int buildFlags) {
 
@@ -65,8 +65,8 @@ namespace Pathfinding.Voxels {
 				}
 			}
 
-			List<int> verts = Pathfinding.Util.ListPool<int>.Claim(256);//new List<int> (256);
-			List<int> simplified = Pathfinding.Util.ListPool<int>.Claim(64);//new List<int> (64);
+			List<int> verts = PathFinding.Util.ListPool<int>.Claim(256);//new List<int> (256);
+			List<int> simplified = PathFinding.Util.ListPool<int>.Claim(64);//new List<int> (64);
 
 			for (int z = 0; z < wd; z += voxelArea.width) {
 				for (int x = 0; x < voxelArea.width; x++) {
@@ -145,8 +145,8 @@ namespace Pathfinding.Voxels {
 				}
 			}
 
-			Pathfinding.Util.ListPool<int>.Release(verts);
-			Pathfinding.Util.ListPool<int>.Release(simplified);
+			PathFinding.Util.ListPool<int>.Release(verts);
+			PathFinding.Util.ListPool<int>.Release(simplified);
 
 
 			// Check and merge droppings.
@@ -298,7 +298,7 @@ namespace Pathfinding.Voxels {
 				if (intArrCache[i].Length >= minCapacity) {
 					int[] arr = intArrCache[i];
 					intArrCache.RemoveAt(i);
-					if (zero) Pathfinding.Util.Memory.MemSet<int>(arr, 0, sizeof(int));
+					if (zero) PathFinding.Util.Memory.MemSet<int>(arr, 0, sizeof(int));
 					return arr;
 				}
 			}

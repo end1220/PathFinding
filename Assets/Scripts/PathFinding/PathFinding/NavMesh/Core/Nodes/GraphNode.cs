@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 
-namespace Pathfinding
+namespace PathFinding
 {
 	public delegate void GraphNodeDelegate(GraphNode node);
 	public delegate bool GraphNodeDelegateCancelable(GraphNode node);

@@ -1,13 +1,13 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using Pathfinding;
-using Pathfinding.Voxels;
+using PathFinding;
+using PathFinding.Voxels;
 #if NETFX_CORE && !UNITY_EDITOR
 //using MarkerMetro.Unity.WinLegacy.IO;
 #endif
 
-namespace Pathfinding.Voxels {
+namespace PathFinding.Voxels {
 	/** \astarpro */
 	public class VoxelArea {
 		public const uint MaxHeight = 65536;

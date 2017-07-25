@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace Pathfinding {
+namespace PathFinding {
 	/** Explicit mesh object for recast graphs.
 	 * Adding this component to an object will make sure it is included in any recast graphs.
 	 * It will be included even though the Rasterize Meshes toggle is set to false.

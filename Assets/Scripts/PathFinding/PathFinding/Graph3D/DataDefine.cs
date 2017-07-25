@@ -3,7 +3,7 @@ using System;
 using UnityEngine;
 
 
-namespace PathFinding.NavGraph
+namespace PathFinding.Graph3d
 {
 
 	public class Cell

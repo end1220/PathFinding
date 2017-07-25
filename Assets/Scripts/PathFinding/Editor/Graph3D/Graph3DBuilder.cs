@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using PathFinding.NavGraph;
+using PathFinding.Graph3d;
 
 
 namespace PathFinding
