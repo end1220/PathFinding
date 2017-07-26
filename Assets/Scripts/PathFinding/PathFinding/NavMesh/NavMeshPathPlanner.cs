@@ -25,14 +25,8 @@ namespace PathFinding
 
 		protected override int CalCostH(AStarNode node)
 		{
-			int dx = Math.Abs(targetNode.x - ((NavMeshNode)node).x);
-			int dy = Math.Abs(targetNode.y - ((NavMeshNode)node).y);
-			int dz = Math.Abs(targetNode.z - ((NavMeshNode)node).z);
-			dx *= 10;
-			dy *= 10;
-			dz *= 10;
-			int distxz = (int)(dx > dz ? 1.4f * dz + (dx - dz) : 1.4f * dx + (dz - dx));
-			int dist = distxz + dy;
+			NavMeshNode calNode = node as NavMeshNode;
+			int dist = (calNode.position - targetNode.position).costMagnitude;
 			return dist;
 		}
 
