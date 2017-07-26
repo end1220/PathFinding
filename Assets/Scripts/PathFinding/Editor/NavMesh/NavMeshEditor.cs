@@ -32,8 +32,10 @@ namespace PathFinding
 
 		public Matrix4x4 inverseMatrix = Matrix4x4.identity;
 
-		public TriangleNode[] nodes;
+		public NavMeshNode[] nodes;
 
+
+		readonly string drawObjectName = "_NavGraphData_Gizmo";
 
 
 
@@ -45,12 +47,15 @@ namespace PathFinding
 
 		void OnGUI()
 		{
-			
+			if (GUILayout.Button("Generate", GUILayout.Width(100), GUILayout.Height(60)))
+				GenerateNav();
 		}
 
 
 		void OnDestroy()
 		{
+			ClearDrawGrid();
+
 			UnityEditor.SceneManagement.EditorSceneManager.SaveOpenScenes();
 		}
 
@@ -61,6 +66,7 @@ namespace PathFinding
 			{
 				ImportMesh();
 				ScanInternal();
+				DrawGrid();
 			}
 			catch (System.Exception e)
 			{
@@ -118,7 +124,7 @@ namespace PathFinding
 			{
 				originalVertices = vectorVertices;
 				vertices = new Int3[0];
-				nodes = new TriangleNode[0];
+				nodes = new NavMeshNode[0];
 				return;
 			}
 
@@ -167,12 +173,12 @@ namespace PathFinding
 			UnityEngine.Profiling.Profiler.EndSample();
 			UnityEngine.Profiling.Profiler.BeginSample("Constructing Nodes");
 
-			nodes = new TriangleNode[triangles.Length / 3];
+			nodes = new NavMeshNode[triangles.Length / 3];
 
 			for (int i = 0; i < nodes.Length; i++)
 			{
-				nodes[i] = new TriangleNode(i);
-				TriangleNode node = nodes[i];
+				nodes[i] = new NavMeshNode(i);
+				NavMeshNode node = nodes[i];
 
 				node.Penalty = initialPenalty;
 				node.Walkable = true;
@@ -201,7 +207,7 @@ namespace PathFinding
 
 			UnityEngine.Profiling.Profiler.EndSample();
 
-			var sides = new Dictionary<Int2, TriangleNode>();
+			var sides = new Dictionary<Int2, NavMeshNode>();
 
 			for (int i = 0, j = 0; i < triangles.Length; j += 1, i += 3)
 			{
@@ -212,7 +218,7 @@ namespace PathFinding
 
 			UnityEngine.Profiling.Profiler.BeginSample("Connecting Nodes");
 
-			var connections = new List<TriangleNode>();
+			var connections = new List<NavMeshNode>();
 			var connectionCosts = new List<uint>();
 
 			for (int i = 0, j = 0; i < triangles.Length; j += 1, i += 3)
@@ -220,11 +226,11 @@ namespace PathFinding
 				connections.Clear();
 				connectionCosts.Clear();
 
-				TriangleNode node = nodes[j];
+				NavMeshNode node = nodes[j];
 
 				for (int q = 0; q < 3; q++)
 				{
-					TriangleNode other;
+					NavMeshNode other;
 					if (sides.TryGetValue(new Int2(triangles[i + ((q + 1) % 3)], triangles[i + q]), out other))
 					{
 						connections.Add(other);
@@ -243,27 +249,37 @@ namespace PathFinding
 
 			UnityEngine.Profiling.Profiler.EndSample();
 
-#if ASTARDEBUG
-			for (int i = 0; i < nodes.Length; i++) {
-				TriangleNode node = nodes[i] as TriangleNode;
-
-				float a1 = VectorMath.SignedTriangleAreaTimes2XZ((Vector3)vertices[node.v0], (Vector3)vertices[node.v1], (Vector3)vertices[node.v2]);
-
-				long a2 = VectorMath.SignedTriangleAreaTimes2XZ(vertices[node.v0], vertices[node.v1], vertices[node.v2]);
-				if (a1 * a2 < 0) Debug.LogError(a1+ " " + a2);
+		}
 
 
-				if (VectorMath.IsClockwiseXZ(vertices[node.v0], vertices[node.v1], vertices[node.v2])) {
-					Debug.DrawLine((Vector3)vertices[node.v0], (Vector3)vertices[node.v1], Color.green);
-					Debug.DrawLine((Vector3)vertices[node.v1], (Vector3)vertices[node.v2], Color.green);
-					Debug.DrawLine((Vector3)vertices[node.v2], (Vector3)vertices[node.v0], Color.green);
-				} else {
-					Debug.DrawLine((Vector3)vertices[node.v0], (Vector3)vertices[node.v1], Color.red);
-					Debug.DrawLine((Vector3)vertices[node.v1], (Vector3)vertices[node.v2], Color.red);
-					Debug.DrawLine((Vector3)vertices[node.v2], (Vector3)vertices[node.v0], Color.red);
-				}
+		void DrawGrid()
+		{
+			var go = GameObject.Find(drawObjectName);
+			if (go == null)
+			{
+				go = new GameObject(drawObjectName);
+				go.AddComponent<NavMeshGizmo>();
 			}
-#endif
+			try
+			{
+				NavMeshGizmo gizmo = go.GetComponent<NavMeshGizmo>();
+				gizmo.nodes = nodes;
+			}
+			catch (System.Exception e)
+			{
+				Debug.LogError(e.ToString());
+			}
+
+		}
+
+
+		void ClearDrawGrid()
+		{
+			var go = GameObject.Find(drawObjectName);
+			if (go != null)
+			{
+				GameObject.DestroyImmediate(go);
+			}
 		}
 
 

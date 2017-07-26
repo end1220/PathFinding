@@ -4,7 +4,7 @@ using AStar;
 
 namespace PathFinding
 {
-	public class TriangleNode : AStarNode
+	public class NavMeshNode : AStarNode
 	{
 		public Int3 v0 = Int3.zero;
 
@@ -18,12 +18,12 @@ namespace PathFinding
 
 		public Int3 position;
 
-		public TriangleNode[] connections;
+		public NavMeshNode[] connections;
 
 		public uint[] connectionCosts;
 
 
-		public TriangleNode(int id) :
+		public NavMeshNode(int id) :
 			base(id)
 		{
 		}
