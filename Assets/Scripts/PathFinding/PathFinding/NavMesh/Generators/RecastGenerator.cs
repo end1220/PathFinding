@@ -1412,7 +1412,7 @@ namespace PathFinding
 			//The tile is not added to any graphs yet, but to get the position querys from the nodes
 			//to work correctly (not throw exceptions because the tile is not calculated) we fake a new graph
 			//and direct the position queries directly to the tile
-			int graphIndex = 0;
+			int graphIndex = 9;// TriangleMeshNode.GetNavmeshHolderCount();
 
 			TriangleMeshNode.SetNavmeshHolder(graphIndex, tile);
 
@@ -1817,7 +1817,7 @@ namespace PathFinding
 			//The tile is not added to any graphs yet, but to get the position querys from the nodes
 			//to work correctly (not throw exceptions because the tile is not calculated) we fake a new graph
 			//and direct the position queries directly to the tile
-			int graphIndex = 0;
+			int graphIndex = 9;// TriangleMeshNode.GetNavmeshHolderCount();
 
 			TriangleMeshNode.SetNavmeshHolder(graphIndex, tile);
 

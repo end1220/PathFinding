@@ -30,6 +30,11 @@ namespace PathFinding
 			return _navmeshHolders[(int)graphIndex];
 		}
 
+		public static int GetNavmeshHolderCount()
+		{
+			return _navmeshHolders.Length;
+		}
+
 		/** Sets the internal navmesh holder for a given graph index.
 		 * \warning Internal method
 		 */
@@ -42,6 +47,8 @@ namespace PathFinding
 				_navmeshHolders = gg;
 			}
 			_navmeshHolders[graphIndex] = graph;
+			if (graph == null)
+				graph = graph;
 		}
 
 		/** Set the position of this node to the average of its 3 vertices */
@@ -67,12 +74,20 @@ namespace PathFinding
 		 */
 		public int GetVertexArrayIndex(int i)
 		{
-			return GetNavmeshHolder(GraphIndex).GetVertexArrayIndex(i == 0 ? v0 : (i == 1 ? v1 : v2));
+			var holder = GetNavmeshHolder(GraphIndex);
+			if (holder == null)
+				holder = null;
+			return holder.GetVertexArrayIndex(i == 0 ? v0 : (i == 1 ? v1 : v2));
 		}
 
 		public override Int3 GetVertex(int i)
 		{
-			return GetNavmeshHolder(GraphIndex).GetVertex(GetVertexIndex(i));
+			var holder = GetNavmeshHolder(GraphIndex);
+			if (holder == null)
+			{
+				holder = GetNavmeshHolder(GraphIndex);
+			}
+			return holder.GetVertex(GetVertexIndex(i));
 		}
 
 		public override int GetVertexCount()
