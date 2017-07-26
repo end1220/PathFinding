@@ -1,4 +1,5 @@
 ﻿
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
@@ -9,74 +10,47 @@ namespace PathFinding
 
 	public class NavMeshEditor : EditorWindow
 	{
-		PathFinding.NavMeshBuilder builder = new PathFinding.NavMeshBuilder();
+		public Vector3 offset = Vector3.zero;
 
-		GameObject worldBoxObj;
-		float gridSize;
-		float agentHeight = 2;
-		float tan_slope;
+		public Vector3 rotation = Vector3.zero;
 
-		string str_gridSize = "0.5";
-		string str_roleHeight = "2";
-		string str_slope = "45";
+		public float scale = 1;
 
-		string saveFilePath = "";
-		readonly string drawObjectName = "_NavMeshData_Gizmo";
+		public int initialPenalty = 0;
+
+
+
+		private Mesh sourceMesh;
+
+		private int[] triangles;
+
+		Vector3[] originalVertices;
+
+		Int3[] _vertices;
+
+		public Matrix4x4 matrix = Matrix4x4.identity;
+
+		public Matrix4x4 inverseMatrix = Matrix4x4.identity;
+
+		public TriangleNode[] nodes;
+
 
 
 
 		void OnEnable()
 		{
-			string scenePath = EditorUtils.GetCurrentScenePath();
-			saveFilePath = scenePath.Substring(0, scenePath.IndexOf(".unity")) + "_navmesh.asset";
-
-			if (worldBoxObj == null)
-				worldBoxObj = GameObject.Find("worldbox");
+			
 		}
 
 
 		void OnGUI()
 		{
-			float spaceSize = 3f;
-
-			GUILayout.Label("This tool generates 3d graph from current scene.", EditorStyles.largeLabel);
-			GUILayout.Space(spaceSize);
-
-			GUILayout.Label("world box：", EditorStyles.boldLabel);
-			worldBoxObj = EditorGUILayout.ObjectField(worldBoxObj, typeof(GameObject), true) as GameObject;
-			GUILayout.Space(spaceSize);
-
-			GUILayout.Label("Grid size(0.5-1.0)：", EditorStyles.boldLabel);
-			str_gridSize = GUILayout.TextField(str_gridSize);
-			GUILayout.Space(spaceSize);
-
-			/*GUILayout.Label("Role height(m)：", EditorStyles.boldLabel);
-			str_roleHeight = GUILayout.TextField(str_roleHeight);
-			GUILayout.Space(spaceSize);*/
-
-			GUILayout.Label("Max slope(20°-80°)：", EditorStyles.boldLabel);
-			str_slope = GUILayout.TextField(str_slope);
-			GUILayout.Space(spaceSize);
-
-			if (GUILayout.Button("Generate"))
-				GenerateNav();
-			GUILayout.Space(spaceSize);
-
-			GUILayout.Label("Output file：", EditorStyles.boldLabel);
-			saveFilePath = GUILayout.TextField(saveFilePath);
-			GUILayout.Space(spaceSize);
-
-			if (GUILayout.Button("Save"))
-				SaveToFile();
-			GUILayout.Space(spaceSize);
-
+			
 		}
 
 
 		void OnDestroy()
 		{
-			ClearDrawGrid();
-
 			UnityEditor.SceneManagement.EditorSceneManager.SaveOpenScenes();
 		}
 
@@ -85,34 +59,8 @@ namespace PathFinding
 		{
 			try
 			{
-				if (worldBoxObj == null)
-				{
-					UnityEngine.Debug.LogError("There is no world box object in the scene ? ? ?");
-					return;
-				}
-				var render = worldBoxObj.GetComponent<MeshRenderer>();
-				if (render == null)
-				{
-					UnityEngine.Debug.LogError("World box has no MeshRenderer");
-				}
-
-				// parse settings
-				gridSize = float.Parse(str_gridSize);
-				agentHeight = float.Parse(str_roleHeight);
-				float slope = int.Parse(str_slope);
-				if (slope < 20 || slope > 80)
-					UnityEngine.Debug.LogError("Bad slope! XD");
-				tan_slope = Mathf.Tan(slope / 180.0f * Mathf.PI);
-
-				// build
-				builder.Stetup(worldBoxObj, gridSize, agentHeight, tan_slope);
-				builder.Build();
-
-				// gizmo
-				DrawGrid();
-
-				Selection.SetActiveObjectWithContext(GameObject.Find(drawObjectName), null);
-
+				ImportMesh();
+				ScanInternal();
 			}
 			catch (System.Exception e)
 			{
@@ -122,62 +70,202 @@ namespace PathFinding
 		}
 
 
-		void DrawGrid()
+		private void ImportMesh()
 		{
-			var go = GameObject.Find(drawObjectName);
-			if (go == null)
-			{
-				go = new GameObject(drawObjectName);
-				go.AddComponent<NavMeshGizmo>();
-			}
-			try
-			{
-				NavMeshGizmo gizmo = go.GetComponent<NavMeshGizmo>();
-				gizmo.cfg = builder.cfg;
-			}
-			catch (System.Exception e)
-			{
-				UnityEngine.Debug.LogError(e.ToString());
-			}
+			UnityEngine.AI.NavMeshTriangulation triangulatedNavMesh = UnityEngine.AI.NavMesh.CalculateTriangulation();
 
+			Mesh mesh = new Mesh();
+			mesh.name = "ExportedNavMesh";
+			mesh.vertices = triangulatedNavMesh.vertices;
+			mesh.triangles = triangulatedNavMesh.indices;
+			sourceMesh = mesh;
 		}
 
 
-		void ClearDrawGrid()
+		public void ScanInternal()
 		{
-			var go = GameObject.Find(drawObjectName);
-			if (go != null)
+			if (sourceMesh == null)
 			{
-				GameObject.DestroyImmediate(go);
-			}
-		}
-
-
-		void SaveToFile()
-		{
-			if (builder.navData == null)
-			{
-				UnityEngine.Debug.LogError("You should click generate first...");
 				return;
 			}
 
-			builder.navData.SaveBytes();
-			var existingAsset = AssetDatabase.LoadAssetAtPath<NavMeshData>(saveFilePath);
-			if (existingAsset == null)
-			{
-				AssetDatabase.CreateAsset(builder.navData, saveFilePath);
-				AssetDatabase.Refresh();
-				existingAsset = builder.navData;
-			}
-			else
-			{
-				EditorUtility.CopySerialized(builder.navData, existingAsset);
-			}
+			GenerateMatrix();
 
-			EditorUtility.SetDirty(builder.navData);
+			Vector3[] vectorVertices = sourceMesh.vertices;
 
-			UnityEngine.Debug.Log("Saved  : " + saveFilePath);
+			triangles = sourceMesh.triangles;
+
+			GenerateNodes(vectorVertices, triangles, out originalVertices, out _vertices);
 		}
+
+		public void SetMatrix(Matrix4x4 m)
+		{
+			matrix = m;
+			inverseMatrix = m.inverse;
+		}
+
+		public void GenerateMatrix()
+		{
+			SetMatrix(Matrix4x4.TRS(offset, Quaternion.Euler(rotation), new Vector3(scale, scale, scale)));
+		}
+
+
+		void GenerateNodes(Vector3[] vectorVertices, int[] triangles, out Vector3[] originalVertices, out Int3[] vertices)
+		{
+			UnityEngine.Profiling.Profiler.BeginSample("Init");
+
+			if (vectorVertices.Length == 0 || triangles.Length == 0)
+			{
+				originalVertices = vectorVertices;
+				vertices = new Int3[0];
+				nodes = new TriangleNode[0];
+				return;
+			}
+
+			vertices = new Int3[vectorVertices.Length];
+
+			int c = 0;
+
+			for (int i = 0; i < vertices.Length; i++)
+			{
+				vertices[i] = (Int3)matrix.MultiplyPoint3x4(vectorVertices[i]);
+			}
+
+			var hashedVerts = new Dictionary<Int3, int>();
+
+			var newVertices = new int[vertices.Length];
+
+			UnityEngine.Profiling.Profiler.EndSample();
+			UnityEngine.Profiling.Profiler.BeginSample("Hashing");
+
+			for (int i = 0; i < vertices.Length; i++)
+			{
+				if (!hashedVerts.ContainsKey(vertices[i]))
+				{
+					newVertices[c] = i;
+					hashedVerts.Add(vertices[i], c);
+					c++;
+				}
+			}
+
+			for (int x = 0; x < triangles.Length; x++)
+			{
+				Int3 vertex = vertices[triangles[x]];
+
+				triangles[x] = hashedVerts[vertex];
+			}
+
+			Int3[] totalIntVertices = vertices;
+			vertices = new Int3[c];
+			originalVertices = new Vector3[c];
+			for (int i = 0; i < c; i++)
+			{
+				vertices[i] = totalIntVertices[newVertices[i]];
+				originalVertices[i] = vectorVertices[newVertices[i]];
+			}
+
+			UnityEngine.Profiling.Profiler.EndSample();
+			UnityEngine.Profiling.Profiler.BeginSample("Constructing Nodes");
+
+			nodes = new TriangleNode[triangles.Length / 3];
+
+			for (int i = 0; i < nodes.Length; i++)
+			{
+				nodes[i] = new TriangleNode(i);
+				TriangleNode node = nodes[i];
+
+				node.Penalty = initialPenalty;
+				node.Walkable = true;
+
+				node.v0 = vertices[triangles[i * 3]];
+				node.v1 = vertices[triangles[i * 3 + 1]];
+				node.v2 = vertices[triangles[i * 3 + 2]];
+
+				if (!VectorMath.IsClockwiseXZ(node.v0, node.v1, node.v2))
+				{
+					Int3 tmp = node.v0;
+					node.v0 = node.v2;
+					node.v2 = tmp;
+				}
+
+				if (VectorMath.IsColinearXZ(node.v0, node.v1, node.v2))
+				{
+					Debug.DrawLine((Vector3)node.v0, (Vector3)node.v1, Color.red);
+					Debug.DrawLine((Vector3)node.v1, (Vector3)node.v2, Color.red);
+					Debug.DrawLine((Vector3)node.v2, (Vector3)node.v0, Color.red);
+				}
+
+				// Make sure position is correctly set
+				node.UpdatePositionFromVertices();
+			}
+
+			UnityEngine.Profiling.Profiler.EndSample();
+
+			var sides = new Dictionary<Int2, TriangleNode>();
+
+			for (int i = 0, j = 0; i < triangles.Length; j += 1, i += 3)
+			{
+				sides[new Int2(triangles[i + 0], triangles[i + 1])] = nodes[j];
+				sides[new Int2(triangles[i + 1], triangles[i + 2])] = nodes[j];
+				sides[new Int2(triangles[i + 2], triangles[i + 0])] = nodes[j];
+			}
+
+			UnityEngine.Profiling.Profiler.BeginSample("Connecting Nodes");
+
+			var connections = new List<TriangleNode>();
+			var connectionCosts = new List<uint>();
+
+			for (int i = 0, j = 0; i < triangles.Length; j += 1, i += 3)
+			{
+				connections.Clear();
+				connectionCosts.Clear();
+
+				TriangleNode node = nodes[j];
+
+				for (int q = 0; q < 3; q++)
+				{
+					TriangleNode other;
+					if (sides.TryGetValue(new Int2(triangles[i + ((q + 1) % 3)], triangles[i + q]), out other))
+					{
+						connections.Add(other);
+						connectionCosts.Add((uint)(node.position - other.position).costMagnitude);
+					}
+				}
+
+				node.connections = connections.ToArray();
+				node.connectionCosts = connectionCosts.ToArray();
+			}
+
+			UnityEngine.Profiling.Profiler.EndSample();
+			UnityEngine.Profiling.Profiler.BeginSample("Rebuilding BBTree");
+
+			//RebuildBBTree(this);
+
+			UnityEngine.Profiling.Profiler.EndSample();
+
+#if ASTARDEBUG
+			for (int i = 0; i < nodes.Length; i++) {
+				TriangleNode node = nodes[i] as TriangleNode;
+
+				float a1 = VectorMath.SignedTriangleAreaTimes2XZ((Vector3)vertices[node.v0], (Vector3)vertices[node.v1], (Vector3)vertices[node.v2]);
+
+				long a2 = VectorMath.SignedTriangleAreaTimes2XZ(vertices[node.v0], vertices[node.v1], vertices[node.v2]);
+				if (a1 * a2 < 0) Debug.LogError(a1+ " " + a2);
+
+
+				if (VectorMath.IsClockwiseXZ(vertices[node.v0], vertices[node.v1], vertices[node.v2])) {
+					Debug.DrawLine((Vector3)vertices[node.v0], (Vector3)vertices[node.v1], Color.green);
+					Debug.DrawLine((Vector3)vertices[node.v1], (Vector3)vertices[node.v2], Color.green);
+					Debug.DrawLine((Vector3)vertices[node.v2], (Vector3)vertices[node.v0], Color.green);
+				} else {
+					Debug.DrawLine((Vector3)vertices[node.v0], (Vector3)vertices[node.v1], Color.red);
+					Debug.DrawLine((Vector3)vertices[node.v1], (Vector3)vertices[node.v2], Color.red);
+					Debug.DrawLine((Vector3)vertices[node.v2], (Vector3)vertices[node.v0], Color.red);
+				}
+			}
+#endif
+		}
+
 
 	}
 
