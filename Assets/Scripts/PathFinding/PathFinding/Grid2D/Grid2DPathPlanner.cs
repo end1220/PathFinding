@@ -7,21 +7,21 @@ using AStar;
 namespace PathFinding
 {
 	
-	public class GridPathPlanner : AStarPathPlanner
+	public class Grid2DPathPlanner : AStarPathPlanner
 	{
 		private int startX;
 		private int startY;
 		private int endX;
 		private int endY;
-		private GridAStarNode startNode;
-		private GridAStarNode targetNode;
+		private Grid2DNode startNode;
+		private Grid2DNode targetNode;
 
 		private List<Int2> resultCache = new List<Int2>();
 
 
 		public bool FindPath(FixVector3 from, FixVector3 to, ref List<FixVector3> result)
 		{
-			GridAStarMap gridMap = this.map as GridAStarMap;
+			Grid2DMap gridMap = this.map as Grid2DMap;
 
 			Int2 start = gridMap.FixVector3ToInt2(from);
 			Int2 end = gridMap.FixVector3ToInt2(to);
@@ -48,32 +48,32 @@ namespace PathFinding
 
 		public List<Int2> FindPath(int startX, int startY, int endX, int endY)
 		{
-			GridAStarNode endNode = _findPath(startX, startY, endX, endY);
+			Grid2DNode endNode = _findPath(startX, startY, endX, endY);
 
 			// build path points.
 			resultCache.Clear();
-			GridAStarNode pathNode = endNode;
+			Grid2DNode pathNode = endNode;
 			while (pathNode != null)
 			{
 				resultCache.Add(new Int2(pathNode.x, pathNode.y));
-				pathNode = pathNode.prev as GridAStarNode;
+				pathNode = pathNode.prev as Grid2DNode;
 			}
 			
 			return resultCache;
 		}
 
-		private GridAStarNode _findPath(int startX, int startY, int endX, int endY)
+		private Grid2DNode _findPath(int startX, int startY, int endX, int endY)
 		{
 			this.startX = endX;
 			this.startY = endY;
 			this.endX = startX;
 			this.endY = startY;
 
-			GridAStarMap gridMap = (GridAStarMap)map;
+			Grid2DMap gridMap = (Grid2DMap)map;
 			startNode = gridMap.GetNodeByIndex(this.startX, this.startY);
 			targetNode = gridMap.GetNodeByIndex(this.endX, this.endY);
 
-			GridAStarNode endNode = DoAStar(startNode) as GridAStarNode;
+			Grid2DNode endNode = DoAStar(startNode) as Grid2DNode;
 
 			return endNode;
 		}
@@ -85,16 +85,16 @@ namespace PathFinding
 
 		protected override int CalCostG(AStarNode prevNode, AStarNode currentNode)
 		{
-			int dx = Math.Abs(((GridAStarNode)prevNode).x - ((GridAStarNode)currentNode).x);
-			int dy = Math.Abs(((GridAStarNode)prevNode).y - ((GridAStarNode)currentNode).y);
+			int dx = Math.Abs(((Grid2DNode)prevNode).x - ((Grid2DNode)currentNode).x);
+			int dy = Math.Abs(((Grid2DNode)prevNode).y - ((Grid2DNode)currentNode).y);
 			int dist = dx > dy ? 14 * dy + 10 * (dx - dy) : 14 * dx + 10 * (dy - dx);
 			return prevNode.g + dist;
 		}
 
 		protected override int CalCostH(AStarNode node)
 		{
-			int dx = Math.Abs(endX - ((GridAStarNode)node).x);
-			int dy = Math.Abs(endY - ((GridAStarNode)node).y);
+			int dx = Math.Abs(endX - ((Grid2DNode)node).x);
+			int dy = Math.Abs(endY - ((Grid2DNode)node).y);
 			int dist = dx > dy ? 14 * dy + 10 * (dx - dy) : 14 * dx + 10 * (dy - dx);
 			return dist;
 		}

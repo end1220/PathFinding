@@ -7,7 +7,7 @@ using Graph;
 
 namespace PathFinding
 {
-	public class GraphAStarMap : AStarMap
+	public class Graph2DMap : AStarMap
 	{
 		public override int GetNeighbourNodeCount(AStarNode node)
 		{

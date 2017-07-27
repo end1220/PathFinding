@@ -5,13 +5,13 @@ using AStar;
 
 namespace PathFinding
 {
-	public class GridAStarMap : AStarMap
+	public class Grid2DMap : AStarMap
 	{
 		private const int NEIGHBOUR_COUNT = 8;
 		private readonly int[] xOffset = { -1, -1, -1, 0, 1, 1, 1, 0 };
 		private readonly int[] yOffset = { -1, 0, 1, 1, 1, 0, -1, -1 };
 
-		private GridAStarNode[,] nodes;
+		private Grid2DNode[,] nodes;
 		private int width;
 		private int height;
 
@@ -27,13 +27,13 @@ namespace PathFinding
 			this.width = width;
 			this.height = height;
 
-			nodes = new GridAStarNode[width, height];
+			nodes = new Grid2DNode[width, height];
 
 			for (int x = 0; x < width; ++x)
 			{
 				for (int y = 0; y < height; ++y)
 				{
-					GridAStarNode node = new GridAStarNode(nodeIdCounter++);
+					Grid2DNode node = new Grid2DNode(nodeIdCounter++);
 					nodes[x, y] = node;
 					node.x = (ushort)x;
 					node.y = (ushort)y;
@@ -49,13 +49,13 @@ namespace PathFinding
 			this.width = width;
 			this.height = height;
 
-			nodes = new GridAStarNode[width, height];
+			nodes = new Grid2DNode[width, height];
 
 			for (int x = 0; x < width; ++x)
 			{
 				for (int y = 0; y < height; ++y)
 				{
-					GridAStarNode node = new GridAStarNode(nodeIdCounter++);
+					Grid2DNode node = new Grid2DNode(nodeIdCounter++);
 					nodes[x, y] = node;
 					node.x = (ushort)x;
 					node.y = (ushort)y;
@@ -64,11 +64,11 @@ namespace PathFinding
 			}
 		}
 
-		public GridAStarNode GetNode(int x, int y)
+		public Grid2DNode GetNode(int x, int y)
 		{
 			if (x >= 0 && x < width && y >= 0 && y <= height)
 			{
-				GridAStarNode node = nodes[x, y];
+				Grid2DNode node = nodes[x, y];
 				return node;
 			}
 			return null;
@@ -76,14 +76,14 @@ namespace PathFinding
 
 		public void SetNodePassable(int x, int y, bool passable)
 		{
-			GridAStarNode node = GetNode(x, y);
+			Grid2DNode node = GetNode(x, y);
 			if (node != null)
 				node.blockValue = (ushort)(passable ? 0 : 1);
 		}
 
 		public bool IsNodePassable(int x, int y)
 		{
-			GridAStarNode node = GetNode(x, y);
+			Grid2DNode node = GetNode(x, y);
 			if (node != null)
 				return node.blockValue == 0;
 			return false;
@@ -98,12 +98,12 @@ namespace PathFinding
 		{
 			if (index >= 0 && index < NEIGHBOUR_COUNT && node != null)
 			{
-				GridAStarNode gridNode = node as GridAStarNode;
+				Grid2DNode gridNode = node as Grid2DNode;
 				int x = gridNode.x + xOffset[index];
 				int y = gridNode.y + yOffset[index];
 				if (x >= 0 && x < width && y >= 0 && y < height)
 				{
-					GridAStarNode toNode = nodes[x, y] as GridAStarNode;
+					Grid2DNode toNode = nodes[x, y] as Grid2DNode;
 					if (IsNeighbourPassable(gridNode, toNode))
 						return toNode;
 				}
@@ -111,11 +111,11 @@ namespace PathFinding
 			return null;
 		}
 
-		public GridAStarNode GetNodeByIndex(int x, int y)
+		public Grid2DNode GetNodeByIndex(int x, int y)
 		{
 			if (x >=0 && x < width && y >= 0 && y < height)
 			{
-				return nodes[x,y] as GridAStarNode;
+				return nodes[x,y] as Grid2DNode;
 			}
 			return null;
 		}
@@ -130,7 +130,7 @@ namespace PathFinding
 			return height;
 		}
 
-		private bool IsNeighbourPassable(GridAStarNode from, GridAStarNode to)
+		private bool IsNeighbourPassable(Grid2DNode from, Grid2DNode to)
 		{
 			return (nodes[from.x, to.y].blockValue < 1 && nodes[to.x, from.y].blockValue < 1) 
 				|| (from.x == to.x && from.y == to.y);

@@ -4,7 +4,7 @@ using AStar;
 
 namespace PathFinding
 {
-	public class GridAStarNode : AStarNode
+	public class Grid2DNode : AStarNode
 	{
 		public ushort x;
 
@@ -14,7 +14,7 @@ namespace PathFinding
 
 		public byte terrainType;
 
-		public GridAStarNode(int id) :
+		public Grid2DNode(int id) :
 			base(id)
 		{
 			x = 0;

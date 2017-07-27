@@ -5,7 +5,7 @@ using AStar;
 namespace PathFinding
 {
 	[System.Serializable]
-	public class NavMeshNode : GraphAStarNode
+	public class NavMeshNode : Graph2DNode
 	{
 		public Int3 v0 = Int3.zero;
 

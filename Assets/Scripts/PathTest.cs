@@ -27,8 +27,8 @@ namespace FixedPoint
 
 		// path finding
 		public PathMode mode;
-		private GridAStarMap gridMap;
-		private GridPathPlanner gridPathFinder = new GridPathPlanner();
+		private Grid2DMap gridMap;
+		private Grid2DPathPlanner gridPathFinder = new Grid2DPathPlanner();
 
 		private Graph3DAStarMap graphMap;
 		private Graph3DPathPlanner graphPathFinder = new Graph3DPathPlanner();
@@ -54,7 +54,7 @@ namespace FixedPoint
 			}
 			else if (mode == PathMode.Grid)
 			{
-				gridMap = new GridAStarMap();
+				gridMap = new Grid2DMap();
 				gridMap.InitMap(navGrid.Width, navGrid.Height, navGrid);
 				gridPathFinder.Setup(gridMap);
 			}
@@ -78,7 +78,7 @@ namespace FixedPoint
 			}
 		}
 
-		/*float lastTime = 0;
+		float lastTime = 0;
 		void Update()
 		{
 			if (Time.timeSinceLevelLoad - lastTime > 0.1f)
@@ -86,7 +86,7 @@ namespace FixedPoint
 				lastTime = Time.timeSinceLevelLoad;
 				DoIt();
 			}
-		}*/
+		}
 
 		System.Random random = new System.Random();
 		void DoIt()
@@ -147,9 +147,9 @@ namespace FixedPoint
 			result.Clear();
 			for (int i = 0; i < path.Count; ++i)
 			{
-				float x = navGrid.MinX + path[i].x * navGrid.GridSize;
-				float y = navGrid.MinZ + path[i].y * navGrid.GridSize;
-				Vector3 pos = new Vector3(x, 1, y);
+				float x = (navGrid.MinX + (path[i].x + 0.5f) * navGrid.GridSize) * 0.001f;
+				float y = (navGrid.MinZ + (path[i].y + 0.5f) * navGrid.GridSize) * 0.001f;
+				Vector3 pos = new Vector3(x, 1f, y);
 				result.Add(pos);
 			}
 
@@ -193,9 +193,9 @@ namespace FixedPoint
 				{
 					for (int z = 0; z < navGrid.Height; ++z)
 					{
-						float fposx = navGrid.MinX + navGrid.GridSize * x;
-						float fposz = navGrid.MinZ + navGrid.GridSize * z;
-						pos[x, z] = new Vector3(fposx, 1, fposz);
+						float fposx = (navGrid.MinX + navGrid.GridSize * (x + 0.5f)) * 0.001f;
+						float fposz = (navGrid.MinZ + navGrid.GridSize * (z + 0.5f)) * 0.001f;
+						pos[x, z] = new Vector3(fposx, 1f, fposz);
 					}
 				}
 

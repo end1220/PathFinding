@@ -354,7 +354,7 @@ namespace PathFinding
 				int z = cell.pos.z;
 				int id = cell.id;
 
-				var node = new Graph3DAStarNode();
+				var node = new Graph3DNode();
 				node.id = id;
 				node.x = (ushort)x;
 				node.y = (ushort)y;
@@ -445,7 +445,7 @@ namespace PathFinding
 
 										if (cost != int.MaxValue)
 										{
-											var edge = new Graph3DAStarEdge(id, nbId, cost);
+											var edge = new Graph3DEdge(id, nbId, cost);
 											navData.AddEdge(edge);
 										}
 									}

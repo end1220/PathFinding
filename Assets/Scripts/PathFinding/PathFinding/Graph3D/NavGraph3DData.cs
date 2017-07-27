@@ -29,13 +29,13 @@ namespace PathFinding
 		public int edgeCount;
 
 		[HideInInspector]
-		public List<Graph3DAStarNode> nodeList = new List<Graph3DAStarNode>();
+		public List<Graph3DNode> nodeList = new List<Graph3DNode>();
 
 		[HideInInspector]
-		public List<Graph3DAStarEdge> edgeList = new List<Graph3DAStarEdge>();
+		public List<Graph3DEdge> edgeList = new List<Graph3DEdge>();
 		
 		[NonSerialized]
-		public Dictionary<int, Graph3DAStarNode> nodeDic = new Dictionary<int, Graph3DAStarNode>();
+		public Dictionary<int, Graph3DNode> nodeDic = new Dictionary<int, Graph3DNode>();
 
 
 		public int NodeSize
@@ -65,7 +65,7 @@ namespace PathFinding
 		}
 
 
-		public void AddNode(Graph3DAStarNode node)
+		public void AddNode(Graph3DNode node)
 		{
 			nodeList.Add(node);
 			nodeDic.Add(node.id, node);
@@ -73,7 +73,7 @@ namespace PathFinding
 		}
 
 
-		public void AddEdge(Graph3DAStarEdge edge)
+		public void AddEdge(Graph3DEdge edge)
 		{
 			edgeList.Add(edge);
 		}
@@ -147,9 +147,9 @@ namespace PathFinding
 		}
 
 
-		public Graph3DAStarNode ParseNode(int index)
+		public Graph3DNode ParseNode(int index)
 		{
-			Graph3DAStarNode node = new Graph3DAStarNode();
+			Graph3DNode node = new Graph3DNode();
 			int bytesIndex = index * NodeSize;
 			node.id = ByteTool.IntFromBytes(nodeBytes, bytesIndex);
 			bytesIndex += 4;
@@ -168,9 +168,9 @@ namespace PathFinding
 			return node;
 		}
 
-		public Graph3DAStarEdge ParseEdge(int index)
+		public Graph3DEdge ParseEdge(int index)
 		{
-			Graph3DAStarEdge edge = new Graph3DAStarEdge();
+			Graph3DEdge edge = new Graph3DEdge();
 			int bytesIndex = index * EdgeSize;
 			edge.from = ByteTool.IntFromBytes(edgeBytes, bytesIndex);
 			bytesIndex += 4;

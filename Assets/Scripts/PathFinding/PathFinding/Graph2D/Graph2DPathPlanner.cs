@@ -6,36 +6,36 @@ using AStar;
 namespace PathFinding
 {
 	
-	public class GraphPathPlanner : AStarPathPlanner
+	public class Graph2DPathPlanner : AStarPathPlanner
 	{
-		GraphAStarNode startNode;
-		GraphAStarNode targetNode;
+		Graph2DNode startNode;
+		Graph2DNode targetNode;
 
 		private List<Int3> resultCache = new List<Int3>();
 
 
 		public List<Int3> FindPath(int start, int end)
 		{
-			GraphAStarNode endNode = _findPath(start, end);
+			Graph2DNode endNode = _findPath(start, end);
 
 			// build path points.
 			resultCache.Clear();
-			GraphAStarNode pathNode = endNode;
+			Graph2DNode pathNode = endNode;
 			while (pathNode != null)
 			{
 				resultCache.Add(new Int3(pathNode.x, pathNode.y));
-				pathNode = pathNode.prev as GraphAStarNode;
+				pathNode = pathNode.prev as Graph2DNode;
 			}
 			
 			return resultCache;
 		}
 
-		private GraphAStarNode _findPath(int start, int end)
+		private Graph2DNode _findPath(int start, int end)
 		{
-			startNode = map.GetNodeByID(start) as GraphAStarNode;
-			targetNode = map.GetNodeByID(end) as GraphAStarNode;
+			startNode = map.GetNodeByID(start) as Graph2DNode;
+			targetNode = map.GetNodeByID(end) as Graph2DNode;
 
-			GraphAStarNode endNode = DoAStar(startNode) as GraphAStarNode;
+			Graph2DNode endNode = DoAStar(startNode) as Graph2DNode;
 
 			return endNode;
 		}
@@ -52,8 +52,8 @@ namespace PathFinding
 
 		protected override int CalCostH(AStarNode node)
 		{
-			int dx = Math.Abs(targetNode.x - ((GraphAStarNode)node).x);
-			int dy = Math.Abs(targetNode.y - ((GraphAStarNode)node).y);
+			int dx = Math.Abs(targetNode.x - ((Graph2DNode)node).x);
+			int dy = Math.Abs(targetNode.y - ((Graph2DNode)node).y);
 			int dist = (int)(dx > dy ? 1.4f * dy + (dx - dy) : 1.4f * dx + (dy - dx));
 			return dist;
 		}

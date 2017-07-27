@@ -2,25 +2,40 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Graph;
+using AStar;
 
 
 namespace PathFinding
 {
-	public class Graph3DAStarMap : GraphAStarMap
+	public class Graph3DAStarMap : AStarMap
 	{
 		public NavGraph3DData navGraphData;
 
-		private Graph3DAStarNode[, ,] nodeMatrix;
-		public Graph3DAStarNode[, ,] NodeMatrix { get { return nodeMatrix; } }
+		private Graph3DNode[, ,] nodeMatrix;
+		public Graph3DNode[, ,] NodeMatrix { get { return nodeMatrix; } }
 
 #if UNITY_EDITOR
 		[NonSerialized]
-		public List<Graph3DAStarNode> nodeList = new List<Graph3DAStarNode>();
+		public List<Graph3DNode> nodeList = new List<Graph3DNode>();
 		[NonSerialized]
-		public List<Graph3DAStarEdge> edgeList = new List<Graph3DAStarEdge>();
+		public List<Graph3DEdge> edgeList = new List<Graph3DEdge>();
 		[NonSerialized]
-		public Dictionary<int, Graph3DAStarNode> nodeDic = new Dictionary<int, Graph3DAStarNode>();
+		public Dictionary<int, Graph3DNode> nodeDic = new Dictionary<int, Graph3DNode>();
 #endif
+
+
+		public override int GetNeighbourNodeCount(AStarNode node)
+		{
+			List<GraphEdge> edgeList = GetEdgeList(node.id);
+			return edgeList != null ? edgeList.Count : 0;
+		}
+
+		public override AStarNode GetNeighbourNode(AStarNode node, int index)
+		{
+			List<GraphEdge> edgeList = GetEdgeList(node.id);
+			return GetNodeByID(edgeList[index].to) as AStarNode;
+		}
 
 
 		public void Init(NavGraph3DData navData)
@@ -37,10 +52,10 @@ namespace PathFinding
 		private void ParseNavData(NavGraph3DData navData)
 		{
 			navGraphData = navData;
-			nodeMatrix = new Graph3DAStarNode[navData.buildConfig.cellCount.x, navData.buildConfig.cellCount.y, navData.buildConfig.cellCount.z];
+			nodeMatrix = new Graph3DNode[navData.buildConfig.cellCount.x, navData.buildConfig.cellCount.y, navData.buildConfig.cellCount.z];
 			for (int i = 0; i < navData.nodeList.Count; ++i)
 			{
-				Graph3DAStarNode node = null;
+				Graph3DNode node = null;
 				if (navData.bytesMode)
 					node = navData.ParseNode(i);
 				else
@@ -54,13 +69,13 @@ namespace PathFinding
 			}
 			for (int i = 0; i < navData.edgeList.Count; ++i)
 			{
-				Graph3DAStarEdge edge = null;
+				Graph3DEdge edge = null;
 				if (navData.bytesMode)
 					edge = navData.ParseEdge(i);
 				else
 					edge = navData.edgeList[i];
 
-				Graph3DAStarEdge edgeToFrom = new Graph3DAStarEdge(edge.to, edge.from, edge.cost);
+				Graph3DEdge edgeToFrom = new Graph3DEdge(edge.to, edge.from, edge.cost);
 
 				this.AddEdge(edge);
 				this.AddEdge(edgeToFrom);
@@ -72,7 +87,7 @@ namespace PathFinding
 		}
 
 
-		public Graph3DAStarNode GetNodeAt(int x, int y, int z)
+		public Graph3DNode GetNodeAt(int x, int y, int z)
 		{
 			if (IsIndexValid(x, y, z))
 				return nodeMatrix[x, y, z];
@@ -149,7 +164,7 @@ namespace PathFinding
 		}
 
 
-		public Graph3DAStarNode GetNearbyWalkableNode(FixVector3 pos)
+		public Graph3DNode GetNearbyWalkableNode(FixVector3 pos)
 		{
 			var pt = FixVector3ToInt3(pos);
 			var node = GetNodeAt(pt.x, pt.y, pt.z);

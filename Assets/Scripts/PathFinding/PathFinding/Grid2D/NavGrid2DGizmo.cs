@@ -81,7 +81,7 @@ namespace PathFinding
 			width = w;
 			height = h;
 
-			RegenerateMesh();
+			//RegenerateMesh();
 		}
 
 

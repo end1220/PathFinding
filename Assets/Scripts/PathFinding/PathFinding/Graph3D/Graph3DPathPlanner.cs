@@ -7,10 +7,10 @@ using AStar;
 namespace PathFinding
 {
 
-	public class Graph3DPathPlanner : GraphPathPlanner
+	public class Graph3DPathPlanner : AStarPathPlanner
 	{
-		Graph3DAStarNode startNode;
-		Graph3DAStarNode targetNode;
+		Graph3DNode startNode;
+		Graph3DNode targetNode;
 
 		private List<Int3> resultCache = new List<Int3>();
 
@@ -53,27 +53,27 @@ namespace PathFinding
 
 		public List<Int3> FindPath3D(int startId, int endId)
 		{
-			Graph3DAStarNode node = _findPath(startId, endId);
+			Graph3DNode node = _findPath(startId, endId);
 
 			resultCache.Clear();
 			while (node != null)
 			{
 				resultCache.Add(new Int3(node.x, node.y, node.z));
-				node = node.prev as Graph3DAStarNode;
+				node = node.prev as Graph3DNode;
 			}
 			
 			return resultCache;
 		}
 
 
-		private Graph3DAStarNode _findPath(int start, int end)
+		private Graph3DNode _findPath(int start, int end)
 		{
-			startNode = map.GetNodeByID(end) as Graph3DAStarNode;
-			targetNode = map.GetNodeByID(start) as Graph3DAStarNode;
+			startNode = map.GetNodeByID(end) as Graph3DNode;
+			targetNode = map.GetNodeByID(start) as Graph3DNode;
 			if (startNode == null || targetNode == null)
 				return null;
 
-			Graph3DAStarNode endNode = DoAStar(startNode) as Graph3DAStarNode;
+			Graph3DNode endNode = DoAStar(startNode) as Graph3DNode;
 
 			return endNode;
 		}
@@ -90,9 +90,9 @@ namespace PathFinding
 
 		protected override int CalCostH(AStarNode node)
 		{
-			int dx = Math.Abs(targetNode.x - ((Graph3DAStarNode)node).x);
-			int dy = Math.Abs(targetNode.y - ((Graph3DAStarNode)node).y);
-			int dz = Math.Abs(targetNode.z - ((Graph3DAStarNode)node).z);
+			int dx = Math.Abs(targetNode.x - ((Graph3DNode)node).x);
+			int dy = Math.Abs(targetNode.y - ((Graph3DNode)node).y);
+			int dz = Math.Abs(targetNode.z - ((Graph3DNode)node).z);
 			dx *= 10;
 			dy *= 10;
 			dz *= 10;

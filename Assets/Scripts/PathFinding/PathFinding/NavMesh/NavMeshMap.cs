@@ -5,7 +5,7 @@ using AStar;
 
 namespace PathFinding
 {
-	public class NavMeshMap : GraphAStarMap
+	public class NavMeshMap : Graph2DMap
 	{
 		NavMeshData navData;
 

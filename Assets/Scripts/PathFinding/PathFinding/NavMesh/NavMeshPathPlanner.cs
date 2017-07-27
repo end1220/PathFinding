@@ -7,7 +7,7 @@ using AStar;
 namespace PathFinding
 {
 	
-	public class NavMeshMapPathPlanner : GraphPathPlanner
+	public class NavMeshMapPathPlanner : Graph2DPathPlanner
 	{
 		NavMeshNode startNode;
 		NavMeshNode targetNode;
