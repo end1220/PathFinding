@@ -8,6 +8,13 @@ using PathFinding;
 
 namespace FixedPoint
 {
+	public enum PathMode
+	{
+		Grid,
+		Graph,
+		NavMesh
+	}
+
 
 	public class PathTest : MonoBehaviour
 	{
@@ -15,46 +22,52 @@ namespace FixedPoint
 
 		// navigation asset
 		public NavGrid2DData navGrid;
-
 		public NavGraph3DData navGraph;
+		public NavMeshData navMesh;
 
 		// path finding
-		public bool graphMode;
+		public PathMode mode;
 		private GridAStarMap gridMap;
 		private GridPathPlanner gridPathFinder = new GridPathPlanner();
 
 		private Graph3DAStarMap graphMap;
 		private Graph3DPathPlanner graphPathFinder = new Graph3DPathPlanner();
 
+		private NavMeshMap navmeshMap;
+		private NavMeshMapPathPlanner navPathPlannner = new NavMeshMapPathPlanner();
+
+
 		public DebugLine line;
+
+		public int start = 0;
+		public int end = 10;
 
 		void Awake()
 		{
 			Instance = this;
-			
-			if (navGrid == null && navGraph == null)
-			{
-				Log.Error("Navigation data is null !");
-			}
-			else
-			{
-				if (graphMode)
-				{
-					graphMap = new Graph3DAStarMap();
-					graphMap.Init(navGraph);
-					graphPathFinder.Setup(graphMap);
-				}
-				else
-				{
-					gridMap = new GridAStarMap();
-					gridMap.InitMap(navGrid.Width, navGrid.Height, navGrid);
-					gridPathFinder.Setup(gridMap);
-				}
 
-				SetNavDebugDraw();
+			if (mode == PathMode.Graph)
+			{
+				graphMap = new Graph3DAStarMap();
+				graphMap.Init(navGraph);
+				graphPathFinder.Setup(graphMap);
 			}
+			else if (mode == PathMode.Grid)
+			{
+				gridMap = new GridAStarMap();
+				gridMap.InitMap(navGrid.Width, navGrid.Height, navGrid);
+				gridPathFinder.Setup(gridMap);
+			}
+			else if (mode == PathMode.NavMesh)
+			{
+				navmeshMap = new NavMeshMap();
+				navmeshMap.InitMap(navMesh);
+				navPathPlannner.Setup(navmeshMap);
+			}
+
+			SetNavDebugDraw();
 		}
-		
+
 
 		List<Vector3> result = new List<Vector3>();
 		void OnGUI()
@@ -65,7 +78,7 @@ namespace FixedPoint
 			}
 		}
 
-		float lastTime = 0;
+		/*float lastTime = 0;
 		void Update()
 		{
 			if (Time.timeSinceLevelLoad - lastTime > 0.1f)
@@ -73,7 +86,7 @@ namespace FixedPoint
 				lastTime = Time.timeSinceLevelLoad;
 				DoIt();
 			}
-		}
+		}*/
 
 		System.Random random = new System.Random();
 		void DoIt()
@@ -81,13 +94,13 @@ namespace FixedPoint
 			Stopwatch watch = new Stopwatch();
 			watch.Start();
 
-			if (graphMode)
+			if (mode == PathMode.Graph)
 			{
 				int start = random.Next(0, 1600);
 				int end = random.Next(0, 1600);
 				graphFindPath(start, end, ref result);
 			}
-			else
+			else if (mode == PathMode.Grid)
 			{
 				int startx = random.Next(2, 38);
 				int starty = random.Next(2, 38);
@@ -95,6 +108,11 @@ namespace FixedPoint
 				int endy = random.Next(2, 38);
 				gridFindPath(startx, starty, endx, endy, ref result);
 			}
+			else if (mode == PathMode.NavMesh)
+			{
+				navFindPath(start,end, ref result);
+			}
+
 			if (result.Count > 0)
 			{
 				line.ClearLines();
@@ -138,10 +156,24 @@ namespace FixedPoint
 			return result.Count > 0;
 		}
 
+		private bool navFindPath(int start, int end, ref List<Vector3> result)
+		{
+			var path = navPathPlannner.FindPath2(start, end);
+
+			result.Clear();
+			for (int i = 0; i < path.Count; ++i)
+			{
+				Vector3 pos = (Vector3)path[i];
+				result.Add(pos);
+			}
+
+			return result.Count > 0;
+		}
+
 
 		private void SetNavDebugDraw()
 		{
-			if (graphMode)
+			if (mode == PathMode.Graph)
 			{
 				NavGraph3DGizmo gizmo = gameObject.GetComponent<NavGraph3DGizmo>();
 				if (gizmo == null)
@@ -150,7 +182,7 @@ namespace FixedPoint
 				gizmo.cfg = navGraph.buildConfig;
 				gizmo.graphMap = graphMap;
 			}
-			else
+			else if (mode == PathMode.Grid)
 			{
 				NavGrid2DGizmo gizmoLine = gameObject.GetComponent<NavGrid2DGizmo>();
 				if (gizmoLine == null)
@@ -168,6 +200,14 @@ namespace FixedPoint
 				}
 
 				gizmoLine.SetGridPosList(navGrid, pos, navGrid.Width, navGrid.Height);
+			}
+			else if (mode == PathMode.NavMesh)
+			{
+				NavMeshGizmo gizmo = gameObject.GetComponent<NavMeshGizmo>();
+				if (gizmo == null)
+					gizmo = gameObject.AddComponent<NavMeshGizmo>();
+				gizmo.navData = navMesh;
+
 			}
 		}
 		

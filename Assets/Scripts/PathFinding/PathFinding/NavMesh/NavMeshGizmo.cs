@@ -7,8 +7,7 @@ namespace PathFinding
 {
 	public class NavMeshGizmo : MonoBehaviour
 	{
-
-		public NavMeshNode[] nodes;
+		public NavMeshData navData;
 
 		private Color green = new Color(0.2f, 0.5f, 0.2f);
 		private Color red = new Color(0.5f, 0.2f, 0.2f);
@@ -21,6 +20,7 @@ namespace PathFinding
 			Color defaultColor = Gizmos.color;
 
 			// begin draw
+			NavMeshNode[] nodes = navData.nodes;
 
 			for (int i = 0; i < nodes.Length; i++)
 			{
@@ -34,15 +34,15 @@ namespace PathFinding
 
 				if (VectorMath.IsClockwiseXZ(node.v0, node.v1, node.v2))
 				{
-					Debug.DrawLine((Vector3)node.v0, (Vector3)node.v1, Color.green);
-					Debug.DrawLine((Vector3)node.v1, (Vector3)node.v2, Color.green);
-					Debug.DrawLine((Vector3)node.v2, (Vector3)node.v0, Color.green);
+					Debug.DrawLine((Vector3)node.v0, (Vector3)node.v1, green);
+					Debug.DrawLine((Vector3)node.v1, (Vector3)node.v2, green);
+					Debug.DrawLine((Vector3)node.v2, (Vector3)node.v0, green);
 				}
 				else
 				{
-					Debug.DrawLine((Vector3)node.v0, (Vector3)node.v1, Color.red);
-					Debug.DrawLine((Vector3)node.v1, (Vector3)node.v2, Color.red);
-					Debug.DrawLine((Vector3)node.v2, (Vector3)node.v0, Color.red);
+					Debug.DrawLine((Vector3)node.v0, (Vector3)node.v1, red);
+					Debug.DrawLine((Vector3)node.v1, (Vector3)node.v2, red);
+					Debug.DrawLine((Vector3)node.v2, (Vector3)node.v0, red);
 				}
 			}
 

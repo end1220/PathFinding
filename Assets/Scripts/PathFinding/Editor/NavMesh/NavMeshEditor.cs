@@ -34,14 +34,15 @@ namespace PathFinding
 
 		public NavMeshNode[] nodes;
 
-
+		string saveFilePath = "";
 		readonly string drawObjectName = "_NavGraphData_Gizmo";
 
 
 
 		void OnEnable()
 		{
-			
+			string scenePath = EditorUtils.GetCurrentScenePath();
+			saveFilePath = scenePath.Substring(0, scenePath.IndexOf(".unity")) + "_navmesh.asset";
 		}
 
 
@@ -49,6 +50,11 @@ namespace PathFinding
 		{
 			if (GUILayout.Button("Generate", GUILayout.Width(100), GUILayout.Height(60)))
 				GenerateNav();
+
+			GUILayout.Space(20);
+
+			if (GUILayout.Button("Save", GUILayout.Width(100), GUILayout.Height(60)))
+				SaveToFile();
 		}
 
 
@@ -66,7 +72,13 @@ namespace PathFinding
 			{
 				ImportMesh();
 				ScanInternal();
+
+				navData = ScriptableObject.CreateInstance<NavMeshData>();
+				navData.nodes = nodes;
+
 				DrawGrid();
+
+				Selection.SetActiveObjectWithContext(GameObject.Find(drawObjectName), null);
 			}
 			catch (System.Exception e)
 			{
@@ -263,7 +275,7 @@ namespace PathFinding
 			try
 			{
 				NavMeshGizmo gizmo = go.GetComponent<NavMeshGizmo>();
-				gizmo.nodes = nodes;
+				gizmo.navData = navData;
 			}
 			catch (System.Exception e)
 			{
@@ -280,6 +292,27 @@ namespace PathFinding
 			{
 				GameObject.DestroyImmediate(go);
 			}
+		}
+
+
+		NavMeshData navData;
+		void SaveToFile()
+		{
+			var existingAsset = AssetDatabase.LoadAssetAtPath<NavMeshData>(saveFilePath);
+			if (existingAsset == null)
+			{
+				AssetDatabase.CreateAsset(navData, saveFilePath);
+				AssetDatabase.Refresh();
+				existingAsset = navData;
+			}
+			else
+			{
+				EditorUtility.CopySerialized(navData, existingAsset);
+			}
+
+			EditorUtility.SetDirty(navData);
+
+			UnityEngine.Debug.Log("Saved  : " + saveFilePath);
 		}
 
 
