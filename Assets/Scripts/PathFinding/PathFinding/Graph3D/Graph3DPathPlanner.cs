@@ -17,7 +17,7 @@ namespace PathFinding
 
 		public bool FindPath3D(FixVector3 from, FixVector3 to, ref List<FixVector3> result)
 		{
-			Graph3DAStarMap graphMap = this.map as Graph3DAStarMap;
+			Graph3DMap graphMap = this.map as Graph3DMap;
 			var startNode = graphMap.GetNearbyWalkableNode(from);
 			var endNode = graphMap.GetNearbyWalkableNode(to);
 			if (startNode == null || endNode == null)

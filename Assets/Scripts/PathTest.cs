@@ -30,7 +30,7 @@ namespace FixedPoint
 		private Grid2DMap gridMap;
 		private Grid2DPathPlanner gridPathFinder = new Grid2DPathPlanner();
 
-		private Graph3DAStarMap graphMap;
+		private Graph3DMap graphMap;
 		private Graph3DPathPlanner graphPathFinder = new Graph3DPathPlanner();
 
 		private NavMeshMap navmeshMap;
@@ -48,7 +48,7 @@ namespace FixedPoint
 
 			if (mode == PathMode.Graph)
 			{
-				graphMap = new Graph3DAStarMap();
+				graphMap = new Graph3DMap();
 				graphMap.Init(navGraph);
 				graphPathFinder.Setup(graphMap);
 			}

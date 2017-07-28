@@ -10,10 +10,10 @@ namespace PathFinding
 	public static class PathOptimizer3D
 	{
 		static List<Int3> optimalPoints = new List<Int3>();
-		static Graph3DAStarMap graphMap;
+		static Graph3DMap graphMap;
 
 
-		public static void Optimize(Graph3DAStarMap map, ref List<Int3> path)
+		public static void Optimize(Graph3DMap map, ref List<Int3> path)
 		{
 			graphMap = map;
 			CombinePoints(ref path);

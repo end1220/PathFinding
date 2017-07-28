@@ -8,7 +8,7 @@ using AStar;
 
 namespace PathFinding
 {
-	public class Graph3DAStarMap : AStarMap
+	public class Graph3DMap : AStarMap
 	{
 		public NavGraph3DData navGraphData;
 

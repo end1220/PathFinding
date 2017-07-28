@@ -25,7 +25,7 @@ namespace PathFinding
 		public List<Cell> cells;
 		public List<Cell> finalCells;
 		public List<SubSpace> spaces;
-		public Graph3DAStarMap graphMap;
+		public Graph3DMap graphMap;
 
 		private Color green = new Color(0f, 1f, 0f);
 		private Color red = new Color(1f, 0f, 0f);

@@ -21,7 +21,7 @@ namespace PathFinding
 		private int idCounter = 0;
 
 		public NavGraph3DData navData;
-		public Graph3DAStarMap graphMap;
+		public Graph3DMap graphMap;
 
 		private bool Enable8Directions = true;
 
@@ -456,7 +456,7 @@ namespace PathFinding
 				}
 			}
 
-			graphMap = new Graph3DAStarMap();
+			graphMap = new Graph3DMap();
 			graphMap.Init(navData);
 		}
 
