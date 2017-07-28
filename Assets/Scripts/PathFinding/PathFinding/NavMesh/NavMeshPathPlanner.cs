@@ -12,6 +12,7 @@ namespace PathFinding
 		NavMeshNode startNode;
 		NavMeshNode targetNode;
 
+		private List<NavMeshNode> resultNodeCache = new List<NavMeshNode>();
 		private List<Int3> resultCache = new List<Int3>();
 
 
@@ -20,13 +21,17 @@ namespace PathFinding
 			NavMeshNode endNode = _findPath(start, end);
 
 			// build path points.
+			resultNodeCache.Clear();
 			resultCache.Clear();
 			NavMeshNode pathNode = endNode;
 			while (pathNode != null)
 			{
+				resultNodeCache.Add(pathNode);
 				resultCache.Add(pathNode.position);
 				pathNode = pathNode.prev as NavMeshNode;
 			}
+
+			PathOptimizerNavMesh.Optimize(ref resultNodeCache, ref resultCache);
 
 			return resultCache;
 		}

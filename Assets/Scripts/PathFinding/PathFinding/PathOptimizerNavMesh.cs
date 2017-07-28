@@ -9,9 +9,6 @@ namespace PathFinding
 
 	public static class PathOptimizerNavMesh
 	{
-		static List<Int3> optimalPoints = new List<Int3>();
-		static Graph3DAStarMap graphMap;
-
 
 		public static void Optimize(ref List<NavMeshNode> path, ref List<Int3> vectorPath)
 		{
@@ -21,9 +18,6 @@ namespace PathFinding
 
 		static void Apply(ref List<NavMeshNode> path, ref List<Int3> vectorPath)
 		{
-			//List<NavMeshNode> path = p.path;
-			//List<Vector3> vectorPath = p.vectorPath;
-
 			if (path == null || path.Count == 0 || vectorPath == null || vectorPath.Count != path.Count)
 			{
 				return;
@@ -41,11 +35,10 @@ namespace PathFinding
 			left.Add(vectorPath[0].ToVector3());
 			right.Add(vectorPath[0].ToVector3());
 
-			// Loop through all nodes in the path (except the last one)
 			for (int i = 0; i < path.Count - 1; i++)
 			{
 				// Get the portal between path[i] and path[i+1] and add it to the left and right lists
-				bool portalWasAdded = path[i].GetPortal(path[i + 1], left, right, false);
+				bool portalWasAdded = path[i].GetPortal(path[i + 1], left, right);
 
 				if (!portalWasAdded)
 				{
@@ -71,7 +64,9 @@ namespace PathFinding
 
 			// Release lists back to the pool
 			//ListPool<Vector3>.Release(vectorPath);
-			vectorPath = funnelPath;
+			vectorPath.Clear();
+			foreach (var v in funnelPath)
+				vectorPath.Add((Int3)v);
 
 			ListPool<Vector3>.Release(left);
 			ListPool<Vector3>.Release(right);
