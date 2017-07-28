@@ -9,31 +9,26 @@ namespace PathFinding
 
 	public static class PathOptimizerNavMesh
 	{
+		static List<Int3> funnelPath = new List<Int3>();
+		static List<Int3> left = new List<Int3>();
+		static List<Int3> right = new List<Int3>();
+
 
 		public static void Optimize(ref List<NavMeshNode> path, ref List<Int3> vectorPath)
 		{
-			Apply(ref path, ref vectorPath);
-		}
-
-
-		static void Apply(ref List<NavMeshNode> path, ref List<Int3> vectorPath)
-		{
+			
 			if (path == null || path.Count == 0 || vectorPath == null || vectorPath.Count != path.Count)
 			{
 				return;
 			}
 
-			List<Vector3> funnelPath = ListPool<Vector3>.Claim();
-
-			// Claim temporary lists and try to find lists with a high capacity
-			List<Vector3> left = ListPool<Vector3>.Claim(path.Count + 1);
-			List<Vector3> right = ListPool<Vector3>.Claim(path.Count + 1);
-
-			//AstarProfiler.StartProfile("Construct Funnel");
+			funnelPath.Clear();
+			left.Clear();
+			right.Clear();
 
 			// Add start point
-			left.Add(vectorPath[0].ToVector3());
-			right.Add(vectorPath[0].ToVector3());
+			left.Add(vectorPath[0]);
+			right.Add(vectorPath[0]);
 
 			for (int i = 0; i < path.Count - 1; i++)
 			{
@@ -43,39 +38,36 @@ namespace PathFinding
 				if (!portalWasAdded)
 				{
 					// Fallback, just use the positions of the nodes
-					left.Add((Vector3)path[i].position);
-					right.Add((Vector3)path[i].position);
+					left.Add(path[i].position);
+					right.Add(path[i].position);
 
-					left.Add((Vector3)path[i + 1].position);
-					right.Add((Vector3)path[i + 1].position);
+					left.Add(path[i + 1].position);
+					right.Add(path[i + 1].position);
 				}
 			}
 
 			// Add end point
-			left.Add(vectorPath[vectorPath.Count - 1].ToVector3());
-			right.Add(vectorPath[vectorPath.Count - 1].ToVector3());
+			left.Add(vectorPath[vectorPath.Count - 1]);
+			right.Add(vectorPath[vectorPath.Count - 1]);
 
 			if (!RunFunnel(left, right, funnelPath))
 			{
 				// If funnel algorithm failed, degrade to simple line
-				funnelPath.Add(vectorPath[0].ToVector3());
-				funnelPath.Add(vectorPath[vectorPath.Count - 1].ToVector3());
+				funnelPath.Add(vectorPath[0]);
+				funnelPath.Add(vectorPath[vectorPath.Count - 1]);
 			}
 
-			// Release lists back to the pool
-			//ListPool<Vector3>.Release(vectorPath);
 			vectorPath.Clear();
-			foreach (var v in funnelPath)
-				vectorPath.Add((Int3)v);
+			vectorPath.AddRange(funnelPath);
+			//foreach (var v in funnelPath)
+			//	vectorPath.Add((Int3)v);
 
-			ListPool<Vector3>.Release(left);
-			ListPool<Vector3>.Release(right);
+			left.Clear();
+			right.Clear();
 		}
 
-		/** Calculate a funnel path from the \a left and \a right portal lists.
-		 * The result will be appended to \a funnelPath
-		 */
-		public static bool RunFunnel(List<Vector3> left, List<Vector3> right, List<Vector3> funnelPath)
+		
+		public static bool RunFunnel(List<Int3> left, List<Int3> right, List<Int3> funnelPath)
 		{
 			if (left == null) throw new System.ArgumentNullException("left");
 			if (right == null) throw new System.ArgumentNullException("right");
@@ -101,7 +93,7 @@ namespace PathFinding
 				}
 			}
 
-			Vector3 swPoint = left[2];
+			Int3 swPoint = left[2];
 			if (swPoint == left[1])
 			{
 				swPoint = right[2];
@@ -110,10 +102,6 @@ namespace PathFinding
 			//Test
 			while (VectorMath.IsColinearXZ(left[0], left[1], right[1]) || VectorMath.RightOrColinearXZ(left[1], right[1], swPoint) == VectorMath.RightOrColinearXZ(left[1], right[1], left[0]))
 			{
-#if ASTARDEBUG
-				Debug.DrawLine(left[1], right[1], new Color(0, 0, 0, 0.5F));
-				Debug.DrawLine(left[0], swPoint, new Color(0, 0, 0, 0.5F));
-#endif
 				left.RemoveAt(1);
 				right.RemoveAt(1);
 
@@ -134,27 +122,16 @@ namespace PathFinding
 			if (!VectorMath.IsClockwiseXZ(left[0], left[1], right[1]) && !VectorMath.IsColinearXZ(left[0], left[1], right[1]))
 			{
 				//System.Console.WriteLine ("Wrong Side 2");
-				List<Vector3> tmp = left;
+				List<Int3> tmp = left;
 				left = right;
 				right = tmp;
 			}
 
-#if ASTARDEBUG
-			for (int i = 0; i < left.Count-1; i++) {
-				Debug.DrawLine(left[i], left[i+1], Color.red);
-				Debug.DrawLine(right[i], right[i+1], Color.magenta);
-				Debug.DrawRay(right[i], Vector3.up, Color.magenta);
-			}
-			for (int i = 0; i < left.Count; i++) {
-				//Debug.DrawLine (right[i],left[i], Color.cyan);
-			}
-#endif
-
 			funnelPath.Add(left[0]);
 
-			Vector3 portalApex = left[0];
-			Vector3 portalLeft = left[1];
-			Vector3 portalRight = right[1];
+			Int3 portalApex = left[0];
+			Int3 portalLeft = left[1];
+			Int3 portalRight = right[1];
 
 			int apexIndex = 0;
 			int rightIndex = 1;
@@ -168,13 +145,8 @@ namespace PathFinding
 					break;
 				}
 
-				Vector3 pLeft = left[i];
-				Vector3 pRight = right[i];
-
-				/*Debug.DrawLine (portalApex,portalLeft,Color.red);
-				 * Debug.DrawLine (portalApex,portalRight,Color.yellow);
-				 * Debug.DrawLine (portalApex,left,Color.cyan);
-				 * Debug.DrawLine (portalApex,right,Color.cyan);*/
+				Int3 pLeft = left[i];
+				Int3 pRight = right[i];
 
 				if (VectorMath.SignedTriangleAreaTimes2XZ(portalApex, portalRight, pRight) >= 0)
 				{

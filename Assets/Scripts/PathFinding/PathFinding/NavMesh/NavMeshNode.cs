@@ -1,4 +1,6 @@
 
+using System.Collections.Generic;
+
 
 namespace PathFinding
 {
@@ -54,7 +56,7 @@ namespace PathFinding
 			return i == 0 ? v0 : (i == 1 ? v1 : v2);
 		}
 
-		public bool GetPortal(NavMeshNode other, System.Collections.Generic.List<UnityEngine.Vector3> left, System.Collections.Generic.List<UnityEngine.Vector3> right)
+		public bool GetPortal(NavMeshNode other, List<Int3> left, List<Int3> right)
 		{
 			int first = -1;
 			int second = -1;
@@ -81,8 +83,8 @@ namespace PathFinding
 			if (first != -1)
 			{
 				//All triangles should be clockwise so second is the rightmost vertex (seen from this node)
-				left.Add((UnityEngine.Vector3)GetVertex(first));
-				right.Add((UnityEngine.Vector3)GetVertex((first + 1) % acount));
+				left.Add(GetVertex(first));
+				right.Add(GetVertex((first + 1) % acount));
 				return true;
 			}
 
