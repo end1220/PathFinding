@@ -68,8 +68,8 @@ namespace PathFinding
 
 		private Graph3DNode _findPath(int start, int end)
 		{
-			startNode = map.GetNodeByID(end) as Graph3DNode;
-			targetNode = map.GetNodeByID(start) as Graph3DNode;
+			startNode = map.GetNode(end) as Graph3DNode;
+			targetNode = map.GetNode(start) as Graph3DNode;
 			if (startNode == null || targetNode == null)
 				return null;
 

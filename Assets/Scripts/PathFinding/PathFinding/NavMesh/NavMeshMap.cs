@@ -1,11 +1,11 @@
 ﻿
-using System;
+using Graph;
 using AStar;
 
 
 namespace PathFinding
 {
-	public class NavMeshMap : Graph2DMap
+	public class NavMeshMap : AStarMap
 	{
 		NavMeshData navData;
 
@@ -16,21 +16,34 @@ namespace PathFinding
 			for (int i = 0; i < navData.nodes.Length; i++)
 			{
 				NavMeshNode node = navData.nodes[i] as NavMeshNode;
-				this.AddNode(node);
+				AddNode(node);
 			}
 
-			for (int i = 0; i < navData.nodes.Length; i++)
-			{
-				NavMeshNode node = navData.nodes[i] as NavMeshNode;
-
-				for (int c = 0; c < node.connections.Length; ++c)
-				{
-					Graph.GraphEdge edge = new Graph.GraphEdge(node.id, node.connections[c].id, (int)node.connectionCosts[c]);
-					this.AddEdge(edge);
-				}
-			}
+// 			for (int i = 0; i < navData.nodes.Length; i++)
+// 			{
+// 				NavMeshNode node = navData.nodes[i] as NavMeshNode;
+// 
+// 				for (int c = 0; c < node.connections.Length; ++c)
+// 				{
+// 					GraphEdge edge = new GraphEdge(node.id, node.connections[c].id, (int)node.connectionCosts[c]);
+// 					this.AddEdge(edge);
+// 				}
+// 			}
 
 		}
+
+
+		public override int GetNeighbourNodeCount(AStarNode node)
+		{
+			return (node as NavMeshNode).connections.Length;
+		}
+
+		public override AStarNode GetNeighbourNode(AStarNode node, int index)
+		{
+			int id = (node as NavMeshNode).connections[index];
+			return GetNode(id) as AStarNode;
+		}
+
 
 	}
 }

@@ -71,7 +71,7 @@ namespace Graph
 			return new NodeList(nodeTable.Values);
 		}
 
-		public GraphNode GetNodeByID(int id)
+		public GraphNode GetNode(int id)
 		{
 			GraphNode node = null;
 			nodeTable.TryGetValue(id, out node);

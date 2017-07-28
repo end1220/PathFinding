@@ -18,7 +18,7 @@ namespace PathFinding
 		public override AStarNode GetNeighbourNode(AStarNode node, int index)
 		{
 			List<GraphEdge> edgeList = GetEdgeList(node.id);
-			return GetNodeByID(edgeList[index].to) as AStarNode;
+			return GetNode(edgeList[index].to) as AStarNode;
 		}
 
 	}

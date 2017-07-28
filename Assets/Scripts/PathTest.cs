@@ -34,7 +34,7 @@ namespace FixedPoint
 		private Graph3DPathPlanner graphPathFinder = new Graph3DPathPlanner();
 
 		private NavMeshMap navmeshMap;
-		private NavMeshMapPathPlanner navPathPlannner = new NavMeshMapPathPlanner();
+		private NavMeshPathPlanner navPathPlannner = new NavMeshPathPlanner();
 
 
 		public DebugLine line;
@@ -158,7 +158,7 @@ namespace FixedPoint
 
 		private bool navFindPath(int start, int end, ref List<Vector3> result)
 		{
-			var path = navPathPlannner.FindPath2(start, end);
+			var path = navPathPlannner.FindPath(start, end);
 
 			result.Clear();
 			for (int i = 0; i < path.Count; ++i)

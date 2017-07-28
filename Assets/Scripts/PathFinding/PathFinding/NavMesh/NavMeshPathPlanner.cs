@@ -7,7 +7,7 @@ using AStar;
 namespace PathFinding
 {
 	
-	public class NavMeshMapPathPlanner : Graph2DPathPlanner
+	public class NavMeshPathPlanner : AStar.AStarPathPlanner
 	{
 		NavMeshNode startNode;
 		NavMeshNode targetNode;
@@ -15,9 +15,9 @@ namespace PathFinding
 		private List<Int3> resultCache = new List<Int3>();
 
 
-		public List<Int3> FindPath2(int start, int end)
+		public List<Int3> FindPath(int start, int end)
 		{
-			NavMeshNode endNode = _findPath2(start, end);
+			NavMeshNode endNode = _findPath(start, end);
 
 			// build path points.
 			resultCache.Clear();
@@ -31,10 +31,10 @@ namespace PathFinding
 			return resultCache;
 		}
 
-		private NavMeshNode _findPath2(int start, int end)
+		private NavMeshNode _findPath(int start, int end)
 		{
-			startNode = map.GetNodeByID(start) as NavMeshNode;
-			targetNode = map.GetNodeByID(end) as NavMeshNode;
+			startNode = map.GetNode(start) as NavMeshNode;
+			targetNode = map.GetNode(end) as NavMeshNode;
 
 			NavMeshNode endNode = DoAStar(startNode) as NavMeshNode;
 
@@ -47,10 +47,12 @@ namespace PathFinding
 			return node.id == targetNode.id;
 		}
 
+
 		protected override int CalCostG(AStarNode prevNode, AStarNode currentNode)
 		{
-			return prevNode.g + map.GetEdge(prevNode.id, currentNode.id).cost;
+			return prevNode.g + (prevNode as NavMeshNode).GetConnectionCost(currentNode.id);
 		}
+
 
 		protected override int CalCostH(AStarNode node)
 		{

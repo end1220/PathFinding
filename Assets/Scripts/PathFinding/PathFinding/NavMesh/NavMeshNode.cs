@@ -1,11 +1,9 @@
 
-using AStar;
-
 
 namespace PathFinding
 {
 	[System.Serializable]
-	public class NavMeshNode : Graph2DNode
+	public class NavMeshNode : AStar.AStarNode
 	{
 		public Int3 v0 = Int3.zero;
 
@@ -19,9 +17,9 @@ namespace PathFinding
 
 		public Int3 position;
 
-		public NavMeshNode[] connections;
+		public int[] connections;
 
-		public uint[] connectionCosts;
+		public int[] connectionCosts;
 
 
 		public NavMeshNode(int id) :
@@ -33,6 +31,17 @@ namespace PathFinding
 		public void UpdatePositionFromVertices()
 		{
 			position = (v0 + v1 + v2) * 0.333333f;
+		}
+
+
+		public int GetConnectionCost(int connectId)
+		{
+			for (int i = 0; i < connections.Length; ++i)
+			{
+				if (connections[i] == connectId)
+					return connectionCosts[i];
+			}
+			return 0;
 		}
 
 	}

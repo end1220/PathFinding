@@ -32,8 +32,8 @@ namespace PathFinding
 
 		private Graph2DNode _findPath(int start, int end)
 		{
-			startNode = map.GetNodeByID(start) as Graph2DNode;
-			targetNode = map.GetNodeByID(end) as Graph2DNode;
+			startNode = map.GetNode(start) as Graph2DNode;
+			targetNode = map.GetNode(end) as Graph2DNode;
 
 			Graph2DNode endNode = DoAStar(startNode) as Graph2DNode;
 
