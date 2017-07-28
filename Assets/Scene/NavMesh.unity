@@ -477,7 +477,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   navGrid: {fileID: 0}
   navGraph: {fileID: 0}
-  navMesh: {fileID: 0}
+  navMesh: {fileID: 11400000, guid: 523883303211c494b90bd36363e77cd1, type: 2}
   mode: 2
   line: {fileID: 1353898671}
   start: 0
