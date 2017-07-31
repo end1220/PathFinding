@@ -163,9 +163,34 @@ namespace PathFinding
 			return ret;
 		}
 
+		/// <summary>
+		/// 有些地形在特殊情况下walkable，如墙可以闪现而过.
+		/// </summary>
+		/// <param name="position"></param>
+		/// <param name="mov"></param>
+		/// <returns></returns>
+		private bool SpecialTerrainPassable(FixVector3 position, MoveType mov)
+		{
+			Int2 pt2d = FixVector3ToInt2(position);
+			var node = GetNode(pt2d.x, pt2d.y);
+			if (node.terrainType == (byte)TerrainType.Walkable)
+			{
+				return true;
+			}
+			else if (node.terrainType == (byte)TerrainType.Unwalkable)
+			{
+				return false;
+			}
+			else if (node.terrainType == (byte)TerrainType.ShortWall || node.terrainType == (byte)TerrainType.TallWall)
+			{
+				return mov == MoveType.Blink;
+			}
+			return false;
+		}
+
 
 		// 射线碰撞，计算起点到终点间的最远可到达点
-		public FixVector3 RayCast2DForMoving(FixVector3 from, FixVector3 to)
+		public FixVector3 RayCast2DForMoving(FixVector3 from, FixVector3 to, MoveType mov)
 		{
 			FixVector3 blockPoint = from;
 			int stepLen = Math.Min(200, navGridData.GridSize);
@@ -186,8 +211,11 @@ namespace PathFinding
 					var tmpPos = new FixVector3(x, 0, (int)z);
 					if (!IsPassable(tmpPos))
 					{
-						blocked = true;
-						break;
+						if (!SpecialTerrainPassable(tmpPos, mov))
+						{
+							blocked = true;
+							break;
+						}
 					}
 
 					blockPoint.Set(x, from.y, (int)z);
@@ -204,8 +232,11 @@ namespace PathFinding
 					var tmpPos = new FixVector3((int)x, 0, z);
 					if (!IsPassable(tmpPos))
 					{
-						blocked = true;
-						break;
+						if (!SpecialTerrainPassable(tmpPos, mov))
+						{
+							blocked = true;
+							break;
+						}
 					}
 
 					blockPoint.Set((int)x, from.y, z);
