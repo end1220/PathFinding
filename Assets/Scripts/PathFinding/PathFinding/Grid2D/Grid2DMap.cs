@@ -189,6 +189,42 @@ namespace PathFinding
 		}
 
 
+		public FixVector3 GetNearestForce(FixVector3 position, int step)
+		{
+			if (IsPassable(position))
+				return position;
+			Int2 pt2 = FixVector3ToInt2(position);
+			for (int x = pt2.x; x < pt2.x + step; ++x)
+			{
+				for (int y = pt2.y; y < pt2.y + step; ++y)
+				{
+					if (IsNodePassable(x, y))
+						return Int2ToFixVector3(new Int2(x, y));
+				}
+				for (int y = pt2.y; y > pt2.y - step; --y)
+				{
+					if (IsNodePassable(x, y))
+						return Int2ToFixVector3(new Int2(x, y));
+				}
+			}
+			for (int x = pt2.x; x > pt2.x - step; --x)
+			{
+				for (int y = pt2.y; y < pt2.y + step; ++y)
+				{
+					if (IsNodePassable(x, y))
+						return Int2ToFixVector3(new Int2(x,y));
+				}
+				for (int y = pt2.y; y > pt2.y - step; --y)
+				{
+					if (IsNodePassable(x, y))
+						return Int2ToFixVector3(new Int2(x, y));
+				}
+			}
+			UnityEngine.Debug.LogError("Grid2dMap: GetNearestForce failed.");
+			return position;
+		}
+
+
 		// 射线碰撞，计算起点到终点间的最远可到达点
 		public FixVector3 RayCast2DForMoving(FixVector3 from, FixVector3 to, MoveType mov)
 		{
