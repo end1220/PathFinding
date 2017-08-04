@@ -9,8 +9,8 @@ namespace PathFinding
 	{
 		public NavMeshData navData;
 
-		private Color green = new Color(0.2f, 0.5f, 0.2f);
-		private Color red = new Color(0.5f, 0.2f, 0.2f);
+		//private Color green = new Color(0.2f, 0.5f, 0.2f);
+		//private Color red = new Color(0.5f, 0.2f, 0.2f);
 
 		private Material navmeshMaterial;
 		private Material navmeshOutlineMaterial;
@@ -31,11 +31,13 @@ namespace PathFinding
 
 		void OnDrawGizmosSelected()
 		{
+#if UNITY_EDITOR
 			if (navmeshMaterial == null)
 			{
 				navmeshMaterial = UnityEditor.AssetDatabase.LoadAssetAtPath<Material>(editorAssets + "/Materials/Navmesh.mat");
 				navmeshOutlineMaterial = UnityEditor.AssetDatabase.LoadAssetAtPath<Material>(editorAssets + "/Materials/NavmeshOutline.mat");
 			}
+#endif
 
 			Matrix4x4 defaultMatrix = Gizmos.matrix;
 			Gizmos.matrix = transform.localToWorldMatrix;

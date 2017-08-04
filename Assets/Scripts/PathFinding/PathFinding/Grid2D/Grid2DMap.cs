@@ -155,6 +155,25 @@ namespace PathFinding
 			return new FixVector3(x, 0, z);;
 		}
 
+		public bool IsMissileCross(FixVector3 position,int CrossType)
+		{
+			Int2 pt2d = FixVector3ToInt2(position);
+			var node = GetNode(pt2d.x, pt2d.y);
+
+			if(CrossType == 1)
+			{
+				if (node.terrainType == (byte)TerrainType.ShortWall || node.terrainType == (byte)TerrainType.Walkable)
+				{
+					return true;
+				}
+			}else if (CrossType == 2)
+			{
+				if (node.terrainType == (byte)TerrainType.Walkable)
+					return true;
+			}
+
+			return false;
+		}
 
 		public bool IsPassable(FixVector3 position)
 		{
@@ -169,10 +188,16 @@ namespace PathFinding
 		/// <param name="position"></param>
 		/// <param name="mov"></param>
 		/// <returns></returns>
-		private bool SpecialTerrainPassable(FixVector3 position, MoveType mov)
+		public bool SpecialTerrainPassable(FixVector3 position, MoveType mov)
 		{
 			Int2 pt2d = FixVector3ToInt2(position);
 			var node = GetNode(pt2d.x, pt2d.y);
+
+			if (node.terrainType == (byte)TerrainType.ShortWall)
+			{
+				if (mov == MoveType.ShortWall)
+					return true;
+			}
 			if (node.terrainType == (byte)TerrainType.Walkable)
 			{
 				return true;

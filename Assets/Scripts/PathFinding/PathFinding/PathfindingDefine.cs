@@ -19,7 +19,8 @@ namespace PathFinding
 	{
 		Normal,     // 普通行走
 		Charge,     // 冲刺
-		Blink       // 闪现
+		Blink,       // 闪现
+		ShortWall,	// 只能翻越短墙
 	}
 
 }

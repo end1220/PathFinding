@@ -48,7 +48,7 @@ namespace PathFinding
 
 			//var gridSize = new Vector3(cfg.cellSize / 1000f, cfg.cellSize / 1000f, cfg.cellSize / 1000f);
 			//var minPos = navData.buildConfig.worldMinPos;
-			float cellSize = cfg.cellSize / 1000f;
+			//float cellSize = cfg.cellSize / 1000f;
 			//float cellRadius = cellSize / 2;
 			Vector3 nodesz = new Vector3(0.05f, 0.05f, 0.05f);
 
@@ -88,8 +88,6 @@ namespace PathFinding
 
 			if (graphMap != null && drawGraph)
 			{
-				List<EdgeData> borderEdges = new List<EdgeData>();
-
 				for (int i = 0; i < graphMap.edgeList.Count; ++i)
 				{
 					var edge = graphMap.edgeList[i];
