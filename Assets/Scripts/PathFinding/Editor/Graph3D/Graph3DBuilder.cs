@@ -70,7 +70,7 @@ namespace PathFinding
 				
 				EditorUtility.ClearProgressBar();
 			}
-			catch (System.Exception e)
+			catch (Exception e)
 			{
 				EditorUtility.ClearProgressBar();
 				Debug.LogError("Build Failed ! " + e.ToString());

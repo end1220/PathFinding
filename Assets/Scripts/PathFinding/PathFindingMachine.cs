@@ -14,7 +14,6 @@ namespace PathFinding
 
 		public NavGrid2DData navGrid;
 		public NavGraph3DData navGraph;
-		//public bool enable3DNavigation;
 		public PathMode pathMode = PathMode.Grid2D;
 
 		private Grid2DMap gridMap;
@@ -36,31 +35,34 @@ namespace PathFinding
 				if (navGrid == null && navGraph == null)
 				{
 					Log.Error("Navigation data is null !");
+					return;
 				}
-				else
+				if (pathMode == PathMode.Grid2D)
 				{
-					if (pathMode == PathMode.Graph3D)
-					{
-						graphMap = new Graph3DMap();
-						graphMap.Init(navGraph);
-						graphPathFinder.Setup(graphMap);
-					}
-					else if (pathMode == PathMode.Grid2D)
-					{
-						gridMap = new Grid2DMap();
-						gridMap.InitMap(navGrid.Width, navGrid.Height, navGrid);
-						gridPathFinder.Setup(gridMap);
-					}
-
-#if UNITY_EDITOR
-					SetNavDebugDraw();
-#endif
+					gridMap = new Grid2DMap();
+					gridMap.InitMap(navGrid.Width, navGrid.Height, navGrid);
+					gridPathFinder.Setup(gridMap);
+				}
+				else if (pathMode == PathMode.Graph3D)
+				{
+					graphMap = new Graph3DMap();
+					graphMap.Init(navGraph);
+					graphPathFinder.Setup(graphMap);
 				}
 			}
 			catch (Exception e)
 			{
 				Log.Error(e.ToString());
 			}
+		}
+
+
+		private void OnDrawGizmosSelected()
+		{
+			if (pathMode == PathMode.Grid2D && navGrid != null)
+				navGrid.OnDrawGizmosSelected(transform);
+			else if (pathMode == PathMode.Graph3D && navGraph != null)
+				navGraph.OnDrawGizmosSelected(transform);
 		}
 
 
@@ -83,39 +85,6 @@ namespace PathFinding
 		{
 			return pathMode == PathMode.Graph3D ? position : gridMap.GetNearestForce(position, step);
 		}
-
-		private void SetNavDebugDraw()
-		{
-			if (pathMode == PathMode.Graph3D)
-			{
-				NavGraph3DGizmo gizmo = gameObject.GetComponent<NavGraph3DGizmo>();
-				if (gizmo == null)
-					gizmo = gameObject.AddComponent<NavGraph3DGizmo>();
-
-				gizmo.cfg = navGraph.buildConfig;
-				gizmo.graphMap = graphMap;
-			}
-			else
-			{
-				NavGrid2DGizmo gizmoLine = gameObject.GetComponent<NavGrid2DGizmo>();
-				if (gizmoLine == null)
-					gizmoLine = gameObject.AddComponent<NavGrid2DGizmo>();
-
-				Vector3[,] pos = new Vector3[navGrid.Width, navGrid.Height];
-				for (int x = 0; x < navGrid.Width; ++x)
-				{
-					for (int z = 0; z < navGrid.Height; ++z)
-					{
-						float fposx = FixMath.mm2m(navGrid.MinX) + FixMath.mm2m(navGrid.GridSize) * (x + 0.5f);
-						float fposz = FixMath.mm2m(navGrid.MinZ) + FixMath.mm2m(navGrid.GridSize) * (z + 0.5f);
-						pos[x, z] = new Vector3(fposx, 1, fposz);
-					}
-				}
-
-				gizmoLine.SetGridPosList(navGrid, pos, navGrid.Width, navGrid.Height);
-			}
-		}
-
 
 		public Int3 Vector3ToPoint3D(Vector3 position)
 		{

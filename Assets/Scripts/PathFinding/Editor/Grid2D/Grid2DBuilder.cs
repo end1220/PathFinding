@@ -27,23 +27,28 @@ namespace PathFinding
 		public int width;
 		public int height;
 		GridInfo[,] gridList;
+		public int slope;
 		public float tan_slope;
 
-		public NavGrid2DData navigation;
+		public NavGrid2DData navData;
+
+		const float badY = 10000;
 
 
 		public void Build()
 		{
-			Fill_Grid();
+			InitFill();
+			TerrainTest();
+			SlopeTest();
+			DynamicObstacleTest();
+			CreateAsset();
 		}
 
-
-		private void Fill_Grid()
+		/// <summary>
+		/// 初始化填充数据
+		/// </summary>
+		private void InitFill()
 		{
-			int terrainLayer = LayerMask.NameToLayer(AppConst.LayerTerrain);
-			int obstacleLayer = LayerMask.NameToLayer(AppConst.LayerObstacle);
-			int linkLayer = LayerMask.NameToLayer(AppConst.LayerLink);
-
 			gridList = new GridInfo[width, height];
 			for (int x = 0; x < width; ++x)
 			{
@@ -53,6 +58,17 @@ namespace PathFinding
 					gridList[x, y].mask = 0;
 				}
 			}
+		}
+
+		/// <summary>
+		/// 地形类型检查，简单设置objstacle地表为不可走.
+		/// 包含了角色半径的处理
+		/// </summary>
+		private void TerrainTest()
+		{
+			int terrainLayer = LayerMask.NameToLayer(AppConst.LayerTerrain);
+			int obstacleLayer = LayerMask.NameToLayer(AppConst.LayerObstacle);
+			int linkLayer = LayerMask.NameToLayer(AppConst.LayerLink);
 
 			// get hit points.
 			Ray ray = new Ray();
@@ -65,7 +81,6 @@ namespace PathFinding
 
 			float sideLen = (gridSize / 2.0f) * 0.5f;
 			sideLen += agentRadius;
-			float badY = 10000;
 			for (int x = 0; x < width; ++x)
 			{
 				for (int y = 0; y < height; ++y)
@@ -123,8 +138,19 @@ namespace PathFinding
 				}
 				UpdateProgress(x, width, "");
 			}
+		}
 
-			// calculate slope values.
+		/// <summary>
+		/// 坡度检查，超过设定坡度则不可走。
+		/// 另外对墙类型做特殊处理
+		/// </summary>
+		private void SlopeTest()
+		{
+			int terrainLayer = LayerMask.NameToLayer(AppConst.LayerTerrain);
+			int obstacleLayer = LayerMask.NameToLayer(AppConst.LayerObstacle);
+			int linkLayer = LayerMask.NameToLayer(AppConst.LayerLink);
+			float badY = 10000;
+
 			for (int x = 0; x < width; ++x)
 			{
 				for (int y = 0; y < height; ++y)
@@ -205,6 +231,18 @@ namespace PathFinding
 				UpdateProgress(x, width, "");
 			}
 
+			EditorUtility.ClearProgressBar();
+		}
+
+
+		private void DynamicObstacleTest()
+		{
+
+		}
+
+
+		private void CreateAsset()
+		{
 			NavGrid2DData nav = ScriptableObject.CreateInstance<NavGrid2DData>();
 			ushort[,] maskList = new ushort[width, height];
 			byte[,] terrain = new byte[width, height];
@@ -216,10 +254,10 @@ namespace PathFinding
 					terrain[x, y] = gridList[x, y].terrain;
 				}
 			}
-			nav._setData(maskList, terrain, width, height, (int)FixMath.m2mm(gridSize), (int)FixMath.m2mm(minX), (int)FixMath.m2mm(minZ));
-			navigation = nav;
-
-			EditorUtility.ClearProgressBar();
+			nav._setData(maskList, terrain, width, height, 
+				FixMath.m2mm(gridSize), FixMath.m2mm(minX), FixMath.m2mm(minZ),
+				FixMath.m2mm(agentRadius), slope);
+			navData = nav;
 		}
 
 
