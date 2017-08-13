@@ -519,7 +519,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8214b7fae899b2d41b44f3649386b110, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  machine: {fileID: 0}
+  machine: {fileID: 532173034}
   line: {fileID: 1353898671}
   start: 0
   end: 66

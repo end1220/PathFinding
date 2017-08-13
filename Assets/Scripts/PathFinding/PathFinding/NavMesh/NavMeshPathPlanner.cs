@@ -7,7 +7,7 @@ using AStar;
 namespace PathFinding
 {
 	
-	public class NavMeshPathPlanner : AStar.AStarPathPlanner
+	public class NavMeshPathPlanner : AStarPathPlanner
 	{
 		NavMeshNode startNode;
 		NavMeshNode targetNode;
@@ -18,10 +18,19 @@ namespace PathFinding
 
 		public bool FindPath(FixVector3 from, FixVector3 to, ref List<FixVector3> result)
 		{
-			NavMeshMap gridMap = this.map as NavMeshMap;
+			NavMeshMap navMap = this.map as NavMeshMap;
 
-			int start = gridMap.FixVector3ToInt2(from);
-			int end = gridMap.FixVector3ToInt2(to);
+			//float distance = 0;
+			//var bestStart = new NNInfo();
+			//var bestEnd = new NNInfo();
+			//bestStart = navMap.bbTree.QueryClosestXZ(to.ToVector3(), null, ref distance, bestStart);
+			//bestEnd = navMap.bbTree.QueryClosestXZ(from.ToVector3(), null, ref distance, bestEnd);
+			//int start = bestStart.node.id;
+			//int end = bestEnd.node.id;
+
+			int start = navMap.bbTree.QueryInside(to.ToVector3(), null).id;
+			int end = navMap.bbTree.QueryInside(from.ToVector3(), null).id;
+
 
 			var path = FindPath(start, end);
 

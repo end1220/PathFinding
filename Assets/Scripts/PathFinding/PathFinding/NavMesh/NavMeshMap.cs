@@ -9,6 +9,8 @@ namespace PathFinding
 	{
 		NavMeshData navData;
 
+		public BBTree bbTree = new BBTree();
+
 
 		public void InitMap(NavMeshData data)
 		{
@@ -20,16 +22,18 @@ namespace PathFinding
 				AddNode(node);
 			}
 
-// 			for (int i = 0; i < navData.nodes.Length; i++)
-// 			{
-// 				NavMeshNode node = navData.nodes[i] as NavMeshNode;
-// 
-// 				for (int c = 0; c < node.connections.Length; ++c)
-// 				{
-// 					GraphEdge edge = new GraphEdge(node.id, node.connections[c].id, (int)node.connectionCosts[c]);
-// 					this.AddEdge(edge);
-// 				}
-// 			}
+			// 			for (int i = 0; i < navData.nodes.Length; i++)
+			// 			{
+			// 				NavMeshNode node = navData.nodes[i] as NavMeshNode;
+			// 
+			// 				for (int c = 0; c < node.connections.Length; ++c)
+			// 				{
+			// 					GraphEdge edge = new GraphEdge(node.id, node.connections[c].id, (int)node.connectionCosts[c]);
+			// 					this.AddEdge(edge);
+			// 				}
+			// 			}
+
+			bbTree.RebuildFrom(navData.nodes);
 
 		}
 

@@ -34,7 +34,7 @@ namespace PathFinding
 		{
 			try
 			{
-				if (navGrid == null && navGraph == null)
+				if (navGrid == null && navGraph == null && navMesh == null)
 				{
 					Log.Error("Navigation data is null !");
 					return;
@@ -72,7 +72,11 @@ namespace PathFinding
 			else if (pathMode == PathMode.Graph3D && navGraph != null)
 				navGraph.OnDrawGizmosSelected(transform);
 			else if (pathMode == PathMode.NavMesh && navMesh != null)
+			{
+				//if (navMeshMap != null)
+				//	navMeshMap.bbTree.OnDrawGizmos();
 				navMesh.OnDrawGizmosSelected(transform);
+			}
 		}
 
 
@@ -88,6 +92,11 @@ namespace PathFinding
 					return navPathFinder.FindPath(from, to, ref result);
 			}
 			return false;
+		}
+
+		public List<Int3> FindPath(int start, int end)
+		{
+			return navPathFinder.FindPath(start, end);
 		}
 
 		public bool IsPassable(FixVector3 position)
