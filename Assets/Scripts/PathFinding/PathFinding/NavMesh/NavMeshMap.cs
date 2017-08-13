@@ -1,5 +1,5 @@
 ﻿
-using Graph;
+
 using AStar;
 
 
@@ -8,6 +8,7 @@ namespace PathFinding
 	public class NavMeshMap : AStarMap
 	{
 		NavMeshData navData;
+
 
 		public void InitMap(NavMeshData data)
 		{

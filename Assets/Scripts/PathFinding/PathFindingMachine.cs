@@ -63,6 +63,8 @@ namespace PathFinding
 				navGrid.OnDrawGizmosSelected(transform);
 			else if (pathMode == PathMode.Graph3D && navGraph != null)
 				navGraph.OnDrawGizmosSelected(transform);
+			else if (pathMode == PathMode.NavMesh && navMesh != null)
+				navMesh.OnDrawGizmosSelected(transform);
 		}
 
 

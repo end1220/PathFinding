@@ -1,7 +1,7 @@
 // Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 // Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
-Shader "Hidden/AstarPathfindingProject/Navmesh" {
+Shader "AstarPathfindingProject/Navmesh" {
 Properties {
 	_Color ("Main Color", Color) = (1,1,1,0.5)
 	_MainTex ("Texture", 2D) = "white" { }
