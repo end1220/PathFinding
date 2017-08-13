@@ -16,6 +16,31 @@ namespace PathFinding
 		private List<Int3> resultCache = new List<Int3>();
 
 
+		public bool FindPath(FixVector3 from, FixVector3 to, ref List<FixVector3> result)
+		{
+			NavMeshMap gridMap = this.map as NavMeshMap;
+
+			int start = gridMap.FixVector3ToInt2(from);
+			int end = gridMap.FixVector3ToInt2(to);
+
+			var path = FindPath(start, end);
+
+			result.Clear();
+			for (int i = 0; i < path.Count; ++i)
+			{
+				result.Add(new FixVector3(path[i].x, path[i].y, path[i].z));
+			}
+
+			if (result.Count > 0)
+			{
+				result[0] = from;
+				result[result.Count - 1] = to;
+			}
+
+			return result.Count >= 2;
+		}
+
+
 		public List<Int3> FindPath(int start, int end)
 		{
 			NavMeshNode endNode = _findPath(start, end);

@@ -53,6 +53,7 @@ namespace FixedPoint
 			Stopwatch watch = new Stopwatch();
 			watch.Start();
 
+			//machine.FindPath();
 
 			if (result.Count > 0)
 			{

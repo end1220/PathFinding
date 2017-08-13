@@ -20,6 +20,8 @@ namespace PathFinding
 		private Grid2DPathPlanner gridPathFinder = new Grid2DPathPlanner();
 		private Graph3DMap graphMap;
 		private Graph3DPathPlanner graphPathFinder = new Graph3DPathPlanner();
+		private NavMeshMap navMeshMap;
+		private NavMeshPathPlanner navPathFinder = new NavMeshPathPlanner();
 
 
 		void Awake()
@@ -49,6 +51,12 @@ namespace PathFinding
 					graphMap.Init(navGraph);
 					graphPathFinder.Setup(graphMap);
 				}
+				else if (pathMode == PathMode.NavMesh)
+				{
+					navMeshMap = new NavMeshMap();
+					navMeshMap.InitMap(navMesh);
+					navPathFinder.Setup(navMeshMap);
+				}
 			}
 			catch (Exception e)
 			{
@@ -70,7 +78,16 @@ namespace PathFinding
 
 		public bool FindPath(FixVector3 from, FixVector3 to, ref List<FixVector3> result)
 		{
-			return pathMode == PathMode.Graph3D ? graphPathFinder.FindPath3D(from, to, ref result) : gridPathFinder.FindPath(from, to, ref result);
+			switch (pathMode)
+			{
+				case PathMode.Grid2D:
+					return gridPathFinder.FindPath(from, to, ref result);
+				case PathMode.Graph3D:
+					return graphPathFinder.FindPath3D(from, to, ref result);
+				case PathMode.NavMesh:
+					return navPathFinder.FindPath(from, to, ref result);
+			}
+			return false;
 		}
 
 		public bool IsPassable(FixVector3 position)
