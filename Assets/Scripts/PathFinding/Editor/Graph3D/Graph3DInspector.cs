@@ -29,12 +29,12 @@ namespace PathFinding
 			saveFilePath = scenePath.Substring(0, scenePath.IndexOf(".unity")) + "_navgraph.asset";
 
 			// load previous settings
-			var existingAsset = AssetDatabase.LoadAssetAtPath<NavGrid2DData>(saveFilePath);
+			var existingAsset = AssetDatabase.LoadAssetAtPath<NavGraph3DData>(saveFilePath);
 			if (existingAsset != null)
 			{
-				GridSize = existingAsset.GridSize * 0.001f;
-				RoleRadius = existingAsset.AgentRadius * 0.001f;
-				MaxSlope = existingAsset.MaxSlope;
+				GridSize = existingAsset.buildConfig.cellSize * 0.001f;
+				RoleRadius = existingAsset.buildConfig.agentRadius * 0.001f;
+				MaxSlope = existingAsset.buildConfig.maxSlope;
 			}
 
 			if (worldBoxObj == null)

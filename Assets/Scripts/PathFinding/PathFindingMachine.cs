@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using TwFramework;
 
 
 namespace PathFinding
@@ -14,6 +13,7 @@ namespace PathFinding
 
 		public NavGrid2DData navGrid;
 		public NavGraph3DData navGraph;
+		public NavMeshData navMesh;
 		public PathMode pathMode = PathMode.Grid2D;
 
 		private Grid2DMap gridMap;

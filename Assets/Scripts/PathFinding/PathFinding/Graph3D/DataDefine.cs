@@ -43,6 +43,7 @@ namespace PathFinding.Graph3d
 		public float agentHeight;
 		public float agentRadius;
 		public int agentHeightStep;
+		public int maxSlope;
 		[NonSerialized]
 		public float tanSlope;
 		[NonSerialized]

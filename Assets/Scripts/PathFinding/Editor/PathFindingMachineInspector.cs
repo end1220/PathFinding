@@ -17,6 +17,7 @@ namespace PathFinding
 		private EditorInspector inspector;
 		private Grid2DInspector grid2d;
 		private Graph3DInspector graph3d;
+		private NavMeshInspector navMesh;
 
 
 		void OnEnable()
@@ -40,7 +41,8 @@ namespace PathFinding
 			}
 			else if (machine.pathMode == PathMode.NavMesh)
 			{
-
+				inspector = navMesh;
+				machine.navMesh = EditorGUILayout.ObjectField("Nav Asset", machine.navMesh, typeof(NavMeshData), false) as NavMeshData;
 			}
 
 			EditorGUILayout.Separator();
@@ -75,6 +77,8 @@ namespace PathFinding
 				grid2d = new Grid2DInspector(machine);
 			if (graph3d == null)
 				graph3d = new Graph3DInspector(machine);
+			if (navMesh == null)
+				navMesh = new NavMeshInspector(machine);
 		}
 
 

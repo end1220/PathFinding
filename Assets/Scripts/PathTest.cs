@@ -18,55 +18,13 @@ namespace FixedPoint
 
 	public class PathTest : MonoBehaviour
 	{
-		public static PathTest Instance;
-
-		// navigation asset
-		public NavGrid2DData navGrid;
-		public NavGraph3DData navGraph;
-		public NavMeshData navMesh;
-
-		// path finding
-		public PathMode mode;
-		private Grid2DMap gridMap;
-		private Grid2DPathPlanner gridPathFinder = new Grid2DPathPlanner();
-
-		private Graph3DMap graphMap;
-		private Graph3DPathPlanner graphPathFinder = new Graph3DPathPlanner();
-
-		private NavMeshMap navmeshMap;
-		private NavMeshPathPlanner navPathPlannner = new NavMeshPathPlanner();
-
+		public PathFindingMachine machine;
 
 		public DebugLine line;
 
 		public int start = 0;
 		public int end = 10;
 
-		void Awake()
-		{
-			Instance = this;
-
-			if (mode == PathMode.Graph)
-			{
-				graphMap = new Graph3DMap();
-				graphMap.Init(navGraph);
-				graphPathFinder.Setup(graphMap);
-			}
-			else if (mode == PathMode.Grid)
-			{
-				gridMap = new Grid2DMap();
-				gridMap.InitMap(navGrid.Width, navGrid.Height, navGrid);
-				gridPathFinder.Setup(gridMap);
-			}
-			else if (mode == PathMode.NavMesh)
-			{
-				navmeshMap = new NavMeshMap();
-				navmeshMap.InitMap(navMesh);
-				navPathPlannner.Setup(navmeshMap);
-			}
-
-			SetNavDebugDraw();
-		}
 
 
 		List<Vector3> result = new List<Vector3>();
@@ -77,6 +35,7 @@ namespace FixedPoint
 				DoIt();
 			}
 		}
+
 
 		float lastTime = 0;
 		void Update()
@@ -94,24 +53,6 @@ namespace FixedPoint
 			Stopwatch watch = new Stopwatch();
 			watch.Start();
 
-			if (mode == PathMode.Graph)
-			{
-				int start = random.Next(0, 1600);
-				int end = random.Next(0, 1600);
-				graphFindPath(start, end, ref result);
-			}
-			else if (mode == PathMode.Grid)
-			{
-				int startx = random.Next(2, 38);
-				int starty = random.Next(2, 38);
-				int endx = random.Next(2, 38);
-				int endy = random.Next(2, 38);
-				gridFindPath(startx, starty, endx, endy, ref result);
-			}
-			else if (mode == PathMode.NavMesh)
-			{
-				navFindPath(start,end, ref result);
-			}
 
 			if (result.Count > 0)
 			{
@@ -125,93 +66,7 @@ namespace FixedPoint
 		}
 
 
-		private bool graphFindPath(int startId, int endId, ref List<Vector3> result)
-		{
-			var path = graphPathFinder.FindPath3D(startId, endId);
-
-			result.Clear();
-			for (int i = 0; i < path.Count; ++i)
-			{
-				var node = graphMap.GetNodeAt(path[i].x, path[i].y, path[i].z);
-				result.Add(node.worldPosition.ToVector3());
-			}
-
-			return result.Count > 0;
-		}
-
-
-		private bool gridFindPath(int startX, int startY, int endX, int endY, ref List<Vector3> result)
-		{
-			var path = gridPathFinder.FindPath(startX, startY, endX, endY);
-
-			result.Clear();
-			for (int i = 0; i < path.Count; ++i)
-			{
-				float x = (navGrid.MinX + (path[i].x + 0.5f) * navGrid.GridSize) * 0.001f;
-				float y = (navGrid.MinZ + (path[i].y + 0.5f) * navGrid.GridSize) * 0.001f;
-				Vector3 pos = new Vector3(x, 1f, y);
-				result.Add(pos);
-			}
-
-			return result.Count > 0;
-		}
-
-		private bool navFindPath(int start, int end, ref List<Vector3> result)
-		{
-			var path = navPathPlannner.FindPath(start, end);
-
-			result.Clear();
-			for (int i = 0; i < path.Count; ++i)
-			{
-				Vector3 pos = (Vector3)path[i];
-				result.Add(pos);
-			}
-
-			return result.Count > 0;
-		}
-
-
-		private void SetNavDebugDraw()
-		{
-			if (mode == PathMode.Graph)
-			{
-				NavGraph3DGizmo gizmo = gameObject.GetComponent<NavGraph3DGizmo>();
-				if (gizmo == null)
-					gizmo = gameObject.AddComponent<NavGraph3DGizmo>();
-
-				gizmo.cfg = navGraph.buildConfig;
-				gizmo.graphMap = graphMap;
-			}
-			else if (mode == PathMode.Grid)
-			{
-				NavGrid2DGizmo gizmoLine = gameObject.GetComponent<NavGrid2DGizmo>();
-				if (gizmoLine == null)
-					gizmoLine = gameObject.AddComponent<NavGrid2DGizmo>();
-
-				Vector3[,] pos = new Vector3[navGrid.Width, navGrid.Height];
-				for (int x = 0; x < navGrid.Width; ++x)
-				{
-					for (int z = 0; z < navGrid.Height; ++z)
-					{
-						float fposx = (navGrid.MinX + navGrid.GridSize * (x + 0.5f)) * 0.001f;
-						float fposz = (navGrid.MinZ + navGrid.GridSize * (z + 0.5f)) * 0.001f;
-						pos[x, z] = new Vector3(fposx, 1f, fposz);
-					}
-				}
-
-				gizmoLine.SetGridPosList(navGrid, pos, navGrid.Width, navGrid.Height);
-			}
-			else if (mode == PathMode.NavMesh)
-			{
-				NavMeshGizmo gizmo = gameObject.GetComponent<NavMeshGizmo>();
-				if (gizmo == null)
-					gizmo = gameObject.AddComponent<NavMeshGizmo>();
-				gizmo.navData = navMesh;
-
-			}
-		}
 		
-
 	}
 
 }
