@@ -61,7 +61,7 @@ namespace PathFinding
 		public bool GetPortal(NavMeshNode other, List<Int3> left, List<Int3> right)
 		{
 			int first = -1;
-			int second = -1;
+			//int second = -1;
 
 			int acount = 3;
 			int bcount = 3;
@@ -75,7 +75,7 @@ namespace PathFinding
 					if (va == other.GetVertexIndex((b + 1) % bcount) && GetVertexIndex((a + 1) % acount) == other.GetVertexIndex(b))
 					{
 						first = a;
-						second = b;
+						//second = b;
 						a = acount;
 						break;
 					}

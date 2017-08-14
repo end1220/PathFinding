@@ -6,7 +6,7 @@ using AStar;
 namespace PathFinding
 {
 	
-	public class Graph2DPathPlanner : AStarPathPlanner
+	public class Graph2DPathPlanner : IPathPlanner
 	{
 		Graph2DNode startNode;
 		Graph2DNode targetNode;

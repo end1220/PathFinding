@@ -1,5 +1,5 @@
 
-using System;
+
 using System.Collections.Generic;
 using AStar;
 
@@ -7,7 +7,7 @@ using AStar;
 namespace PathFinding
 {
 	
-	public class NavMeshPathPlanner : AStarPathPlanner
+	public class NavMeshPathPlanner : IPathPlanner
 	{
 		NavMeshNode startNode;
 		NavMeshNode targetNode;
@@ -16,29 +16,23 @@ namespace PathFinding
 		private List<Int3> resultCache = new List<Int3>();
 
 
-		public bool FindPath(FixVector3 from, FixVector3 to, ref List<FixVector3> result)
+		public override bool FindPath(FixVector3 from, FixVector3 to, ref List<FixVector3> result)
 		{
+			result.Clear();
+
 			NavMeshMap navMap = this.map as NavMeshMap;
 
-			//float distance = 0;
-			//var bestStart = new NNInfo();
-			//var bestEnd = new NNInfo();
-			//bestStart = navMap.bbTree.QueryClosestXZ(to.ToVector3(), null, ref distance, bestStart);
-			//bestEnd = navMap.bbTree.QueryClosestXZ(from.ToVector3(), null, ref distance, bestEnd);
-			//int start = bestStart.node.id;
-			//int end = bestEnd.node.id;
+			var startNode = navMap.bbTree.QueryInside(to.ToVector3(), null);
+			var endNode = navMap.bbTree.QueryInside(from.ToVector3(), null);
+			if (startNode == null || endNode == null)
+				return false;
 
-			int start = navMap.bbTree.QueryInside(to.ToVector3(), null).id;
-			int end = navMap.bbTree.QueryInside(from.ToVector3(), null).id;
-
+			int start = startNode.id;
+			int end = endNode.id;
 
 			var path = FindPath(start, end);
-
-			result.Clear();
 			for (int i = 0; i < path.Count; ++i)
-			{
 				result.Add(new FixVector3(path[i].x, path[i].y, path[i].z));
-			}
 
 			if (result.Count > 0)
 			{

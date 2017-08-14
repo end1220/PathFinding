@@ -18,9 +18,9 @@ namespace FixedPoint
 
 		private List<FixVector3> localVertexes = new List<FixVector3>();
 
-		private readonly int[] xOffset = { -1, 1, 1, -1, -1, 1, 1, -1 };
-		private readonly int[] yOffset = { 1, 1, 1, 1, -1, -1, -1, -1 };
-		private readonly int[] zOffset = { 1, 1, -1, -1, 1, 1, -1, -1 };
+		//private readonly int[] xOffset = { -1, 1, 1, -1, -1, 1, 1, -1 };
+		//private readonly int[] yOffset = { 1, 1, 1, 1, -1, -1, -1, -1 };
+		//private readonly int[] zOffset = { 1, 1, -1, -1, 1, 1, -1, -1 };
 
 		protected override bool IsPointIn(FixVector3 position)
 		{

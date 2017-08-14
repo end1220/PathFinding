@@ -8,7 +8,7 @@ using AStar;
 
 namespace PathFinding
 {
-	public class Graph3DMap : AStarMap
+	public class Graph3DMap : AStarMap, INavGraph
 	{
 		public NavGraph3DData navGraphData;
 
@@ -38,8 +38,9 @@ namespace PathFinding
 		}
 
 
-		public void Init(NavGraph3DData navData)
+		public void Init(INavData data)
 		{
+			NavGraph3DData navData = data as NavGraph3DData;
 			ParseNavData(navData);
 
 #if !UNITY_EDITOR
@@ -193,7 +194,7 @@ namespace PathFinding
 		}
 
 		
-		public FixVector3 RayCast3DForMoving(FixVector3 from, FixVector3 to)
+		public FixVector3 RayCastForMoving(FixVector3 from, FixVector3 to, MoveType mov)
 		{
 			int halfAgentHeightStep = Math.Max(1, navGraphData.buildConfig.agentHeightStep / 2);
 

@@ -5,7 +5,7 @@ using AStar;
 
 namespace PathFinding
 {
-	public class Grid2DMap : AStarMap
+	public class Grid2DMap : AStarMap, INavGraph
 	{
 		private const int NEIGHBOUR_COUNT = 8;
 		private readonly int[] xOffset = { -1, -1, -1, 0, 1, 1, 1, 0 };
@@ -17,15 +17,15 @@ namespace PathFinding
 
 		private int nodeIdCounter;
 
-		NavGrid2DData navGridData;
+		NavGrid2DData navData;
 
 
-		public void InitMap(int width, int height, NavGrid2DData data)
+		public void Init(INavData data)
 		{
-			navGridData = data;
+			navData = data as NavGrid2DData;
 			nodeIdCounter = 0;
-			this.width = width;
-			this.height = height;
+			this.width = navData.Width;
+			this.height = navData.Height;
 
 			nodes = new Grid2DNode[width, height];
 
@@ -37,32 +37,12 @@ namespace PathFinding
 					nodes[x, y] = node;
 					node.x = (ushort)x;
 					node.y = (ushort)y;
-					node.blockValue = data.GetMask(x, y);
-					node.terrainType = data.GetTerrain(x, y);
+					node.blockValue = navData.GetMask(x, y);
+					node.terrainType = navData.GetTerrain(x, y);
 				}
 			}
 		}
 
-		public void InitMap(int width, int height, ushort[,] mask)
-		{
-			nodeIdCounter = 0;
-			this.width = width;
-			this.height = height;
-
-			nodes = new Grid2DNode[width, height];
-
-			for (int x = 0; x < width; ++x)
-			{
-				for (int y = 0; y < height; ++y)
-				{
-					Grid2DNode node = new Grid2DNode(nodeIdCounter++);
-					nodes[x, y] = node;
-					node.x = (ushort)x;
-					node.y = (ushort)y;
-					node.blockValue = (ushort)(mask != null ? mask[x, y] : 0);
-				}
-			}
-		}
 
 		public Grid2DNode GetNode(int x, int y)
 		{
@@ -139,9 +119,9 @@ namespace PathFinding
 
 		public Int2 FixVector3ToInt2(FixVector3 position)
 		{
-			int gridSize = navGridData.GridSize;
-			int dx = position.x - navGridData.MinX;
-			int dz = position.z - navGridData.MinZ;
+			int gridSize = navData.GridSize;
+			int dx = position.x - navData.MinX;
+			int dz = position.z - navData.MinZ;
 			int x = dx / gridSize;
 			int z = dz / gridSize;
 			return new Int2(x, z);
@@ -150,8 +130,8 @@ namespace PathFinding
 
 		public FixVector3 Int2ToFixVector3(Int2 point)
 		{
-			int x = navGridData.MinX + navGridData.GridSize * point.x;
-			int z = navGridData.MinZ + navGridData.GridSize * point.y;
+			int x = navData.MinX + navData.GridSize * point.x;
+			int z = navData.MinZ + navData.GridSize * point.y;
 			return new FixVector3(x, 0, z);;
 		}
 
@@ -251,10 +231,10 @@ namespace PathFinding
 
 
 		// 射线碰撞，计算起点到终点间的最远可到达点
-		public FixVector3 RayCast2DForMoving(FixVector3 from, FixVector3 to, MoveType mov)
+		public FixVector3 RayCastForMoving(FixVector3 from, FixVector3 to, MoveType mov)
 		{
 			FixVector3 blockPoint = from;
-			int stepLen = Math.Min(200, navGridData.GridSize);
+			int stepLen = Math.Min(200, navData.GridSize);
 			bool blocked = false;
 
 			// y = a*x + b

@@ -29,29 +29,13 @@ namespace PathFinding
 
 		public override void OnInspectorGUI()
 		{
-			if (machine.pathMode == PathMode.Grid2D)
-			{
-				inspector = grid2d;
-				machine.navGrid = EditorGUILayout.ObjectField("Nav Asset", machine.navGrid, typeof(NavGrid2DData), false) as NavGrid2DData;
-			}
-			else if (machine.pathMode == PathMode.Graph3D)
-			{
-				inspector = graph3d;
-				machine.navGraph = EditorGUILayout.ObjectField("Nav Asset", machine.navGraph, typeof(NavGraph3DData), false) as NavGraph3DData;
-			}
-			else if (machine.pathMode == PathMode.NavMesh)
-			{
-				inspector = navMesh;
-				machine.navMesh = EditorGUILayout.ObjectField("Nav Asset", machine.navMesh, typeof(NavMeshData), false) as NavMeshData;
-			}
-
-			EditorGUILayout.Separator();
 			machine.pathMode = (PathMode)EditorGUILayout.EnumPopup("Navgation Mode", machine.pathMode);
-			EditorGUILayout.Separator();
+			machine.EnableMultiThread = EditorGUILayout.Toggle("Enable Multi Thread", machine.EnableMultiThread);
+			machine.navgationData = EditorGUILayout.ObjectField("Nav Asset", machine.navgationData, typeof(INavData), false) as INavData;
 
+			SelectInspector();
 			inspector.DrawInspector();
 
-			EditorGUILayout.Separator();
 			GUILayout.BeginHorizontal();
 			if (GUILayout.Button("Clear", GUILayout.Width(80), GUILayout.Height(40)))
 			{
@@ -67,7 +51,6 @@ namespace PathFinding
 			}
 			GUILayout.EndHorizontal();
 			EditorGUILayout.Separator();
-
 		}
 
 
@@ -81,6 +64,21 @@ namespace PathFinding
 				navMesh = new NavMeshInspector(machine);
 		}
 
+		void SelectInspector()
+		{
+			switch (machine.pathMode)
+			{
+				case PathMode.Grid2D:
+					inspector = grid2d;
+					break;
+				case PathMode.Graph3D:
+					inspector = graph3d;
+					break;
+				case PathMode.NavMesh:
+					inspector = navMesh;
+					break;
+			}
+		}
 
 		private void MarkDirty()
 		{

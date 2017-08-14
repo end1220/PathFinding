@@ -7,7 +7,7 @@ using AStar;
 namespace PathFinding
 {
 	
-	public class Grid2DPathPlanner : AStarPathPlanner
+	public class Grid2DPathPlanner : IPathPlanner
 	{
 		private int startX;
 		private int startY;
@@ -19,7 +19,7 @@ namespace PathFinding
 		private List<Int2> resultCache = new List<Int2>();
 
 
-		public bool FindPath(FixVector3 from, FixVector3 to, ref List<FixVector3> result)
+		public override bool FindPath(FixVector3 from, FixVector3 to, ref List<FixVector3> result)
 		{
 			Grid2DMap gridMap = this.map as Grid2DMap;
 

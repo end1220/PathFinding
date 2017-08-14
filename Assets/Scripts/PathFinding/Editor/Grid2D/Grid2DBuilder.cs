@@ -146,7 +146,7 @@ namespace PathFinding
 		/// </summary>
 		private void SlopeTest()
 		{
-			int terrainLayer = LayerMask.NameToLayer(AppConst.LayerTerrain);
+			//int terrainLayer = LayerMask.NameToLayer(AppConst.LayerTerrain);
 			int obstacleLayer = LayerMask.NameToLayer(AppConst.LayerObstacle);
 			int linkLayer = LayerMask.NameToLayer(AppConst.LayerLink);
 			float badY = 10000;

@@ -11,17 +11,27 @@ namespace PathFinding
 	{
 		public static PathFindingMachine Instance { get; private set; }
 
-		public NavGrid2DData navGrid;
-		public NavGraph3DData navGraph;
-		public NavMeshData navMesh;
 		public PathMode pathMode = PathMode.Grid2D;
 
-		private Grid2DMap gridMap;
+		public bool EnableMultiThread;
+
+		public INavData navgationData;
+
+		public INavGraph navgationGraph;
+
+		private IPathPlanner pathPlanner;
+
+
+		/*public NavGrid2DData navGrid;
+		public NavGraph3DData navGraph;
+		public NavMeshData navMesh;*/
+		
+		/*private Grid2DMap gridMap;
 		private Grid2DPathPlanner gridPathFinder = new Grid2DPathPlanner();
 		private Graph3DMap graphMap;
 		private Graph3DPathPlanner graphPathFinder = new Graph3DPathPlanner();
 		private NavMeshMap navMeshMap;
-		private NavMeshPathPlanner navPathFinder = new NavMeshPathPlanner();
+		private NavMeshPathPlanner navPathFinder = new NavMeshPathPlanner();*/
 
 
 		void Awake()
@@ -34,88 +44,72 @@ namespace PathFinding
 		{
 			try
 			{
-				if (navGrid == null && navGraph == null && navMesh == null)
+				if (navgationData == null)
 				{
-					Log.Error("Navigation data is null !");
+					Debug.LogError("Navigation data is null !");
 					return;
 				}
-				if (pathMode == PathMode.Grid2D)
+				switch (pathMode)
 				{
-					gridMap = new Grid2DMap();
-					gridMap.InitMap(navGrid.Width, navGrid.Height, navGrid);
-					gridPathFinder.Setup(gridMap);
+					case PathMode.Grid2D:
+						navgationGraph = new Grid2DMap();
+						pathPlanner = new Grid2DPathPlanner();
+						break;
+					case PathMode.Graph3D:
+						navgationGraph = new Graph3DMap();
+						pathPlanner = new Graph3DPathPlanner();
+						break;
+					case PathMode.NavMesh:
+						navgationGraph = new NavMeshMap();
+						pathPlanner = new NavMeshPathPlanner();
+						break;
 				}
-				else if (pathMode == PathMode.Graph3D)
-				{
-					graphMap = new Graph3DMap();
-					graphMap.Init(navGraph);
-					graphPathFinder.Setup(graphMap);
-				}
-				else if (pathMode == PathMode.NavMesh)
-				{
-					navMeshMap = new NavMeshMap();
-					navMeshMap.InitMap(navMesh);
-					navPathFinder.Setup(navMeshMap);
-				}
+				navgationGraph.Init(navgationData);
+				pathPlanner.SetGraph(navgationGraph);
 			}
 			catch (Exception e)
 			{
-				Log.Error(e.ToString());
+				Debug.LogError(e.ToString());
 			}
 		}
 
 
 		private void OnDrawGizmosSelected()
 		{
-			if (pathMode == PathMode.Grid2D && navGrid != null)
-				navGrid.OnDrawGizmosSelected(transform);
-			else if (pathMode == PathMode.Graph3D && navGraph != null)
-				navGraph.OnDrawGizmosSelected(transform);
-			else if (pathMode == PathMode.NavMesh && navMesh != null)
-			{
-				//if (navMeshMap != null)
-				//	navMeshMap.bbTree.OnDrawGizmos();
-				navMesh.OnDrawGizmosSelected(transform);
-			}
+			if (navgationData != null)
+				navgationData.OnDrawGizmosSelected(transform);
 		}
 
 
 		public bool FindPath(FixVector3 from, FixVector3 to, ref List<FixVector3> result)
 		{
-			switch (pathMode)
-			{
-				case PathMode.Grid2D:
-					return gridPathFinder.FindPath(from, to, ref result);
-				case PathMode.Graph3D:
-					return graphPathFinder.FindPath3D(from, to, ref result);
-				case PathMode.NavMesh:
-					return navPathFinder.FindPath(from, to, ref result);
-			}
-			return false;
+			bool ret = pathPlanner.FindPath(from, to, ref result);
+			return ret;
 		}
 
-		public List<Int3> FindPath(int start, int end)
-		{
-			return navPathFinder.FindPath(start, end);
-		}
+		//public List<Int3> FindPath(int start, int end)
+		//{
+		//	return pathPlanner.FindPath(start, end);
+		//}
 
 		public bool IsPassable(FixVector3 position)
 		{
-			return pathMode == PathMode.Graph3D ? graphMap.IsPassable(position) : gridMap.IsPassable(position);
+			return navgationGraph.IsPassable(position);
 		}
 
 		public bool IsMissileCross(FixVector3 position, int CrossType)
 		{
-			return gridMap.IsMissileCross(position, CrossType);
+			return (navgationGraph as Grid2DMap).IsMissileCross(position, CrossType);
 		}
 
 		public FixVector3 GetNearestForce(FixVector3 position, int step)
 		{
-			return pathMode == PathMode.Graph3D ? position : gridMap.GetNearestForce(position, step);
+			return pathMode == PathMode.Graph3D ? position : (navgationGraph as Grid2DMap).GetNearestForce(position, step);
 		}
 
 		public Int3 Vector3ToPoint3D(Vector3 position)
 		{
+			var navGrid = navgationData as NavGrid2DData;
 			int x = (FixMath.m2mm(position.x) - navGrid.MinX) / navGrid.GridSize;
 			int z = (FixMath.m2mm(position.z) - navGrid.MinZ) / navGrid.GridSize;
 
@@ -124,13 +118,13 @@ namespace PathFinding
 
 		public int GetGroundHeight3D(FixVector3 position)
 		{
-			return graphMap.GetGroundHeight3D(position);
+			return (navgationGraph as Graph3DMap).GetGroundHeight3D(position);
 		}
 
 
 		public FixVector3 RayCastForMoving(FixVector3 from, FixVector3 to, MoveType mov)
 		{
-			return pathMode == PathMode.Graph3D ? graphMap.RayCast3DForMoving(from, to) : gridMap.RayCast2DForMoving(from, to, mov);
+			return navgationGraph.RayCastForMoving(from, to, mov);
 		}
 
 
@@ -139,7 +133,7 @@ namespace PathFinding
 		/// </summary>
 		public FixVector3 SlideByObstacles(FixVector3 fromPos, FixVector3 oldTargetPos)
 		{
-			return pathMode == PathMode.Graph3D ? graphMap.SlideByObstacles(fromPos, oldTargetPos) : gridMap.SlideByObstacles(fromPos, oldTargetPos);
+			return navgationGraph.SlideByObstacles(fromPos, oldTargetPos);
 		}
 
 

@@ -7,7 +7,7 @@ using AStar;
 namespace PathFinding
 {
 
-	public class Graph3DPathPlanner : AStarPathPlanner
+	public class Graph3DPathPlanner : IPathPlanner
 	{
 		Graph3DNode startNode;
 		Graph3DNode targetNode;
@@ -15,7 +15,7 @@ namespace PathFinding
 		private List<Int3> resultCache = new List<Int3>();
 
 
-		public bool FindPath3D(FixVector3 from, FixVector3 to, ref List<FixVector3> result)
+		public override bool FindPath(FixVector3 from, FixVector3 to, ref List<FixVector3> result)
 		{
 			Graph3DMap graphMap = this.map as Graph3DMap;
 			var startNode = graphMap.GetNearbyWalkableNode(from);

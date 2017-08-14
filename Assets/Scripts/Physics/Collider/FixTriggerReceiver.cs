@@ -8,12 +8,12 @@ namespace FixedPoint
 	[RequireComponent(typeof(FixTransform), typeof(FixCollider))]
 	public abstract class FixTriggerReceiver : MonoBehaviour
 	{
-		private FixCollider collider;
+		//private FixCollider fixCollider;
 
 
 		void Start()
 		{
-			collider = GetComponent<FixCollider>();
+			//fixCollider = GetComponent<FixCollider>();
 			OnStart();
 		}
 

@@ -76,8 +76,8 @@ namespace PathFinding
 				builder.Stetup(worldBoxObj, GridSize, RoleHeight, RoleRadius, tan_slope);
 				builder.Build();
 
-				machine.navGraph = builder.navData;
-				machine.navGraph.finalCells = builder.finalCells;
+				machine.navgationData = builder.navData;
+				(machine.navgationData as NavGraph3DData).finalCells = builder.finalCells;
 			}
 			catch (System.Exception e)
 			{
@@ -108,7 +108,7 @@ namespace PathFinding
 				EditorUtility.CopySerialized(builder.navData, existingAsset);
 			}
 
-			machine.navGraph = builder.navData;
+			machine.navgationData = builder.navData;
 
 			EditorUtility.SetDirty(builder.navData);
 

@@ -10,33 +10,33 @@ namespace PathFinding
 	/// <summary>
 	/// 存储着navmesh数据
 	/// </summary>
-	public class NavMeshData : ScriptableObject
+	public class NavMeshData : INavData
 	{
 		public NavMeshNode[] nodes;
 
 		public bool ShowMesh = true;
 
 		private Material navmeshMaterial;
-		private Material navmeshOutlineMaterial;
+		//private Material navmeshOutlineMaterial;
 
 		string editorAssets = "Assets/Scripts/PathFinding/Editor/EditorAssets";
 
 		class GizmoMeshData
 		{
 			public Mesh surfaceMesh;
-			public Mesh outlineMesh;
+			//public Mesh outlineMesh;
 		}
 
 		List<GizmoMeshData> gizmoMeshes = new List<GizmoMeshData>();
 
 
-		public void OnDrawGizmosSelected(Transform transform)
+		public override void OnDrawGizmosSelected(Transform transform)
 		{
 #if UNITY_EDITOR
 			if (navmeshMaterial == null)
 			{
 				navmeshMaterial = UnityEditor.AssetDatabase.LoadAssetAtPath<Material>(editorAssets + "/Materials/Navmesh.mat");
-				navmeshOutlineMaterial = UnityEditor.AssetDatabase.LoadAssetAtPath<Material>(editorAssets + "/Materials/NavmeshOutline.mat");
+				//navmeshOutlineMaterial = UnityEditor.AssetDatabase.LoadAssetAtPath<Material>(editorAssets + "/Materials/NavmeshOutline.mat");
 			}
 #endif
 

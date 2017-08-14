@@ -52,7 +52,7 @@ namespace PathFinding
 				navData = ScriptableObject.CreateInstance<NavMeshData>();
 				navData.nodes = builder.nodes;
 
-				machine.navMesh = navData;
+				machine.navgationData = navData;
 			}
 			catch (System.Exception e)
 			{
@@ -75,7 +75,7 @@ namespace PathFinding
 				EditorUtility.CopySerialized(navData, existingAsset);
 			}
 
-			machine.navMesh = navData;
+			machine.navgationData = navData;
 
 			EditorUtility.SetDirty(navData);
 

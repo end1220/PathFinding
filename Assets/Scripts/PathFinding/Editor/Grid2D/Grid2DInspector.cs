@@ -80,7 +80,7 @@ namespace PathFinding
 
 				builder.Build();
 
-				machine.navGrid = builder.navData;
+				machine.navgationData = builder.navData;
 			}
 			catch (System.Exception e)
 			{
@@ -131,7 +131,7 @@ namespace PathFinding
 				EditorUtility.CopySerialized(builder.navData, existingAsset);
 			}
 
-			machine.navGrid = builder.navData;
+			machine.navgationData = builder.navData;
 
 			EditorUtility.SetDirty(builder.navData);
 

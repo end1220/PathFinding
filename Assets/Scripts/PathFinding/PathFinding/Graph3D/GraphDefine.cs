@@ -68,3 +68,49 @@ namespace PathFinding.Graph3d
 
 
 }
+
+
+namespace PathFinding
+{
+
+	[System.Serializable]
+	public class Graph3DEdge : Graph.GraphEdge
+	{
+		public Graph3DEdge(int from, int to, int cost) :
+			base(from, to, cost)
+		{
+		}
+
+		public Graph3DEdge() :
+			base(0, 0, 0)
+		{
+		}
+
+	}
+
+
+
+	[System.Serializable]
+	public class Graph3DNode : AStar.AStarNode
+	{
+		public ushort x;
+		public ushort y;
+		public ushort z;
+
+		public Int3 worldPosition;
+
+
+		public Graph3DNode(int id) :
+			base(id)
+		{
+		}
+
+		public Graph3DNode()
+		{
+		}
+
+	}
+
+
+
+}

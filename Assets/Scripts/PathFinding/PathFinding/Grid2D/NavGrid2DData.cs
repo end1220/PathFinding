@@ -9,7 +9,7 @@ namespace PathFinding
 	/// 存储着2D网格寻路数据
 	/// </summary>
 	//[CreateAssetMenu(menuName = "TwGame/Navigation Data", order = 2)]
-	public class NavGrid2DData : ScriptableObject
+	public class NavGrid2DData : INavData
 	{
 		[SerializeField]
 		private int width = 0;
@@ -120,7 +120,7 @@ namespace PathFinding
 		}
 
 
-		public void OnDrawGizmosSelected(Transform trans)
+		public override void OnDrawGizmosSelected(Transform trans)
 		{
 			SetGridPosList();
 

@@ -10,7 +10,7 @@ namespace PathFinding
 	/// <summary>
 	/// 存储着3D网格稀疏图寻路数据
 	/// </summary>
-	public class NavGraph3DData : ScriptableObject
+	public class NavGraph3DData : INavData
 	{
 		[HideInInspector]
 		public bool bytesMode = false;// 序列化图的节点和边数据是否使用bytes
@@ -200,7 +200,7 @@ namespace PathFinding
 		private bool drawSpaces = false;
 		private bool drawNodes = true;
 		private bool drawGraph = false;
-		public void OnDrawGizmosSelected(Transform trans)
+		public override void OnDrawGizmosSelected(Transform trans)
 		{
 			if (graphMap == null)
 			{
