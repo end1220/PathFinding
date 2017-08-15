@@ -3,13 +3,13 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using PathFinding.Graph3d;
+using PathFinding.Grid3D;
 
 
 namespace PathFinding
 {
 
-	public class Graph3DBuilder
+	public class Grid3DBuilder
 	{
 		public BuildConfig cfg;
 
@@ -20,8 +20,8 @@ namespace PathFinding
 		public Cell[, ,] cellArray;
 		private int idCounter = 0;
 
-		public NavGraph3DData navData;
-		public Graph3DMap graphMap;
+		public Grid3DNavData navData;
+		public Grid3DGraph graphMap;
 
 		private bool Enable8Directions = true;
 
@@ -332,7 +332,7 @@ namespace PathFinding
 
 		private void CellsToGraph()
 		{
-			navData = ScriptableObject.CreateInstance<NavGraph3DData>();
+			navData = ScriptableObject.CreateInstance<Grid3DNavData>();
 			navData.Init(cfg);
 			
 			int count = 0;
@@ -354,7 +354,7 @@ namespace PathFinding
 				int z = cell.pos.z;
 				int id = cell.id;
 
-				var node = new Graph3DNode();
+				var node = new Grid3DNode();
 				node.id = id;
 				node.x = (ushort)x;
 				node.y = (ushort)y;
@@ -445,7 +445,7 @@ namespace PathFinding
 
 										if (cost != int.MaxValue)
 										{
-											var edge = new Graph3DEdge(id, nbId, cost);
+											var edge = new Grid3DEdge(id, nbId, cost);
 											navData.AddEdge(edge);
 										}
 									}
@@ -456,7 +456,7 @@ namespace PathFinding
 				}
 			}
 
-			graphMap = new Graph3DMap();
+			graphMap = new Grid3DGraph();
 			graphMap.Init(navData);
 		}
 

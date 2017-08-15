@@ -19,8 +19,9 @@ namespace PathFinding
 		public NavMeshInspector(PathFindingMachine machine):
 			base(machine)
 		{
-			string scenePath = EditorUtils.GetCurrentScenePath();
-			saveFilePath = scenePath.Substring(0, scenePath.IndexOf(".unity")) + "_navmesh.asset";
+			string scenePath = GetCurrentScenePath();
+			string sceneName = GetCurrentSceneName();
+			saveFilePath = scenePath.Substring(0, scenePath.IndexOf(".unity")) + "/" + sceneName + "_nav.asset";
 
 			// load previous settings
 			var existingAsset = AssetDatabase.LoadAssetAtPath<NavMeshData>(saveFilePath);

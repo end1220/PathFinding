@@ -59,7 +59,7 @@ namespace PathFinding
 				pathNode = pathNode.prev as NavMeshNode;
 			}
 
-			PathOptimizerNavMesh.Optimize(ref resultNodeCache, ref resultCache);
+			NavMeshPathOptimizer.Optimize(ref resultNodeCache, ref resultCache);
 
 			return resultCache;
 		}

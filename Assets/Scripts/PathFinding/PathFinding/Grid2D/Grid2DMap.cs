@@ -17,12 +17,12 @@ namespace PathFinding
 
 		private int nodeIdCounter;
 
-		NavGrid2DData navData;
+		Grid2DNavData navData;
 
 
 		public void Init(INavData data)
 		{
-			navData = data as NavGrid2DData;
+			navData = data as Grid2DNavData;
 			nodeIdCounter = 0;
 			this.width = navData.Width;
 			this.height = navData.Height;

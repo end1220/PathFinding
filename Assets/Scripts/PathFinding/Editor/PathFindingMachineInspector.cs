@@ -16,7 +16,7 @@ namespace PathFinding
 
 		private EditorInspector inspector;
 		private Grid2DInspector grid2d;
-		private Graph3DInspector graph3d;
+		private Grid3DInspector Grid3D;
 		private NavMeshInspector navMesh;
 
 
@@ -31,7 +31,9 @@ namespace PathFinding
 		{
 			machine.pathMode = (PathMode)EditorGUILayout.EnumPopup("Navgation Mode", machine.pathMode);
 			machine.EnableMultiThread = EditorGUILayout.Toggle("Enable Multi Thread", machine.EnableMultiThread);
-			machine.navgationData = EditorGUILayout.ObjectField("Nav Asset", machine.navgationData, typeof(INavData), false) as INavData;
+			machine.navgationData = EditorGUILayout.ObjectField("Nav Data", machine.navgationData, typeof(INavData), false) as INavData;
+			if (machine.navgationData == null || ! CheckDataType())
+				EditorGUILayout.HelpBox("Just click Bake, man.", MessageType.Error);
 
 			SelectInspector();
 			inspector.DrawInspector();
@@ -58,8 +60,8 @@ namespace PathFinding
 		{
 			if (grid2d == null)
 				grid2d = new Grid2DInspector(machine);
-			if (graph3d == null)
-				graph3d = new Graph3DInspector(machine);
+			if (Grid3D == null)
+				Grid3D = new Grid3DInspector(machine);
 			if (navMesh == null)
 				navMesh = new NavMeshInspector(machine);
 		}
@@ -71,13 +73,27 @@ namespace PathFinding
 				case PathMode.Grid2D:
 					inspector = grid2d;
 					break;
-				case PathMode.Graph3D:
-					inspector = graph3d;
+				case PathMode.Grid3D:
+					inspector = Grid3D;
 					break;
 				case PathMode.NavMesh:
 					inspector = navMesh;
 					break;
 			}
+		}
+
+		bool CheckDataType()
+		{
+			switch (machine.pathMode)
+			{
+				case PathMode.Grid2D:
+					return machine.navgationData is Grid2DNavData;
+				case PathMode.Grid3D:
+					return machine.navgationData is Grid3DNavData;
+				case PathMode.NavMesh:
+					return machine.navgationData is NavMeshData;
+			}
+			return false;
 		}
 
 		private void MarkDirty()

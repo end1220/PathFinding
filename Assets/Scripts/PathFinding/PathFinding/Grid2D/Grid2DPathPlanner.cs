@@ -28,7 +28,7 @@ namespace PathFinding
 
 			var path = FindPath(start.x, start.y, end.x, end.y);
 
-			PathOptimizer2D.Optimize(gridMap, ref path);
+			Grid2DPathOptimizer.Optimize(gridMap, ref path);
 
 			result.Clear();
 			for (int i = 0; i < path.Count; ++i)

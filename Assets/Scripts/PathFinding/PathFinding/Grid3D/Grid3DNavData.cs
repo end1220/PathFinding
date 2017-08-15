@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using PathFinding.Graph3d;
+using PathFinding.Grid3D;
 
 
 namespace PathFinding
@@ -10,7 +10,7 @@ namespace PathFinding
 	/// <summary>
 	/// 存储着3D网格稀疏图寻路数据
 	/// </summary>
-	public class NavGraph3DData : INavData
+	public class Grid3DNavData : INavData
 	{
 		[HideInInspector]
 		public bool bytesMode = false;// 序列化图的节点和边数据是否使用bytes
@@ -29,13 +29,13 @@ namespace PathFinding
 		public int edgeCount;
 
 		[HideInInspector]
-		public List<Graph3DNode> nodeList = new List<Graph3DNode>();
+		public List<Grid3DNode> nodeList = new List<Grid3DNode>();
 
 		[HideInInspector]
-		public List<Graph3DEdge> edgeList = new List<Graph3DEdge>();
+		public List<Grid3DEdge> edgeList = new List<Grid3DEdge>();
 		
 		[NonSerialized]
-		public Dictionary<int, Graph3DNode> nodeDic = new Dictionary<int, Graph3DNode>();
+		public Dictionary<int, Grid3DNode> nodeDic = new Dictionary<int, Grid3DNode>();
 
 
 		public int NodeSize
@@ -65,7 +65,7 @@ namespace PathFinding
 		}
 
 
-		public void AddNode(Graph3DNode node)
+		public void AddNode(Grid3DNode node)
 		{
 			nodeList.Add(node);
 			nodeDic.Add(node.id, node);
@@ -73,7 +73,7 @@ namespace PathFinding
 		}
 
 
-		public void AddEdge(Graph3DEdge edge)
+		public void AddEdge(Grid3DEdge edge)
 		{
 			edgeList.Add(edge);
 		}
@@ -147,9 +147,9 @@ namespace PathFinding
 		}
 
 
-		public Graph3DNode ParseNode(int index)
+		public Grid3DNode ParseNode(int index)
 		{
-			Graph3DNode node = new Graph3DNode();
+			Grid3DNode node = new Grid3DNode();
 			int bytesIndex = index * NodeSize;
 			node.id = ByteTool.IntFromBytes(nodeBytes, bytesIndex);
 			bytesIndex += 4;
@@ -169,9 +169,9 @@ namespace PathFinding
 		}
 
 
-		public Graph3DEdge ParseEdge(int index)
+		public Grid3DEdge ParseEdge(int index)
 		{
-			Graph3DEdge edge = new Graph3DEdge();
+			Grid3DEdge edge = new Grid3DEdge();
 			int bytesIndex = index * EdgeSize;
 			edge.from = ByteTool.IntFromBytes(edgeBytes, bytesIndex);
 			bytesIndex += 4;
@@ -192,7 +192,7 @@ namespace PathFinding
 		[NonSerialized]
 		public List<SubSpace> spaces;
 		[NonSerialized]
-		public Graph3DMap graphMap;
+		public Grid3DGraph graphMap;
 
 		private Color green = new Color(0f, 1f, 0f);
 		private Color red = new Color(1f, 0f, 0f);
@@ -204,7 +204,7 @@ namespace PathFinding
 		{
 			if (graphMap == null)
 			{
-				graphMap = new Graph3DMap();
+				graphMap = new Grid3DGraph();
 				graphMap.Init(this);
 			}
 

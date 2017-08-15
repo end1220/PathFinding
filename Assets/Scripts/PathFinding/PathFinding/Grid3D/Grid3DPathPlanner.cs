@@ -7,17 +7,17 @@ using AStar;
 namespace PathFinding
 {
 
-	public class Graph3DPathPlanner : IPathPlanner
+	public class Grid3DPathPlanner : IPathPlanner
 	{
-		Graph3DNode startNode;
-		Graph3DNode targetNode;
+		Grid3DNode startNode;
+		Grid3DNode targetNode;
 
 		private List<Int3> resultCache = new List<Int3>();
 
 
 		public override bool FindPath(FixVector3 from, FixVector3 to, ref List<FixVector3> result)
 		{
-			Graph3DMap graphMap = this.map as Graph3DMap;
+			Grid3DGraph graphMap = this.map as Grid3DGraph;
 			var startNode = graphMap.GetNearbyWalkableNode(from);
 			var endNode = graphMap.GetNearbyWalkableNode(to);
 			if (startNode == null || endNode == null)
@@ -25,7 +25,7 @@ namespace PathFinding
 
 			var points = FindPath3D(startNode.id, endNode.id);
 
-			PathOptimizer3D.Optimize(graphMap, ref points);
+			Grid3DPathOptimizer.Optimize(graphMap, ref points);
 
 			result.Clear();
 			for (int i = 0; i < points.Count; ++i)
@@ -53,27 +53,27 @@ namespace PathFinding
 
 		public List<Int3> FindPath3D(int startId, int endId)
 		{
-			Graph3DNode node = _findPath(startId, endId);
+			Grid3DNode node = _findPath(startId, endId);
 
 			resultCache.Clear();
 			while (node != null)
 			{
 				resultCache.Add(new Int3(node.x, node.y, node.z));
-				node = node.prev as Graph3DNode;
+				node = node.prev as Grid3DNode;
 			}
 			
 			return resultCache;
 		}
 
 
-		private Graph3DNode _findPath(int start, int end)
+		private Grid3DNode _findPath(int start, int end)
 		{
-			startNode = map.GetNode(end) as Graph3DNode;
-			targetNode = map.GetNode(start) as Graph3DNode;
+			startNode = map.GetNode(end) as Grid3DNode;
+			targetNode = map.GetNode(start) as Grid3DNode;
 			if (startNode == null || targetNode == null)
 				return null;
 
-			Graph3DNode endNode = DoAStar(startNode) as Graph3DNode;
+			Grid3DNode endNode = DoAStar(startNode) as Grid3DNode;
 
 			return endNode;
 		}
@@ -90,9 +90,9 @@ namespace PathFinding
 
 		protected override int CalCostH(AStarNode node)
 		{
-			int dx = Math.Abs(targetNode.x - ((Graph3DNode)node).x);
-			int dy = Math.Abs(targetNode.y - ((Graph3DNode)node).y);
-			int dz = Math.Abs(targetNode.z - ((Graph3DNode)node).z);
+			int dx = Math.Abs(targetNode.x - ((Grid3DNode)node).x);
+			int dy = Math.Abs(targetNode.y - ((Grid3DNode)node).y);
+			int dz = Math.Abs(targetNode.z - ((Grid3DNode)node).z);
 			dx *= 10;
 			dy *= 10;
 			dz *= 10;

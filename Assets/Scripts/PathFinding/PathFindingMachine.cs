@@ -22,18 +22,6 @@ namespace PathFinding
 		private IPathPlanner pathPlanner;
 
 
-		/*public NavGrid2DData navGrid;
-		public NavGraph3DData navGraph;
-		public NavMeshData navMesh;*/
-		
-		/*private Grid2DMap gridMap;
-		private Grid2DPathPlanner gridPathFinder = new Grid2DPathPlanner();
-		private Graph3DMap graphMap;
-		private Graph3DPathPlanner graphPathFinder = new Graph3DPathPlanner();
-		private NavMeshMap navMeshMap;
-		private NavMeshPathPlanner navPathFinder = new NavMeshPathPlanner();*/
-
-
 		void Awake()
 		{
 			Instance = this;
@@ -55,9 +43,9 @@ namespace PathFinding
 						navgationGraph = new Grid2DMap();
 						pathPlanner = new Grid2DPathPlanner();
 						break;
-					case PathMode.Graph3D:
-						navgationGraph = new Graph3DMap();
-						pathPlanner = new Graph3DPathPlanner();
+					case PathMode.Grid3D:
+						navgationGraph = new Grid3DGraph();
+						pathPlanner = new Grid3DPathPlanner();
 						break;
 					case PathMode.NavMesh:
 						navgationGraph = new NavMeshMap();
@@ -87,11 +75,6 @@ namespace PathFinding
 			return ret;
 		}
 
-		//public List<Int3> FindPath(int start, int end)
-		//{
-		//	return pathPlanner.FindPath(start, end);
-		//}
-
 		public bool IsPassable(FixVector3 position)
 		{
 			return navgationGraph.IsPassable(position);
@@ -104,12 +87,12 @@ namespace PathFinding
 
 		public FixVector3 GetNearestForce(FixVector3 position, int step)
 		{
-			return pathMode == PathMode.Graph3D ? position : (navgationGraph as Grid2DMap).GetNearestForce(position, step);
+			return pathMode == PathMode.Grid3D ? position : (navgationGraph as Grid2DMap).GetNearestForce(position, step);
 		}
 
 		public Int3 Vector3ToPoint3D(Vector3 position)
 		{
-			var navGrid = navgationData as NavGrid2DData;
+			var navGrid = navgationData as Grid2DNavData;
 			int x = (FixMath.m2mm(position.x) - navGrid.MinX) / navGrid.GridSize;
 			int z = (FixMath.m2mm(position.z) - navGrid.MinZ) / navGrid.GridSize;
 
@@ -118,7 +101,7 @@ namespace PathFinding
 
 		public int GetGroundHeight3D(FixVector3 position)
 		{
-			return (navgationGraph as Graph3DMap).GetGroundHeight3D(position);
+			return (navgationGraph as Grid3DGraph).GetGroundHeight3D(position);
 		}
 
 
@@ -135,8 +118,6 @@ namespace PathFinding
 		{
 			return navgationGraph.SlideByObstacles(fromPos, oldTargetPos);
 		}
-
-
 
 
 	}

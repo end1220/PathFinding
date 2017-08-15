@@ -7,9 +7,9 @@ using UnityEditor;
 namespace PathFinding
 {
 
-	public class Graph3DInspector : EditorInspector
+	public class Grid3DInspector : EditorInspector
 	{
-		Graph3DBuilder builder = new Graph3DBuilder();
+		Grid3DBuilder builder = new Grid3DBuilder();
 
 		GameObject worldBoxObj;
 		float tan_slope;
@@ -19,17 +19,18 @@ namespace PathFinding
 		public float RoleRadius = 0.3f;
 		public int MaxSlope = 45;
 
-		string saveFilePath = "Assets/{0}_navgraph.asset";
+		string saveFilePath = "Assets/{0}_nav.asset";
 
 
-		public Graph3DInspector(PathFindingMachine machine):
+		public Grid3DInspector(PathFindingMachine machine):
 			base(machine)
 		{
-			string scenePath = EditorUtils.GetCurrentScenePath();
-			saveFilePath = scenePath.Substring(0, scenePath.IndexOf(".unity")) + "_navgraph.asset";
+			string scenePath = GetCurrentScenePath();
+			string sceneName = GetCurrentSceneName();
+			saveFilePath = scenePath.Substring(0, scenePath.IndexOf(".unity")) + "/" + sceneName + "_nav.asset";
 
 			// load previous settings
-			var existingAsset = AssetDatabase.LoadAssetAtPath<NavGraph3DData>(saveFilePath);
+			var existingAsset = AssetDatabase.LoadAssetAtPath<Grid3DNavData>(saveFilePath);
 			if (existingAsset != null)
 			{
 				GridSize = existingAsset.buildConfig.cellSize * 0.001f;
@@ -77,7 +78,7 @@ namespace PathFinding
 				builder.Build();
 
 				machine.navgationData = builder.navData;
-				(machine.navgationData as NavGraph3DData).finalCells = builder.finalCells;
+				(machine.navgationData as Grid3DNavData).finalCells = builder.finalCells;
 			}
 			catch (System.Exception e)
 			{
@@ -96,7 +97,7 @@ namespace PathFinding
 			}
 
 			builder.navData.SaveBytes();
-			var existingAsset = AssetDatabase.LoadAssetAtPath<NavGraph3DData>(saveFilePath);
+			var existingAsset = AssetDatabase.LoadAssetAtPath<Grid3DNavData>(saveFilePath);
 			if (existingAsset == null)
 			{
 				AssetDatabase.CreateAsset(builder.navData, saveFilePath);

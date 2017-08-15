@@ -2,8 +2,10 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using System.IO;
 using UnityEngine;
 using UnityEditor;
+using UnityEngine.SceneManagement;
 
 
 
@@ -64,7 +66,7 @@ namespace PathFinding
 		}
 
 
-		protected bool TryToDrawField(string label, object currentValue, Type type, out object value)
+		protected static bool TryToDrawField(string label, object currentValue, Type type, out object value)
 		{
 			bool success = true;
 
@@ -109,6 +111,29 @@ namespace PathFinding
 			}
 
 			return success;
+		}
+
+
+		protected static string GetCurrentSceneName()
+		{
+			return SceneManager.GetActiveScene().name;
+		}
+
+
+		protected static string GetCurrentScenePath()
+		{
+			string sceneName = SceneManager.GetActiveScene().name;
+			string scenePath = "";
+			var paths = AssetDatabase.GetAllAssetPaths();
+			foreach (var v in paths)
+			{
+				if (Path.GetFileName(v) == sceneName + ".unity")
+				{
+					scenePath = v;
+					break;
+				}
+			}
+			return scenePath;
 		}
 
 	}

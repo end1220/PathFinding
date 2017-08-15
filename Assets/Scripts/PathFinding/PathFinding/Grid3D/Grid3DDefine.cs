@@ -3,7 +3,7 @@ using System;
 using UnityEngine;
 
 
-namespace PathFinding.Graph3d
+namespace PathFinding.Grid3D
 {
 
 	public class Cell
@@ -74,14 +74,14 @@ namespace PathFinding
 {
 
 	[System.Serializable]
-	public class Graph3DEdge : Graph.GraphEdge
+	public class Grid3DEdge : Graph.GraphEdge
 	{
-		public Graph3DEdge(int from, int to, int cost) :
+		public Grid3DEdge(int from, int to, int cost) :
 			base(from, to, cost)
 		{
 		}
 
-		public Graph3DEdge() :
+		public Grid3DEdge() :
 			base(0, 0, 0)
 		{
 		}
@@ -91,7 +91,7 @@ namespace PathFinding
 
 
 	[System.Serializable]
-	public class Graph3DNode : AStar.AStarNode
+	public class Grid3DNode : AStar.AStarNode
 	{
 		public ushort x;
 		public ushort y;
@@ -100,12 +100,12 @@ namespace PathFinding
 		public Int3 worldPosition;
 
 
-		public Graph3DNode(int id) :
+		public Grid3DNode(int id) :
 			base(id)
 		{
 		}
 
-		public Graph3DNode()
+		public Grid3DNode()
 		{
 		}
 

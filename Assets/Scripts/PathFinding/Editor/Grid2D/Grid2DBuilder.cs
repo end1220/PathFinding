@@ -30,7 +30,7 @@ namespace PathFinding
 		public int slope;
 		public float tan_slope;
 
-		public NavGrid2DData navData;
+		public Grid2DNavData navData;
 
 		const float badY = 10000;
 
@@ -243,7 +243,7 @@ namespace PathFinding
 
 		private void CreateAsset()
 		{
-			NavGrid2DData nav = ScriptableObject.CreateInstance<NavGrid2DData>();
+			Grid2DNavData nav = ScriptableObject.CreateInstance<Grid2DNavData>();
 			ushort[,] maskList = new ushort[width, height];
 			byte[,] terrain = new byte[width, height];
 			for (int x = 0; x < width; ++x)

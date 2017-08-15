@@ -7,13 +7,13 @@ using UnityEngine;
 namespace PathFinding
 {
 
-	public static class PathOptimizer3D
+	public static class Grid3DPathOptimizer
 	{
 		static List<Int3> optimalPoints = new List<Int3>();
-		static Graph3DMap graphMap;
+		static Grid3DGraph graphMap;
 
 
-		public static void Optimize(Graph3DMap map, ref List<Int3> path)
+		public static void Optimize(Grid3DGraph map, ref List<Int3> path)
 		{
 			graphMap = map;
 			CombinePoints(ref path);

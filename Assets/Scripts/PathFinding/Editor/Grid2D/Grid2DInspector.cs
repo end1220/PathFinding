@@ -15,17 +15,18 @@ namespace PathFinding
 		public float RoleRadius = 0.5f;
 		public int MaxSlope = 45;
 
-		private string saveFilePath = "Assets/{0}_navgrid.asset";
+		private string saveFilePath = "Assets/{0}_nav.asset";
 
 
 		public Grid2DInspector(PathFindingMachine machine):
 			base(machine)
 		{
-		string scenePath = EditorUtils.GetCurrentScenePath();
-			saveFilePath = scenePath.Substring(0, scenePath.IndexOf(".unity")) + "_navgrid.asset";
+			string scenePath = GetCurrentScenePath();
+			string sceneName = GetCurrentSceneName();
+			saveFilePath = scenePath.Substring(0, scenePath.IndexOf(".unity")) + "/" + sceneName + "_nav.asset";
 
 			// load previous settings
-			var existingAsset = AssetDatabase.LoadAssetAtPath<NavGrid2DData>(saveFilePath);
+			var existingAsset = AssetDatabase.LoadAssetAtPath<Grid2DNavData>(saveFilePath);
 			if (existingAsset != null)
 			{
 				GridSize = existingAsset.GridSize * 0.001f;
@@ -119,7 +120,7 @@ namespace PathFinding
 				return;
 			}
 
-			var existingAsset = AssetDatabase.LoadAssetAtPath<NavGrid2DData>(saveFilePath);
+			var existingAsset = AssetDatabase.LoadAssetAtPath<Grid2DNavData>(saveFilePath);
 			if (existingAsset == null)
 			{
 				AssetDatabase.CreateAsset(builder.navData, saveFilePath);
