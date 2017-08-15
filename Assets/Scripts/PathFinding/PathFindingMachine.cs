@@ -40,7 +40,7 @@ namespace PathFinding
 				switch (pathMode)
 				{
 					case PathMode.Grid2D:
-						navgationGraph = new Grid2DMap();
+						navgationGraph = new Grid2DGraph();
 						pathPlanner = new Grid2DPathPlanner();
 						break;
 					case PathMode.Grid3D:
@@ -48,7 +48,7 @@ namespace PathFinding
 						pathPlanner = new Grid3DPathPlanner();
 						break;
 					case PathMode.NavMesh:
-						navgationGraph = new NavMeshMap();
+						navgationGraph = new NavMeshGraph();
 						pathPlanner = new NavMeshPathPlanner();
 						break;
 				}
@@ -82,12 +82,12 @@ namespace PathFinding
 
 		public bool IsMissileCross(FixVector3 position, int CrossType)
 		{
-			return (navgationGraph as Grid2DMap).IsMissileCross(position, CrossType);
+			return (navgationGraph as Grid2DGraph).IsMissileCross(position, CrossType);
 		}
 
 		public FixVector3 GetNearestForce(FixVector3 position, int step)
 		{
-			return pathMode == PathMode.Grid3D ? position : (navgationGraph as Grid2DMap).GetNearestForce(position, step);
+			return pathMode == PathMode.Grid3D ? position : (navgationGraph as Grid2DGraph).GetNearestForce(position, step);
 		}
 
 		public Int3 Vector3ToPoint3D(Vector3 position)

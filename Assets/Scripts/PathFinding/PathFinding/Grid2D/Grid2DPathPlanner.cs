@@ -21,7 +21,7 @@ namespace PathFinding
 
 		public override bool FindPath(FixVector3 from, FixVector3 to, ref List<FixVector3> result)
 		{
-			Grid2DMap gridMap = this.map as Grid2DMap;
+			Grid2DGraph gridMap = this.map as Grid2DGraph;
 
 			Int2 start = gridMap.FixVector3ToInt2(from);
 			Int2 end = gridMap.FixVector3ToInt2(to);
@@ -69,7 +69,7 @@ namespace PathFinding
 			this.endX = startX;
 			this.endY = startY;
 
-			Grid2DMap gridMap = (Grid2DMap)map;
+			Grid2DGraph gridMap = (Grid2DGraph)map;
 			startNode = gridMap.GetNodeByIndex(this.startX, this.startY);
 			targetNode = gridMap.GetNodeByIndex(this.endX, this.endY);
 

@@ -20,7 +20,7 @@ namespace PathFinding
 		{
 			result.Clear();
 
-			NavMeshMap navMap = this.map as NavMeshMap;
+			NavMeshGraph navMap = this.map as NavMeshGraph;
 
 			var startNode = navMap.bbTree.QueryInside(to.ToVector3(), null);
 			var endNode = navMap.bbTree.QueryInside(from.ToVector3(), null);

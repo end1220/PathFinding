@@ -11,9 +11,9 @@ namespace PathFinding
 	{
 		static List<Int2> optimalPoints = new List<Int2>();
 
-		static Grid2DMap gridMap;
+		static Grid2DGraph gridMap;
 
-		public static void Optimize(Grid2DMap map, ref List<Int2> path)
+		public static void Optimize(Grid2DGraph map, ref List<Int2> path)
 		{
 			gridMap = map;
 			CombinePoints(ref path);
