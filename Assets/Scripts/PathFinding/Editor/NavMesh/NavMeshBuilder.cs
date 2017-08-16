@@ -44,8 +44,11 @@ namespace PathFinding
 			GenerateMatrix();
 
 			_triangles = sourceMesh.triangles;
-			Vector3[] originalVertices;
-			GenerateNodes(sourceMesh.vertices, _triangles, out originalVertices, out _vertices);
+			Vector3[] originalVertices = sourceMesh.vertices;
+
+			CombineRepeatedVertices(originalVertices, _triangles, out _vertices);
+			InsertTriangles(ref _triangles, _vertices);
+			GenerateNodes(_triangles, _vertices);
 		}
 
 		public void SetMatrix(Matrix4x4 m)
@@ -60,15 +63,13 @@ namespace PathFinding
 		}
 
 
-		void GenerateNodes(Vector3[] vectorVertices, int[] triangles, out Vector3[] originalVertices, out Int3[] vertices)
+		void CombineRepeatedVertices(Vector3[] vectorVertices, int[] triangles, out Int3[] vertices)
 		{
-			UnityEngine.Profiling.Profiler.BeginSample("Init");
-
 			if (vectorVertices.Length == 0 || triangles.Length == 0)
 			{
-				originalVertices = vectorVertices;
 				vertices = new Int3[0];
 				nodes = new NavMeshNode[0];
+				Debug.LogError("NavMeshBuilder: vertices count is 0??");
 				return;
 			}
 
@@ -107,14 +108,15 @@ namespace PathFinding
 
 			Int3[] totalIntVertices = vertices;
 			vertices = new Int3[c];
-			originalVertices = new Vector3[c];
 			for (int i = 0; i < c; i++)
 			{
 				vertices[i] = totalIntVertices[newVertices[i]];
-				originalVertices[i] = vectorVertices[newVertices[i]];
 			}
+		}
 
-			UnityEngine.Profiling.Profiler.EndSample();
+
+		void GenerateNodes(int[] triangles, Int3[] vertices)
+		{
 			UnityEngine.Profiling.Profiler.BeginSample("Constructing Nodes");
 
 			nodes = new NavMeshNode[triangles.Length / 3];
@@ -187,21 +189,124 @@ namespace PathFinding
 			}
 
 			UnityEngine.Profiling.Profiler.EndSample();
+
 			UnityEngine.Profiling.Profiler.BeginSample("Rebuilding BBTree");
 
 			//RebuildBBTree(this);
 
 			UnityEngine.Profiling.Profiler.EndSample();
 
+			//Debug.Log("Node Count " + nodes.Length);
 		}
 
-
-		/*public void BuildUnityNavMesh()
+		struct ExchangeTriangleIndex
 		{
-			var defaultBuildSettings = UnityEngine.AI.NavMesh.GetSettingsByID(0);
-			var m_Operation = UnityEngine.AI.NavMeshBuilder.BuildNavMeshData();
-		}*/
+			public int index1;
+			public int index2;
+			public int nextIndex;
+		}
 
+		void InsertTriangles(ref int[] triangles, Int3[] vertices)
+		{
+			List<int> insertTriangles = new List<int>();
+			insertTriangles.Clear();
+
+			Dictionary<Int3, ExchangeTriangleIndex> exchangeList = new Dictionary<Int3, ExchangeTriangleIndex>();
+
+			Int3[] v0 = new Int3[3];
+			Int3[] v1 = new Int3[3];
+
+			int triangleCount = triangles.Length / 3;
+			for (int i = 0; i < triangleCount; i++)
+			{
+				v0[0] = vertices[triangles[i * 3]];
+				v0[1] = vertices[triangles[i * 3 + 1]];
+				v0[2] = vertices[triangles[i * 3 + 2]];
+
+				for (int j = i + 1; j < triangleCount; j++)
+				{
+					v1[0] = vertices[triangles[j * 3]];
+					v1[1] = vertices[triangles[j * 3 + 1]];
+					v1[2] = vertices[triangles[j * 3 + 2]];
+
+					// must have only one same vertex
+					int sameVertexCount = 0;
+					for (int m = 0; m < 3; m++)
+						for (int n = 0; n < 3; n++)
+							if (v0[m] == v1[n])
+								sameVertexCount++;
+					if (sameVertexCount != 1)
+						continue;
+
+					// find middle point if exist
+					for (int m = 0; m < 3; m++)
+					{
+						for (int n = 0; n < 3; n++)
+						{
+							// not the same vertex
+							if (v0[m] == v1[n] || v0[(m + 1) % 3] == v1[n])
+								continue;
+							// must colinear
+							if (!VectorMath.IsColinearXZ(v0[m], v0[(m + 1) % 3], v1[n]))
+								continue;
+							// v1 must be middle vertex
+							Int3 middle = v1[n];
+							var d1 = middle - v0[m];
+							var d2 = middle - v0[(m + 1) % 3];
+							if (d1.x * d2.x > 0 || d1.y * d2.y > 0 || d1.z * d2.z > 0)
+								continue;
+							// already found it.
+							if (exchangeList.ContainsKey(middle))
+								continue;
+
+							ExchangeTriangleIndex exchange = new ExchangeTriangleIndex();
+							exchange.index1 = i * 3 + ((m + 1) % 3);
+							exchange.index2 = j * 3 + n;
+							exchange.nextIndex = i * 3 + ((m + 2) % 3);
+							exchangeList.Add(middle, exchange);
+
+							break;
+						}
+					}
+				}
+			}
+
+			if (exchangeList.Count > 0)
+			{
+				//Debug.Log("exchange count " + exchangeList.Count);
+				foreach (var item in exchangeList)
+				{
+					ExchangeTriangleIndex data = item.Value;
+					int oldIdx = triangles[data.index1];
+					triangles[data.index1] = triangles[data.index2];
+					int nextIdx = triangles[data.nextIndex];
+
+					insertTriangles.Add(triangles[data.index2]);
+					insertTriangles.Add(oldIdx);
+					insertTriangles.Add(nextIdx);
+
+					/*newPoints.Add(vertices[triangles[data.index2]]);
+					newPoints.Add(vertices[oldIdx]);
+					newPoints.Add(vertices[nextIdx]);*/
+
+				}
+
+				if (insertTriangles.Count > 0)
+				{
+					//Debug.Log("new triangle count " + insertTriangles.Count);
+					int[] newTriangles = new int[triangles.Length + insertTriangles.Count];
+					for (int i = 0; i < triangles.Length; ++i)
+						newTriangles[i] = triangles[i];
+					for (int i = 0; i < insertTriangles.Count; ++i)
+						newTriangles[triangles.Length + i] = insertTriangles[i];
+					triangles = newTriangles;
+				}
+			}
+
+		}
+		
+		//public List<Int3> newPoints = new List<Int3>();
+		
 	}
 
 }

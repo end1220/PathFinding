@@ -14,7 +14,9 @@ namespace PathFinding
 	{
 		public NavMeshNode[] nodes;
 
-		public bool ShowMesh = true;
+		//public List<Int3> insertPoints = new List<Int3>();
+
+		private bool ShowMesh = true;
 
 		private Material navmeshMaterial;
 		//private Material navmeshOutlineMaterial;
@@ -87,15 +89,15 @@ namespace PathFinding
 				}
 			}
 
-			/*navmeshOutlineMaterial.SetPass(0);
-			for (int i = 0; i < gizmoMeshes.Count; i++)
+			/*for (int i = 0; i < insertPoints.Count; i+=3)
 			{
-				Graphics.DrawMeshNow(gizmoMeshes[i].outlineMesh, Matrix4x4.identity);
+				Debug.DrawLine(Vector3.up + (Vector3)insertPoints[i], Vector3.up + (Vector3)insertPoints[i + 1], Color.green);
+				Debug.DrawLine(Vector3.up + (Vector3)insertPoints[i + 1], Vector3.up + (Vector3)insertPoints[i + 2], Color.green);
+				Debug.DrawLine(Vector3.up + (Vector3)insertPoints[i + 2], Vector3.up + (Vector3)insertPoints[i], Color.green);
 			}*/
 
 
 			// end draw
-
 			Gizmos.color = defaultColor;
 			Gizmos.matrix = defaultMatrix;
 		}

@@ -48,9 +48,9 @@ namespace PathFinding
 			return 0;
 		}
 
-		public Int3 GetVertexIndex(int i)
+		public int GetVertexIndex(Int3 vertex)
 		{
-			return i == 0 ? v0 : (i == 1 ? v1 : v2);
+			return vertex == v0 ? 0 : (vertex == v1 ? 1 : 2);
 		}
 
 		public Int3 GetVertex(int i)
@@ -69,10 +69,10 @@ namespace PathFinding
 			/** \todo Maybe optimize with pa=av-1 instead of modulus... */
 			for (int a = 0; a < acount; a++)
 			{
-				var va = GetVertexIndex(a);
+				var va = GetVertex(a);
 				for (int b = 0; b < bcount; b++)
 				{
-					if (va == other.GetVertexIndex((b + 1) % bcount) && GetVertexIndex((a + 1) % acount) == other.GetVertexIndex(b))
+					if (va == other.GetVertex((b + 1) % bcount) && GetVertex((a + 1) % acount) == other.GetVertex(b))
 					{
 						first = a;
 						//second = b;

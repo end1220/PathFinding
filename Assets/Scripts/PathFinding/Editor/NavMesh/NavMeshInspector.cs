@@ -52,6 +52,7 @@ namespace PathFinding
 
 				navData = ScriptableObject.CreateInstance<NavMeshData>();
 				navData.nodes = builder.nodes;
+				//navData.insertPoints.AddRange(builder.newPoints);
 
 				machine.navgationData = navData;
 			}
