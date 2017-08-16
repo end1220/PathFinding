@@ -19,7 +19,7 @@ namespace PathFinding
 		private Material navmeshMaterial;
 		//private Material navmeshOutlineMaterial;
 
-		string editorAssets = "Assets/Scripts/PathFinding/Editor/EditorAssets";
+		string editorAssets = "Assets/Scripts/TwAI/PathFinding/Editor/EditorAssets";
 
 		class GizmoMeshData
 		{
@@ -78,7 +78,8 @@ namespace PathFinding
 			{
 				for (int pass = 0; pass <= 2; pass++)
 				{
-					navmeshMaterial.SetPass(pass);
+					if (navmeshMaterial != null)
+						navmeshMaterial.SetPass(pass);
 					for (int i = 0; i < gizmoMeshes.Count; i++)
 					{
 						Graphics.DrawMeshNow(gizmoMeshes[i].surfaceMesh, Matrix4x4.identity);
@@ -102,6 +103,8 @@ namespace PathFinding
 
 		private void UpdateGizmoMeshes()
 		{
+			if (gizmoMeshes.Count > 0)
+				return;
 			gizmoMeshes.Clear();
 
 			NavMeshNode[] nodes = this.nodes;

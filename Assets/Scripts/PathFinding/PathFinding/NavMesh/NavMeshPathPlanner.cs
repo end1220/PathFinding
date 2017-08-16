@@ -27,10 +27,7 @@ namespace PathFinding
 			if (startNode == null || endNode == null)
 				return false;
 
-			int start = startNode.id;
-			int end = endNode.id;
-
-			var path = FindPath(start, end);
+			var path = FindPath(startNode, endNode);
 			for (int i = 0; i < path.Count; ++i)
 				result.Add(new FixVector3(path[i].x, path[i].y, path[i].z));
 
@@ -44,11 +41,12 @@ namespace PathFinding
 		}
 
 
-		public List<Int3> FindPath(int start, int end)
+		public List<Int3> FindPath(NavMeshNode start, NavMeshNode end)
 		{
-			NavMeshNode endNode = _findPath(start, end);
+			startNode = start;
+			targetNode = end;
+			NavMeshNode endNode = DoAStar(startNode) as NavMeshNode;
 
-			// build path points.
 			resultNodeCache.Clear();
 			resultCache.Clear();
 			NavMeshNode pathNode = endNode;
@@ -64,7 +62,7 @@ namespace PathFinding
 			return resultCache;
 		}
 
-		private NavMeshNode _findPath(int start, int end)
+		/*private NavMeshNode _findPath(int start, int end)
 		{
 			startNode = map.GetNode(start) as NavMeshNode;
 			targetNode = map.GetNode(end) as NavMeshNode;
@@ -72,7 +70,7 @@ namespace PathFinding
 			NavMeshNode endNode = DoAStar(startNode) as NavMeshNode;
 
 			return endNode;
-		}
+		}*/
 
 
 		protected override bool CheckArrived(AStarNode node)

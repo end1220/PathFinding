@@ -255,7 +255,8 @@ namespace PathFinding
 
 			if (graphMap != null && drawGraph)
 			{
-				for (int i = 0; i < graphMap.edgeList.Count; ++i)
+#if UNITY_EDITOR
+                for (int i = 0; i < graphMap.edgeList.Count; ++i)
 				{
 					var edge = graphMap.edgeList[i];
 					var from = graphMap.nodeDic[edge.from];
@@ -263,7 +264,8 @@ namespace PathFinding
 					Gizmos.color = green;
 					Gizmos.DrawLine(from.worldPosition.ToVector3(), to.worldPosition.ToVector3());
 				}
-			}
+#endif
+            }
 
 			// end draw
 

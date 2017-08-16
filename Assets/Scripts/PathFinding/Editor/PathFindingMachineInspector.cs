@@ -32,7 +32,7 @@ namespace PathFinding
 			machine.pathMode = (PathMode)EditorGUILayout.EnumPopup("Navgation Mode", machine.pathMode);
 			machine.EnableMultiThread = EditorGUILayout.Toggle("Enable Multi Thread", machine.EnableMultiThread);
 			machine.navgationData = EditorGUILayout.ObjectField("Nav Data", machine.navgationData, typeof(INavData), false) as INavData;
-			if (machine.navgationData == null || ! CheckDataType())
+			if (machine.navgationData == null || !machine.IsNavDataInvalid())
 				EditorGUILayout.HelpBox("Just click Bake, man.", MessageType.Error);
 
 			SelectInspector();
@@ -44,12 +44,20 @@ namespace PathFinding
 				inspector.Clear();
 				MarkDirty();
 			}
-			GUILayout.Space(20);
+			GUILayout.Space(15);
 			if (GUILayout.Button("Bake", GUILayout.Width(80), GUILayout.Height(40)))
 			{
 				inspector.Bake();
 				inspector.Save();
 				MarkDirty();
+			}
+			if (machine.pathMode == PathMode.NavMesh)
+			{
+				GUILayout.Space(15);
+				if (GUILayout.Button("Export .obj", GUILayout.Width(100), GUILayout.Height(40)))
+				{
+					(inspector as NavMeshInspector).ExportObj();
+				}
 			}
 			GUILayout.EndHorizontal();
 			EditorGUILayout.Separator();
@@ -80,20 +88,6 @@ namespace PathFinding
 					inspector = navMesh;
 					break;
 			}
-		}
-
-		bool CheckDataType()
-		{
-			switch (machine.pathMode)
-			{
-				case PathMode.Grid2D:
-					return machine.navgationData is Grid2DNavData;
-				case PathMode.Grid3D:
-					return machine.navgationData is Grid3DNavData;
-				case PathMode.NavMesh:
-					return machine.navgationData is NavMeshData;
-			}
-			return false;
 		}
 
 		private void MarkDirty()

@@ -8,25 +8,18 @@ namespace PathFinding
 
 	public class NavMeshBuilder
 	{
-		public Vector3 offset = Vector3.zero;
+		private Vector3 offset = Vector3.zero;
+		private Vector3 rotation = Vector3.zero;
+		private float scale = 1;
 
-		public Vector3 rotation = Vector3.zero;
-
-		public float scale = 1;
-
-		public int initialPenalty = 0;
+		private int initialPenalty = 0;
 
 		private Mesh sourceMesh;
+		private Matrix4x4 matrix = Matrix4x4.identity;
+		private Matrix4x4 inverseMatrix = Matrix4x4.identity;
 
-		private int[] triangles;
-
-		Vector3[] originalVertices;
-
-		Int3[] _vertices;
-
-		public Matrix4x4 matrix = Matrix4x4.identity;
-
-		public Matrix4x4 inverseMatrix = Matrix4x4.identity;
+		public Int3[] _vertices;
+		public int[] _triangles;
 
 		public NavMeshNode[] nodes;
 
@@ -46,17 +39,13 @@ namespace PathFinding
 		public void ScanInternal()
 		{
 			if (sourceMesh == null)
-			{
 				return;
-			}
 
 			GenerateMatrix();
 
-			Vector3[] vectorVertices = sourceMesh.vertices;
-
-			triangles = sourceMesh.triangles;
-
-			GenerateNodes(vectorVertices, triangles, out originalVertices, out _vertices);
+			_triangles = sourceMesh.triangles;
+			Vector3[] originalVertices;
+			GenerateNodes(sourceMesh.vertices, _triangles, out originalVertices, out _vertices);
 		}
 
 		public void SetMatrix(Matrix4x4 m)

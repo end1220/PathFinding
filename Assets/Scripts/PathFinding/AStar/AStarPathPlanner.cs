@@ -37,15 +37,13 @@ namespace AStar
 				count++;
 				if (count > 10000)
 				{
-					//UnityEngine.Debug.LogError("AStar : too slow....");
+					UnityEngine.Debug.LogError("AStarPathPlanner : too many nodes....");
 					break;
 				}
 				AStarNode curNode = openList;
 				if (CheckArrived(curNode))
 				{
 					arriveNode = curNode;
-					//if (count > 50)
-					//	UnityEngine.Debug.Log("AStar : take step " + count);
 					break;
 				}
 				EvaluateAllNeighbours(curNode);

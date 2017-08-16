@@ -64,8 +64,22 @@ namespace PathFinding
 
 		private void OnDrawGizmosSelected()
 		{
-			if (navgationData != null)
+			if (navgationData != null && IsNavDataInvalid())
 				navgationData.OnDrawGizmosSelected(transform);
+		}
+
+		public bool IsNavDataInvalid()
+		{
+			switch (pathMode)
+			{
+				case PathMode.Grid2D:
+					return navgationData is Grid2DNavData;
+				case PathMode.Grid3D:
+					return navgationData is Grid3DNavData;
+				case PathMode.NavMesh:
+					return navgationData is NavMeshData;
+			}
+			return false;
 		}
 
 
