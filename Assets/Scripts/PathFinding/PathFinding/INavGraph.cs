@@ -9,7 +9,7 @@ namespace PathFinding
 
 		bool IsPassable(FixVector3 position);
 
-		//FixVector3 GetNearestForce(FixVector3 position, );
+		FixVector3 GetNearestPosition(FixVector3 position);
 
 		FixVector3 RayCastForMoving(FixVector3 from, FixVector3 to, MoveType mov);
 

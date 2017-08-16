@@ -46,6 +46,12 @@ namespace PathFinding
 		}
 
 
+		public FixVector3 GetNearestPosition(FixVector3 position)
+		{
+			return position;
+		}
+
+
 		public FixVector3 RayCastForMoving(FixVector3 from, FixVector3 to, MoveType mov)
 		{
 			return to;

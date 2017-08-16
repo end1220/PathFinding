@@ -165,6 +165,12 @@ namespace PathFinding
 		}
 
 
+		public FixVector3 GetNearestPosition(FixVector3 position)
+		{
+			return position;
+		}
+
+
 		public Grid3DNode GetNearbyWalkableNode(FixVector3 pos)
 		{
 			var pt = FixVector3ToInt3(pos);

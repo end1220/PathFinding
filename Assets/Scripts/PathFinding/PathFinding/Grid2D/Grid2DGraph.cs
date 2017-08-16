@@ -194,8 +194,9 @@ namespace PathFinding
 		}
 
 
-		public FixVector3 GetNearestForce(FixVector3 position, int step)
+		public FixVector3 GetNearestPosition(FixVector3 position)
 		{
+			int step = 5;
 			if (IsPassable(position))
 				return position;
 			Int2 pt2 = FixVector3ToInt2(position);

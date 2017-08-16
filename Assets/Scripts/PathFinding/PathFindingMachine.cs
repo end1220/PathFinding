@@ -99,9 +99,9 @@ namespace PathFinding
 			return (navgationGraph as Grid2DGraph).IsMissileCross(position, CrossType);
 		}
 
-		public FixVector3 GetNearestForce(FixVector3 position, int step)
+		public FixVector3 GetNearestForce(FixVector3 position)
 		{
-			return pathMode == PathMode.Grid3D ? position : (navgationGraph as Grid2DGraph).GetNearestForce(position, step);
+			return navgationGraph.GetNearestPosition(position);
 		}
 
 		public Int3 Vector3ToPoint3D(Vector3 position)
