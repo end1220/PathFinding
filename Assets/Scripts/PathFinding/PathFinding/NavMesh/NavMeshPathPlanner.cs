@@ -12,8 +12,8 @@ namespace PathFinding
 		NavMeshNode startNode;
 		NavMeshNode targetNode;
 
-		private List<NavMeshNode> resultNodeCache = new List<NavMeshNode>();
-		private List<Int3> resultCache = new List<Int3>();
+		private List<NavMeshNode> rawPathNodeCache = new List<NavMeshNode>();
+		private List<Int3> rawPathCache = new List<Int3>();
 
 
 		public override bool FindPath(FixVector3 from, FixVector3 to, ref List<FixVector3> result)
@@ -28,49 +28,40 @@ namespace PathFinding
 				return false;
 
 			var path = FindPath(startNode, endNode);
+			if (path.Count > 0)
+			{
+				// set the first and last point to 'from' and 'to'.
+				path[0] = new Int3(from.x, from.y, from.z);
+				path[path.Count - 1] = new Int3(to.x, to.y, to.z);
+				// then optimize
+				NavMeshPathOptimizer.Optimize(ref rawPathNodeCache, ref path);
+			}
+
 			for (int i = 0; i < path.Count; ++i)
 				result.Add(new FixVector3(path[i].x, path[i].y, path[i].z));
-
-			if (result.Count > 0)
-			{
-				result[0] = from;
-				result[result.Count - 1] = to;
-			}
 
 			return result.Count >= 2;
 		}
 
 
-		public List<Int3> FindPath(NavMeshNode start, NavMeshNode end)
+		private List<Int3> FindPath(NavMeshNode start, NavMeshNode end)
 		{
 			startNode = start;
 			targetNode = end;
 			NavMeshNode endNode = DoAStar(startNode) as NavMeshNode;
 
-			resultNodeCache.Clear();
-			resultCache.Clear();
+			rawPathNodeCache.Clear();
+			rawPathCache.Clear();
 			NavMeshNode pathNode = endNode;
 			while (pathNode != null)
 			{
-				resultNodeCache.Add(pathNode);
-				resultCache.Add(pathNode.position);
+				rawPathNodeCache.Add(pathNode);
+				rawPathCache.Add(pathNode.position);
 				pathNode = pathNode.prev as NavMeshNode;
 			}
 
-			NavMeshPathOptimizer.Optimize(ref resultNodeCache, ref resultCache);
-
-			return resultCache;
+			return rawPathCache;
 		}
-
-		/*private NavMeshNode _findPath(int start, int end)
-		{
-			startNode = map.GetNode(start) as NavMeshNode;
-			targetNode = map.GetNode(end) as NavMeshNode;
-
-			NavMeshNode endNode = DoAStar(startNode) as NavMeshNode;
-
-			return endNode;
-		}*/
 
 
 		protected override bool CheckArrived(AStarNode node)

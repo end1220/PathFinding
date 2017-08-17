@@ -59,8 +59,6 @@ namespace PathFinding
 
 			vectorPath.Clear();
 			vectorPath.AddRange(funnelPath);
-			//foreach (var v in funnelPath)
-			//	vectorPath.Add((Int3)v);
 
 			left.Clear();
 			right.Clear();
@@ -69,21 +67,15 @@ namespace PathFinding
 		
 		public static bool RunFunnel(List<Int3> left, List<Int3> right, List<Int3> funnelPath)
 		{
-			if (left == null) throw new System.ArgumentNullException("left");
-			if (right == null) throw new System.ArgumentNullException("right");
-			if (funnelPath == null) throw new System.ArgumentNullException("funnelPath");
-
-			if (left.Count != right.Count) throw new System.ArgumentException("left and right lists must have equal length");
+			if (left.Count != right.Count) 
+				throw new System.ArgumentException("left and right lists must have equal length");
 
 			if (left.Count < 3)
-			{
 				return false;
-			}
 
 			//Remove identical vertices
 			while (left[1] == left[2] && right[1] == right[2])
 			{
-				//System.Console.WriteLine ("Removing identical left and right");
 				left.RemoveAt(1);
 				right.RemoveAt(1);
 
@@ -148,7 +140,8 @@ namespace PathFinding
 				Int3 pLeft = left[i];
 				Int3 pRight = right[i];
 
-				if (VectorMath.SignedTriangleAreaTimes2XZ(portalApex, portalRight, pRight) >= 0)
+				long rightArea = VectorMath.SignedTriangleAreaTimes2XZ(portalApex, portalRight, pRight);
+				if (rightArea >= 0)
 				{
 					if (portalApex == portalRight || VectorMath.SignedTriangleAreaTimes2XZ(portalApex, portalLeft, pRight) <= 0)
 					{
@@ -173,7 +166,8 @@ namespace PathFinding
 					}
 				}
 
-				if (VectorMath.SignedTriangleAreaTimes2XZ(portalApex, portalLeft, pLeft) <= 0)
+				long leftArea = VectorMath.SignedTriangleAreaTimes2XZ(portalApex, portalLeft, pLeft);
+				if (leftArea <= 0)
 				{
 					if (portalApex == portalLeft || VectorMath.SignedTriangleAreaTimes2XZ(portalApex, portalRight, pLeft) >= 0)
 					{

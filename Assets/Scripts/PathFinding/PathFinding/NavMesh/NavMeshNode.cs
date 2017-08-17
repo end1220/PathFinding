@@ -61,22 +61,21 @@ namespace PathFinding
 		public bool GetPortal(NavMeshNode other, List<Int3> left, List<Int3> right)
 		{
 			int first = -1;
-			//int second = -1;
 
 			int acount = 3;
 			int bcount = 3;
 
-			/** \todo Maybe optimize with pa=av-1 instead of modulus... */
+			// find the shared edge
 			for (int a = 0; a < acount; a++)
 			{
 				var va = GetVertex(a);
+				var va2 = GetVertex((a + 1) % acount);
 				for (int b = 0; b < bcount; b++)
 				{
-					if (va == other.GetVertex((b + 1) % bcount) && GetVertex((a + 1) % acount) == other.GetVertex(b))
+					if (va == other.GetVertex((b + 1) % bcount) && va2 == other.GetVertex(b))
 					{
 						first = a;
-						//second = b;
-						a = acount;
+						a = acount;// to stop the outer loop
 						break;
 					}
 				}

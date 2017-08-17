@@ -30,6 +30,7 @@ namespace PathFinding
 		}
 
 		List<GizmoMeshData> gizmoMeshes = new List<GizmoMeshData>();
+		private Color lineColor = new Color(0.25f, 0.25f, 0.25f);
 
 
 		public override void OnDrawGizmosSelected(Transform transform)
@@ -62,9 +63,9 @@ namespace PathFinding
 
 				if (VectorMath.IsClockwiseXZ(node.v0, node.v1, node.v2))
 				{
-					Debug.DrawLine((Vector3)node.v0, (Vector3)node.v1, Color.black);
-					Debug.DrawLine((Vector3)node.v1, (Vector3)node.v2, Color.black);
-					Debug.DrawLine((Vector3)node.v2, (Vector3)node.v0, Color.black);
+					Debug.DrawLine((Vector3)node.v0, (Vector3)node.v1, lineColor);
+					Debug.DrawLine((Vector3)node.v1, (Vector3)node.v2, lineColor);
+					Debug.DrawLine((Vector3)node.v2, (Vector3)node.v0, lineColor);
 				}
 				else
 				{

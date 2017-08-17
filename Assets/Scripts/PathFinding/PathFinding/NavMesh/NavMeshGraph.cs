@@ -48,7 +48,10 @@ namespace PathFinding
 
 		public FixVector3 GetNearestPosition(FixVector3 position)
 		{
-			return position;
+			if (IsPassable(position))
+				return position;
+			NNInfo info = bbTree.QueryCircle(position.ToVector3(), 5, null);
+			return new FixVector3(info.clampedPosition);
 		}
 
 
