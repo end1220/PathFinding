@@ -110,8 +110,8 @@ namespace PathFinding
 				{
 					for (int z = 0; z < Height; ++z)
 					{
-						float fposx = FixMath.mm2m(MinX) + FixMath.mm2m(GridSize) * (x + 0.5f);
-						float fposz = FixMath.mm2m(MinZ) + FixMath.mm2m(GridSize) * (z + 0.5f);
+						float fposx = FixMath.mm2m(MinX) + FixMath.mm2m(GridSize) * (x/* + 0.5f*/);
+						float fposz = FixMath.mm2m(MinZ) + FixMath.mm2m(GridSize) * (z/* + 0.5f*/);
 						pos[x, z] = new Vector3(fposx, 1, fposz);
 					}
 				}
