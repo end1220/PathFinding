@@ -17,6 +17,13 @@ public struct FixVector3
 		this.z = z;
 	}
 
+	public FixVector3(Int3 vec)
+	{
+		this.x = vec.x;
+		this.y = vec.y;
+		this.z = vec.z;
+	}
+
 	public FixVector3(UnityEngine.Vector3 vec)
 	{
 		this.x = FixMath.m2mm(vec.x);
@@ -86,6 +93,11 @@ public struct FixVector3
 	public UnityEngine.Vector3 ToVector3()
 	{
 		return new UnityEngine.Vector3(FixMath.mm2m(x), FixMath.mm2m(y), FixMath.mm2m(z));
+	}
+
+	public Int3 ToInt3()
+	{
+		return new Int3(x, y, z);
 	}
 
 	public override bool Equals(object o)

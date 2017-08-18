@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 using PathFinding;
-using TwFramework;
-using TwGame;
+//using TwFramework;
+//using TwGame;
 
 
 public class PathTest : MonoBehaviour
@@ -52,6 +52,10 @@ public class PathTest : MonoBehaviour
 
 		if (startNode != null && endNode != null)
 			UnityEngine.Debug.DrawLine(startNode.position.ToVector3(), endNode.position.ToVector3(), Color.blue);
+
+		UnityEngine.Debug.DrawLine(from.ToVector3() + Vector3.up * 0.01f, to.ToVector3() + Vector3.up * 0.01f, Color.blue);
+
+		UnityEngine.Debug.DrawLine(from.ToVector3() + Vector3.right * 0.01f + Vector3.up * 0.01f, hit.ToVector3() + Vector3.right * 0.01f + Vector3.up * 0.01f, Color.red);
 
 		TestClick();
 	}
@@ -101,10 +105,19 @@ public class PathTest : MonoBehaviour
 			if (Physics.Raycast(ray, out hit, 50, layerMask))
 			{
 				from = to;
-				to = new FixVector3(hit.point + Vector3.up);
-				DoIt();
+				to = new FixVector3(hit.point + Vector3.up * 0.01f);
+				//DoIt();
+				DoLinecast();
 			}
 		}
+	}
+
+
+	FixVector3 hit = FixVector3.zero;
+	void DoLinecast()
+	{
+		var graph = machine.navgationGraph as NavMeshGraph;
+		hit = graph.RayCastForMoving(from, to, MoveType.Normal);
 	}
 
 }

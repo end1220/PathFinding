@@ -1,0 +1,1484 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa1ad7b94f4d8a747b6556eb6dc60bae, type: 3}
+  m_Name: NavMesh_nav
+  m_EditorClassIdentifier: 
+  nodes:
+  - id: 0
+    v0:
+      x: -4733
+      y: 66
+      z: -4733
+    v1:
+      x: -4733
+      y: 66
+      z: -4066
+    v2:
+      x: -3000
+      y: 66
+      z: -4066
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -4155
+      y: 66
+      z: -4288
+    connections: 0500000001000000
+    connectionCosts: 54020000c7020000
+  - id: 1
+    v0:
+      x: -4733
+      y: 66
+      z: -4733
+    v1:
+      x: -3000
+      y: 66
+      z: -4066
+    v2:
+      x: -2599
+      y: 66
+      z: -4066
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -3444
+      y: 66
+      z: -4288
+    connections: 000000000c000000
+    connectionCosts: c702000001040000
+  - id: 2
+    v0:
+      x: -333
+      y: 66
+      z: 0
+    v1:
+      x: -333
+      y: 66
+      z: -599
+    v2:
+      x: -2599
+      y: 66
+      z: -599
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -1088
+      y: 66
+      z: -399
+    connections: 0800000003000000
+    connectionCosts: f0020000c8050000
+  - id: 3
+    v0:
+      x: -333
+      y: 66
+      z: 0
+    v1:
+      x: -2599
+      y: 66
+      z: -599
+    v2:
+      x: -4733
+      y: 66
+      z: 0
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -2555
+      y: 66
+      z: -200
+    connections: 020000000a00000025000000
+    connectionCosts: c80500008f03000074020000
+  - id: 4
+    v0:
+      x: -4733
+      y: 66
+      z: -599
+    v1:
+      x: -3000
+      y: 66
+      z: -599
+    v2:
+      x: -3133
+      y: 66
+      z: -733
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -3622
+      y: 66
+      z: -644
+    connections: 0b00000006000000
+    connectionCosts: 4b02000058040000
+  - id: 5
+    v0:
+      x: -3133
+      y: 66
+      z: -3933
+    v1:
+      x: -3000
+      y: 66
+      z: -4066
+    v2:
+      x: -4733
+      y: 66
+      z: -4066
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -3622
+      y: 66
+      z: -4022
+    connections: 0000000007000000
+    connectionCosts: 540200000c050000
+  - id: 6
+    v0:
+      x: -4733
+      y: 66
+      z: -599
+    v1:
+      x: -3133
+      y: 66
+      z: -733
+    v2:
+      x: -3133
+      y: 66
+      z: -3933
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -3666
+      y: 66
+      z: -1755
+    connections: 0400000007000000
+    connectionCosts: 58040000d1040000
+  - id: 7
+    v0:
+      x: -4733
+      y: 66
+      z: -599
+    v1:
+      x: -3133
+      y: 66
+      z: -3933
+    v2:
+      x: -4733
+      y: 66
+      z: -4066
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -4200
+      y: 66
+      z: -2866
+    connections: 0600000005000000
+    connectionCosts: d10400000c050000
+  - id: 8
+    v0:
+      x: -2466
+      y: 66
+      z: -733
+    v1:
+      x: -2599
+      y: 66
+      z: -599
+    v2:
+      x: -333
+      y: 66
+      z: -599
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -1799
+      y: 66
+      z: -644
+    connections: 0200000009000000
+    connectionCosts: f002000039030000
+  - id: 9
+    v0:
+      x: -2466
+      y: 66
+      z: -733
+    v1:
+      x: -333
+      y: 66
+      z: -599
+    v2:
+      x: -333
+      y: 66
+      z: -1599
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -1044
+      y: 66
+      z: -977
+    connections: 080000000f000000
+    connectionCosts: 3903000027050000
+  - id: 10
+    v0:
+      x: -2599
+      y: 66
+      z: -599
+    v1:
+      x: -3000
+      y: 66
+      z: -599
+    v2:
+      x: -4733
+      y: 66
+      z: 0
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -3444
+      y: 66
+      z: -399
+    connections: 0b00000003000000
+    connectionCosts: c70200008f030000
+  - id: 11
+    v0:
+      x: -3000
+      y: 66
+      z: -599
+    v1:
+      x: -4733
+      y: 66
+      z: -599
+    v2:
+      x: -4733
+      y: 66
+      z: 0
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -4155
+      y: 66
+      z: -399
+    connections: 040000000a000000
+    connectionCosts: 4b020000c7020000
+  - id: 12
+    v0:
+      x: 0
+      y: 66
+      z: -4733
+    v1:
+      x: -4733
+      y: 66
+      z: -4733
+    v2:
+      x: -2599
+      y: 66
+      z: -4066
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -2444
+      y: 66
+      z: -4511
+    connections: 010000000d000000
+    connectionCosts: 0104000022030000
+  - id: 13
+    v0:
+      x: 0
+      y: 66
+      z: -4733
+    v1:
+      x: -2599
+      y: 66
+      z: -4066
+    v2:
+      x: -2466
+      y: 66
+      z: -3933
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -1688
+      y: 66
+      z: -4244
+    connections: 0c00000010000000
+    connectionCosts: 220300005c040000
+  - id: 14
+    v0:
+      x: -333
+      y: 66
+      z: -1599
+    v1:
+      x: 0
+      y: 66
+      z: -1733
+    v2:
+      x: 0
+      y: 66
+      z: -4733
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -111
+      y: 66
+      z: -2688
+    connections: 2000000010000000
+    connectionCosts: af0300004e040000
+  - id: 15
+    v0:
+      x: -2466
+      y: 66
+      z: -3933
+    v1:
+      x: -2466
+      y: 66
+      z: -733
+    v2:
+      x: -333
+      y: 66
+      z: -1599
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -1755
+      y: 66
+      z: -2088
+    connections: 0900000010000000
+    connectionCosts: 270500001f060000
+  - id: 16
+    v0:
+      x: -2466
+      y: 66
+      z: -3933
+    v1:
+      x: -333
+      y: 66
+      z: -1599
+    v2:
+      x: 0
+      y: 66
+      z: -4733
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -933
+      y: 66
+      z: -3422
+    connections: 0f0000000e0000000d000000
+    connectionCosts: 1f0600004e0400005c040000
+  - id: 17
+    v0:
+      x: 3533
+      y: 66
+      z: -3733
+    v1:
+      x: 4800
+      y: 66
+      z: -3733
+    v2:
+      x: 4800
+      y: 66
+      z: -4733
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: 4378
+      y: 66
+      z: -4066
+    connections: 1a00000015000000
+    connectionCosts: 17020000e8030000
+  - id: 18
+    v0:
+      x: 1800
+      y: 66
+      z: -1733
+    v1:
+      x: 333
+      y: 66
+      z: -1599
+    v2:
+      x: 333
+      y: 66
+      z: 0
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: 822
+      y: 66
+      z: -1111
+    connections: 1900000013000000
+    connectionCosts: 430200002e060000
+  - id: 19
+    v0:
+      x: 1800
+      y: 66
+      z: -1733
+    v1:
+      x: 333
+      y: 66
+      z: 0
+    v2:
+      x: 4800
+      y: 66
+      z: 0
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: 2311
+      y: 66
+      z: -578
+    connections: 120000003700000014000000
+    connectionCosts: 2e06000061030000bd040000
+  - id: 20
+    v0:
+      x: 1800
+      y: 66
+      z: -1733
+    v1:
+      x: 4800
+      y: 66
+      z: 0
+    v2:
+      x: 3533
+      y: 66
+      z: -1733
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: 3378
+      y: 66
+      z: -1155
+    connections: 1300000018000000
+    connectionCosts: bd040000e8030000
+  - id: 21
+    v0:
+      x: 1800
+      y: 66
+      z: -3733
+    v1:
+      x: 3533
+      y: 66
+      z: -3733
+    v2:
+      x: 4800
+      y: 66
+      z: -4733
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: 3378
+      y: 66
+      z: -4066
+    connections: 1100000016000000
+    connectionCosts: e8030000c8040000
+  - id: 22
+    v0:
+      x: 1800
+      y: 66
+      z: -3733
+    v1:
+      x: 4800
+      y: 66
+      z: -4733
+    v2:
+      x: 0
+      y: 66
+      z: -4733
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: 2200
+      y: 66
+      z: -4400
+    connections: 1500000021000000
+    connectionCosts: c804000057040000
+  - id: 23
+    v0:
+      x: 200
+      y: 66
+      z: -1733
+    v1:
+      x: 1800
+      y: 66
+      z: -1733
+    v2:
+      x: 1666
+      y: 66
+      z: -1866
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: 1222
+      y: 66
+      z: -1777
+    connections: 190000001e000000
+    connectionCosts: c501000058020000
+  - id: 24
+    v0:
+      x: 4800
+      y: 66
+      z: 0
+    v1:
+      x: 4800
+      y: 66
+      z: -1733
+    v2:
+      x: 3533
+      y: 66
+      z: -1733
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: 4378
+      y: 66
+      z: -1155
+    connections: 1b00000014000000
+    connectionCosts: d8020000e8030000
+  - id: 25
+    v0:
+      x: 1800
+      y: 66
+      z: -1733
+    v1:
+      x: 200
+      y: 66
+      z: -1733
+    v2:
+      x: 333
+      y: 66
+      z: -1599
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: 778
+      y: 66
+      z: -1688
+    connections: 1700000012000000
+    connectionCosts: c501000043020000
+  - id: 26
+    v0:
+      x: 4800
+      y: 66
+      z: -3733
+    v1:
+      x: 3533
+      y: 66
+      z: -3733
+    v2:
+      x: 3666
+      y: 66
+      z: -3599
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: 4000
+      y: 66
+      z: -3688
+    connections: 110000001c000000
+    connectionCosts: 1702000014030000
+  - id: 27
+    v0:
+      x: 3666
+      y: 66
+      z: -1866
+    v1:
+      x: 3533
+      y: 66
+      z: -1733
+    v2:
+      x: 4800
+      y: 66
+      z: -1733
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: 4000
+      y: 66
+      z: -1777
+    connections: 180000001d000000
+    connectionCosts: d802000070020000
+  - id: 28
+    v0:
+      x: 4800
+      y: 66
+      z: -1733
+    v1:
+      x: 4800
+      y: 66
+      z: -3733
+    v2:
+      x: 3666
+      y: 66
+      z: -3599
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: 4422
+      y: 66
+      z: -3022
+    connections: 1a0000001d000000
+    connectionCosts: 14030000d9020000
+  - id: 29
+    v0:
+      x: 4800
+      y: 66
+      z: -1733
+    v1:
+      x: 3666
+      y: 66
+      z: -3599
+    v2:
+      x: 3666
+      y: 66
+      z: -1866
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: 4044
+      y: 66
+      z: -2399
+    connections: 1c0000001b000000
+    connectionCosts: d902000070020000
+  - id: 30
+    v0:
+      x: 0
+      y: 66
+      z: -1733
+    v1:
+      x: 200
+      y: 66
+      z: -1733
+    v2:
+      x: 1666
+      y: 66
+      z: -1866
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: 622
+      y: 66
+      z: -1777
+    connections: 170000001f000000
+    connectionCosts: 5802000017030000
+  - id: 31
+    v0:
+      x: 0
+      y: 66
+      z: -1733
+    v1:
+      x: 1666
+      y: 66
+      z: -1866
+    v2:
+      x: 1666
+      y: 66
+      z: -3599
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: 1111
+      y: 66
+      z: -2399
+    connections: 1e00000020000000
+    connectionCosts: 1703000052040000
+  - id: 32
+    v0:
+      x: 0
+      y: 66
+      z: -1733
+    v1:
+      x: 1666
+      y: 66
+      z: -3599
+    v2:
+      x: 0
+      y: 66
+      z: -4733
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: 555
+      y: 66
+      z: -3355
+    connections: 1f000000210000000e000000
+    connectionCosts: 5204000081030000af030000
+  - id: 33
+    v0:
+      x: 1666
+      y: 66
+      z: -3599
+    v1:
+      x: 1800
+      y: 66
+      z: -3733
+    v2:
+      x: 0
+      y: 66
+      z: -4733
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: 1155
+      y: 66
+      z: -4022
+    connections: 1600000020000000
+    connectionCosts: 5704000081030000
+  - id: 34
+    v0:
+      x: -1399
+      y: 66
+      z: 1000
+    v1:
+      x: -333
+      y: 66
+      z: 1000
+    v2:
+      x: -333
+      y: 66
+      z: 0
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -688
+      y: 66
+      z: 667
+    connections: 2a00000024000000
+    connectionCosts: e901000041040000
+  - id: 35
+    v0:
+      x: -4733
+      y: 66
+      z: 0
+    v1:
+      x: -4733
+      y: 66
+      z: 1000
+    v2:
+      x: -3599
+      y: 66
+      z: 1000
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -4355
+      y: 66
+      z: 667
+    connections: 2700000025000000
+    connectionCosts: f7010000e1050000
+  - id: 36
+    v0:
+      x: -3599
+      y: 66
+      z: 1000
+    v1:
+      x: -1399
+      y: 66
+      z: 1000
+    v2:
+      x: -333
+      y: 66
+      z: 0
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -1777
+      y: 66
+      z: 667
+    connections: 2200000025000000
+    connectionCosts: 4104000088040000
+  - id: 37
+    v0:
+      x: -3599
+      y: 66
+      z: 1000
+    v1:
+      x: -333
+      y: 66
+      z: 0
+    v2:
+      x: -4733
+      y: 66
+      z: 0
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -2888
+      y: 66
+      z: 333
+    connections: 240000000300000023000000
+    connectionCosts: 8804000074020000e1050000
+  - id: 38
+    v0:
+      x: -4733
+      y: 66
+      z: 3466
+    v1:
+      x: -3599
+      y: 66
+      z: 3466
+    v2:
+      x: -3733
+      y: 66
+      z: 3333
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -4022
+      y: 66
+      z: 3422
+    connections: 2e00000028000000
+    connectionCosts: 500200000b030000
+  - id: 39
+    v0:
+      x: -3733
+      y: 66
+      z: 1133
+    v1:
+      x: -3599
+      y: 66
+      z: 1000
+    v2:
+      x: -4733
+      y: 66
+      z: 1000
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -4022
+      y: 66
+      z: 1044
+    connections: 2300000029000000
+    connectionCosts: f701000089030000
+  - id: 40
+    v0:
+      x: -4733
+      y: 66
+      z: 3466
+    v1:
+      x: -3733
+      y: 66
+      z: 3333
+    v2:
+      x: -3733
+      y: 66
+      z: 1133
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -4066
+      y: 66
+      z: 2644
+    connections: 2600000029000000
+    connectionCosts: 0b0300004f030000
+  - id: 41
+    v0:
+      x: -4733
+      y: 66
+      z: 3466
+    v1:
+      x: -3733
+      y: 66
+      z: 1133
+    v2:
+      x: -4733
+      y: 66
+      z: 1000
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -4400
+      y: 66
+      z: 1866
+    connections: 2800000027000000
+    connectionCosts: 4f03000089030000
+  - id: 42
+    v0:
+      x: -333
+      y: 66
+      z: 1000
+    v1:
+      x: -1399
+      y: 66
+      z: 1000
+    v2:
+      x: -1266
+      y: 66
+      z: 1133
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -999
+      y: 66
+      z: 1044
+    connections: 220000002b000000
+    connectionCosts: e901000097010000
+  - id: 43
+    v0:
+      x: -333
+      y: 66
+      z: 1000
+    v1:
+      x: -1266
+      y: 66
+      z: 1133
+    v2:
+      x: -333
+      y: 66
+      z: 1600
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -644
+      y: 66
+      z: 1244
+    connections: 2a00000032000000
+    connectionCosts: 9701000046030000
+  - id: 44
+    v0:
+      x: -1399
+      y: 66
+      z: 3466
+    v1:
+      x: -3599
+      y: 66
+      z: 3466
+    v2:
+      x: -4733
+      y: 66
+      z: 4800
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -3244
+      y: 66
+      z: 3911
+    connections: 2e0000002d000000
+    connectionCosts: 5704000000050000
+  - id: 45
+    v0:
+      x: -1399
+      y: 66
+      z: 3466
+    v1:
+      x: -4733
+      y: 66
+      z: 4800
+    v2:
+      x: 0
+      y: 66
+      z: 4800
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -2044
+      y: 66
+      z: 4355
+    connections: 2c00000031000000
+    connectionCosts: 00050000e7040000
+  - id: 46
+    v0:
+      x: -3599
+      y: 66
+      z: 3466
+    v1:
+      x: -4733
+      y: 66
+      z: 3466
+    v2:
+      x: -4733
+      y: 66
+      z: 4800
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -4355
+      y: 66
+      z: 3911
+    connections: 260000002c000000
+    connectionCosts: 5002000057040000
+  - id: 47
+    v0:
+      x: -3266
+      y: 899
+      z: 1466
+    v1:
+      x: -3266
+      y: 899
+      z: 3000
+    v2:
+      x: -1733
+      y: 899
+      z: 3000
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -2755
+      y: 899
+      z: 2489
+    connections: 30000000
+    connectionCosts: d3020000
+  - id: 48
+    v0:
+      x: -3266
+      y: 899
+      z: 1466
+    v1:
+      x: -1733
+      y: 899
+      z: 3000
+    v2:
+      x: -1733
+      y: 899
+      z: 1466
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -2244
+      y: 899
+      z: 1977
+    connections: 2f000000
+    connectionCosts: d3020000
+  - id: 49
+    v0:
+      x: -1266
+      y: 66
+      z: 3333
+    v1:
+      x: -1399
+      y: 66
+      z: 3466
+    v2:
+      x: 0
+      y: 66
+      z: 4800
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -888
+      y: 66
+      z: 3866
+    connections: 2d00000034000000
+    connectionCosts: e7040000e6020000
+  - id: 50
+    v0:
+      x: -333
+      y: 66
+      z: 1600
+    v1:
+      x: -1266
+      y: 66
+      z: 1133
+    v2:
+      x: -1266
+      y: 66
+      z: 3333
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -955
+      y: 66
+      z: 2022
+    connections: 2b00000033000000
+    connectionCosts: 46030000d3010000
+  - id: 51
+    v0:
+      x: 0
+      y: 66
+      z: 1733
+    v1:
+      x: -333
+      y: 66
+      z: 1600
+    v2:
+      x: -1266
+      y: 66
+      z: 3333
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -533
+      y: 66
+      z: 2222
+    connections: 3200000034000000
+    connectionCosts: d301000031040000
+  - id: 52
+    v0:
+      x: 0
+      y: 66
+      z: 1733
+    v1:
+      x: -1266
+      y: 66
+      z: 3333
+    v2:
+      x: 0
+      y: 66
+      z: 4800
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: -422
+      y: 66
+      z: 3289
+    connections: 330000003100000042000000
+    connectionCosts: 31040000e602000049060000
+  - id: 53
+    v0:
+      x: 3333
+      y: 66
+      z: 600
+    v1:
+      x: 4800
+      y: 66
+      z: 600
+    v2:
+      x: 4800
+      y: 66
+      z: 0
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: 4311
+      y: 66
+      z: 400
+    connections: 3d00000036000000
+    connectionCosts: fc0100006e020000
+  - id: 54
+    v0:
+      x: 2933
+      y: 66
+      z: 600
+    v1:
+      x: 3333
+      y: 66
+      z: 600
+    v2:
+      x: 4800
+      y: 66
+      z: 0
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: 3689
+      y: 66
+      z: 400
+    connections: 3500000037000000
+    connectionCosts: 6e020000fc030000
+  - id: 55
+    v0:
+      x: 2933
+      y: 66
+      z: 600
+    v1:
+      x: 4800
+      y: 66
+      z: 0
+    v2:
+      x: 333
+      y: 66
+      z: 0
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: 2689
+      y: 66
+      z: 200
+    connections: 360000001300000038000000
+    connectionCosts: fc03000061030000de050000
+  - id: 56
+    v0:
+      x: 2933
+      y: 66
+      z: 600
+    v1:
+      x: 333
+      y: 66
+      z: 0
+    v2:
+      x: 333
+      y: 66
+      z: 600
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: 1200
+      y: 66
+      z: 400
+    connections: 3700000039000000
+    connectionCosts: de05000059030000
+  - id: 57
+    v0:
+      x: 2800
+      y: 66
+      z: 733
+    v1:
+      x: 2933
+      y: 66
+      z: 600
+    v2:
+      x: 333
+      y: 66
+      z: 600
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: 2022
+      y: 66
+      z: 644
+    connections: 380000003a000000
+    connectionCosts: 59030000a1030000
+  - id: 58
+    v0:
+      x: 2800
+      y: 66
+      z: 733
+    v1:
+      x: 333
+      y: 66
+      z: 600
+    v2:
+      x: 333
+      y: 66
+      z: 1600
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: 1155
+      y: 66
+      z: 978
+    connections: 3900000041000000
+    connectionCosts: a103000089010000
+  - id: 59
+    v0:
+      x: 4800
+      y: 66
+      z: 4800
+    v1:
+      x: 3333
+      y: 66
+      z: 4066
+    v2:
+      x: 2933
+      y: 66
+      z: 4066
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: 3689
+      y: 66
+      z: 4311
+    connections: 3c00000044000000
+    connectionCosts: 6e02000071040000
+  - id: 60
+    v0:
+      x: 4800
+      y: 66
+      z: 4800
+    v1:
+      x: 4800
+      y: 66
+      z: 4066
+    v2:
+      x: 3333
+      y: 66
+      z: 4066
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: 4311
+      y: 66
+      z: 4311
+    connections: 3e0000003b000000
+    connectionCosts: 130200006e020000
+  - id: 61
+    v0:
+      x: 4800
+      y: 66
+      z: 600
+    v1:
+      x: 3333
+      y: 66
+      z: 600
+    v2:
+      x: 3466
+      y: 66
+      z: 733
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: 3866
+      y: 66
+      z: 644
+    connections: 350000003f000000
+    connectionCosts: fc010000e7040000
+  - id: 62
+    v0:
+      x: 3466
+      y: 66
+      z: 3933
+    v1:
+      x: 3333
+      y: 66
+      z: 4066
+    v2:
+      x: 4800
+      y: 66
+      z: 4066
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: 3866
+      y: 66
+      z: 4022
+    connections: 3c00000040000000
+    connectionCosts: 1302000058040000
+  - id: 63
+    v0:
+      x: 4800
+      y: 66
+      z: 4066
+    v1:
+      x: 4800
+      y: 66
+      z: 600
+    v2:
+      x: 3466
+      y: 66
+      z: 733
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: 4355
+      y: 66
+      z: 1800
+    connections: 3d00000040000000
+    connectionCosts: e7040000ac040000
+  - id: 64
+    v0:
+      x: 4800
+      y: 66
+      z: 4066
+    v1:
+      x: 3466
+      y: 66
+      z: 733
+    v2:
+      x: 3466
+      y: 66
+      z: 3933
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: 3911
+      y: 66
+      z: 2911
+    connections: 3f0000003e000000
+    connectionCosts: ac04000058040000
+  - id: 65
+    v0:
+      x: 2800
+      y: 66
+      z: 733
+    v1:
+      x: 333
+      y: 66
+      z: 1600
+    v2:
+      x: 0
+      y: 66
+      z: 1733
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: 1044
+      y: 66
+      z: 1355
+    connections: 3a00000042000000
+    connectionCosts: 8901000031040000
+  - id: 66
+    v0:
+      x: 2800
+      y: 66
+      z: 733
+    v1:
+      x: 0
+      y: 66
+      z: 1733
+    v2:
+      x: 0
+      y: 66
+      z: 4800
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: 933
+      y: 66
+      z: 2422
+    connections: 410000003400000043000000
+    connectionCosts: 3104000049060000a3040000
+  - id: 67
+    v0:
+      x: 2800
+      y: 66
+      z: 733
+    v1:
+      x: 0
+      y: 66
+      z: 4800
+    v2:
+      x: 2800
+      y: 66
+      z: 3933
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: 1867
+      y: 66
+      z: 3155
+    connections: 4200000045000000
+    connectionCosts: a304000058040000
+  - id: 68
+    v0:
+      x: 0
+      y: 66
+      z: 4800
+    v1:
+      x: 4800
+      y: 66
+      z: 4800
+    v2:
+      x: 2933
+      y: 66
+      z: 4066
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: 2578
+      y: 66
+      z: 4555
+    connections: 3b00000045000000
+    connectionCosts: 71040000d7020000
+  - id: 69
+    v0:
+      x: 0
+      y: 66
+      z: 4800
+    v1:
+      x: 2933
+      y: 66
+      z: 4066
+    v2:
+      x: 2800
+      y: 66
+      z: 3933
+    Penalty: 0
+    Walkable: 1
+    position:
+      x: 1911
+      y: 66
+      z: 4266
+    connections: 4400000043000000
+    connectionCosts: d702000058040000

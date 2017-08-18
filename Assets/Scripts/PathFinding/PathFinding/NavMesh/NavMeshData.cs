@@ -39,6 +39,11 @@ namespace PathFinding
 			if (navmeshMaterial == null)
 			{
 				navmeshMaterial = UnityEditor.AssetDatabase.LoadAssetAtPath<Material>(editorAssets + "/Materials/Navmesh.mat");
+				if (navmeshMaterial == null)
+				{
+					editorAssets = "Assets/Scripts/PathFinding/Editor/EditorAssets";
+					navmeshMaterial = UnityEditor.AssetDatabase.LoadAssetAtPath<Material>(editorAssets + "/Materials/Navmesh.mat");
+				}
 				//navmeshOutlineMaterial = UnityEditor.AssetDatabase.LoadAssetAtPath<Material>(editorAssets + "/Materials/NavmeshOutline.mat");
 			}
 #endif

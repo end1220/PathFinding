@@ -6,15 +6,15 @@ using System.Collections.Generic;
 // ·Ç±ÕºÏÏß
 class LineInfo
 {
-	public List<Vector3> pointList = new List<Vector3>();
+	public List<FixVector3> pointList = new List<FixVector3>();
 	public Color color = Color.cyan;
 
-	public LineInfo(Vector3[] points, Color color)
+	public LineInfo(FixVector3[] points, Color color)
 	{
 		this.color = color;
 		for (int i = 0; i < points.Length; ++i)
 		{
-			pointList.Add(points[i] + new Vector3(0, 0.01f, 0));
+			pointList.Add(points[i] + new FixVector3(0, 10, 0));
 		}
 	}
 }
@@ -43,7 +43,7 @@ public class DebugLine : MonoBehaviour
 	private List<CircleInfo> circleList = new List<CircleInfo>();
 
 
-	public void AddLine(Vector3[] points, Color color)
+	public void AddLine(FixVector3[] points, Color color)
 	{
 		var info = new LineInfo(points, color);
 		lineList.Add(info);
@@ -98,7 +98,7 @@ public class DebugLine : MonoBehaviour
 			var info = lineList[c];
 			for (int i = 0; i < info.pointList.Count-1; i++)
 			{
-				Debug.DrawLine(info.pointList[i], info.pointList[i + 1], info.color);
+				Debug.DrawLine(info.pointList[i].ToVector3(), info.pointList[i + 1].ToVector3(), info.color);
 			}
 		}
 

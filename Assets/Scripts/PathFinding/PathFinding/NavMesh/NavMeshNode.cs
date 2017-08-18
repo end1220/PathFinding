@@ -48,6 +48,11 @@ namespace PathFinding
 			return 0;
 		}
 
+		public int GetVertexCount()
+		{
+			return 3;
+		}
+
 		public int GetVertexIndex(Int3 vertex)
 		{
 			return vertex == v0 ? 0 : (vertex == v1 ? 1 : 2);
