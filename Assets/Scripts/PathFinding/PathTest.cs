@@ -53,9 +53,15 @@ public class PathTest : MonoBehaviour
 		if (startNode != null && endNode != null)
 			UnityEngine.Debug.DrawLine(startNode.position.ToVector3(), endNode.position.ToVector3(), Color.blue);
 
-		UnityEngine.Debug.DrawLine(from.ToVector3() + Vector3.up * 0.01f, to.ToVector3() + Vector3.up * 0.01f, Color.blue);
+		UnityEngine.Debug.DrawLine(from.ToVector3() + Vector3.up * 0.1f, to.ToVector3() + Vector3.up * 0.1f, Color.blue);
 
-		UnityEngine.Debug.DrawLine(from.ToVector3() + Vector3.right * 0.01f + Vector3.up * 0.01f, hit.ToVector3() + Vector3.right * 0.01f + Vector3.up * 0.01f, Color.red);
+		UnityEngine.Debug.DrawLine(from.ToVector3() + Vector3.right * 0.05f + Vector3.up * 0.1f, hit.ToVector3() + Vector3.right * 0.05f + Vector3.up * 0.1f, Color.red);
+
+		var graph = machine.navgationGraph as NavMeshGraph;
+		for (int i = 0; i < graph.trace.Count-1; ++i)
+		{
+			UnityEngine.Debug.DrawLine(graph.trace[i].position.ToVector3(), graph.trace[i+1].position.ToVector3(), Color.green);
+		}
 
 		TestClick();
 	}

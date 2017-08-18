@@ -109,8 +109,12 @@ namespace PathFinding
 		}
 
 
+		public List<NavMeshNode> trace = new List<NavMeshNode>();
+
 		public FixVector3 RayCastForMoving(FixVector3 from, FixVector3 to, MoveType mov)
 		{
+			if (trace != null) trace.Clear();
+
 			var end = new Int3(to.x, to.y, to.z);
 			var origin = new Int3(from.x, from.y, from.z);
 
@@ -149,6 +153,8 @@ namespace PathFinding
 				}
 
 				NavMeshNode newNode = null;
+
+				if (trace != null) trace.Add(node);
 
 				if (node.ContainsPoint(end))
 				{
@@ -223,7 +229,7 @@ namespace PathFinding
 
 							if (factor1 >= 0 && factor1 <= 1)
 							{
-								Vector3 intersectionPoint = (Vector3)(a + (b - a)) * factor1;
+								Vector3 intersectionPoint = (Vector3)a + (Vector3)(b - a) * factor1;
 								hitPosition = new FixVector3(intersectionPoint);
 
 								Util.ListPool<Int3>.Release(left);
