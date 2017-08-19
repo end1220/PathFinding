@@ -21,6 +21,15 @@ namespace PathFinding
 
 		public override bool FindPath(FixVector3 from, FixVector3 to, ref List<FixVector3> result)
 		{
+			result.Clear();
+
+			if (from.x == to.x && from.z == to.z)
+			{
+				result.Add(from);
+				result.Add(to);
+				return true;
+			}
+
 			Grid2DGraph gridMap = this.map as Grid2DGraph;
 
 			Int2 start = gridMap.FixVector3ToInt2(from);
@@ -30,7 +39,6 @@ namespace PathFinding
 
 			Grid2DPathOptimizer.Optimize(gridMap, ref path);
 
-			result.Clear();
 			for (int i = 0; i < path.Count; ++i)
 			{
 				result.Add(gridMap.Int2ToFixVector3(path[i]));
