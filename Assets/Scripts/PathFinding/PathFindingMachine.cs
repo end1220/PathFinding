@@ -110,7 +110,7 @@ namespace PathFinding
 			int x = (FixMath.m2mm(position.x) - navGrid.MinX) / navGrid.GridSize;
 			int z = (FixMath.m2mm(position.z) - navGrid.MinZ) / navGrid.GridSize;
 
-			return new Int3(x, z);
+			return new Int3(x, 0, z);
 		}
 
 		public int GetGroundHeight3D(FixVector3 position)

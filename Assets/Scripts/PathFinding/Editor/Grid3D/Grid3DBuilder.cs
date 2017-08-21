@@ -87,7 +87,7 @@ namespace PathFinding
 			int intSubSize = subGridCount * cfg.cellSize;
 			float subSize = intSubSize / 1000f;
 			float halfSubSize = subSize / 2f;
-			Vector3 worldMinPos = cfg.worldMinPos.ToVector3();
+			Vector3 worldMinPos = (Vector3)cfg.worldMinPos;
 
 			int xSpaceCount = cfg.cellCount.x / subGridCount + ((cfg.cellCount.x % subGridCount) == 0 ? 0 : 1);
 			int ySpaceCount = cfg.cellCount.y / subGridCount + ((cfg.cellCount.y % subGridCount) == 0 ? 0 : 1);
@@ -157,7 +157,7 @@ namespace PathFinding
 			for (int i = 0; i < subSpaces.Count; ++i)
 			{
 				SubSpace space = subSpaces[i];
-				Vector3 startPos = space.minPos.ToVector3() + new Vector3(cellRadius, cellRadius, cellRadius);
+				Vector3 startPos = (Vector3)space.minPos + new Vector3(cellRadius, cellRadius, cellRadius);
 				for (int x = 0; x < space.cellCount.x; ++x)
 				{
 					for (int y = 0; y < space.cellCount.y; ++y)

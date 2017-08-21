@@ -51,7 +51,7 @@ public class PathTest : MonoBehaviour
 		}*/
 
 		if (startNode != null && endNode != null)
-			UnityEngine.Debug.DrawLine(startNode.position.ToVector3(), endNode.position.ToVector3(), Color.blue);
+			UnityEngine.Debug.DrawLine((Vector3)startNode.position, (Vector3)endNode.position, Color.blue);
 
 		UnityEngine.Debug.DrawLine(from.ToVector3() + Vector3.up * 0.1f, to.ToVector3() + Vector3.up * 0.1f, Color.blue);
 
@@ -60,7 +60,7 @@ public class PathTest : MonoBehaviour
 		var graph = machine.navgationGraph as NavMeshGraph;
 		for (int i = 0; i < graph.trace.Count-1; ++i)
 		{
-			UnityEngine.Debug.DrawLine(graph.trace[i].position.ToVector3(), graph.trace[i+1].position.ToVector3(), Color.green);
+			UnityEngine.Debug.DrawLine((Vector3)graph.trace[i].position, (Vector3)graph.trace[i+1].position, Color.green);
 		}
 
 		TestClick();

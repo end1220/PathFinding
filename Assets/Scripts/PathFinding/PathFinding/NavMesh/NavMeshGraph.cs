@@ -95,7 +95,7 @@ namespace PathFinding
 
 			if (query.constrainedNode != null)
 			{
-				if (constraint.constrainDistance && (query.constrainedNode.position.ToVector3() - position.ToVector3()).sqrMagnitude > maxNearestNodeDistanceSqr)
+				if (constraint.constrainDistance && ((Vector3)query.constrainedNode.position - position.ToVector3()).sqrMagnitude > maxNearestNodeDistanceSqr)
 				{
 					query.constrainedNode = null;
 				}

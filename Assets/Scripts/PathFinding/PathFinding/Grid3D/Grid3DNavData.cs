@@ -224,7 +224,7 @@ namespace PathFinding
 				for (int i = 0; i < spaces.Count; ++i)
 				{
 					var space = spaces[i];
-					Gizmos.DrawWireCube(space.minPos.ToVector3() + (space.cellCount * buildConfig.cellSize).ToVector3() / 2f, (space.cellCount * buildConfig.cellSize).ToVector3());
+					Gizmos.DrawWireCube((Vector3)space.minPos + (Vector3)(space.cellCount * buildConfig.cellSize) / 2f, (Vector3)(space.cellCount * buildConfig.cellSize));
 				}
 			}
 
@@ -262,7 +262,7 @@ namespace PathFinding
 					var from = graphMap.nodeDic[edge.from];
 					var to = graphMap.nodeDic[edge.to];
 					Gizmos.color = green;
-					Gizmos.DrawLine(from.worldPosition.ToVector3(), to.worldPosition.ToVector3());
+					Gizmos.DrawLine((Vector3)from.worldPosition, (Vector3)to.worldPosition);
 				}
 #endif
             }

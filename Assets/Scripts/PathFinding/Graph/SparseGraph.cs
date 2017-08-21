@@ -34,6 +34,7 @@ namespace Graph
 		{
 			T node = new T();
 			node.id = nodeIdCounter++;
+			node.graph = this;
 			nodeTable.Add(node.id, node);
 			edgeListTable.Add(node.id, new EdgeList());
 			return node;
@@ -41,6 +42,7 @@ namespace Graph
 
 		public void AddNode(GraphNode node)
 		{
+			node.graph = this;
 			nodeTable.Add(node.id, node);
 			edgeListTable.Add(node.id, new EdgeList());
 		}

@@ -1,6 +1,6 @@
 // Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
-Shader "AstarPathfindingProject/Navmesh Outline" {
+Shader "AstarPathFindingProject/Navmesh Outline" {
 Properties {
 	_Color ("Main Color", Color) = (1,1,1,0.5)
 	_MainTex ("Texture", 2D) = "white" { }

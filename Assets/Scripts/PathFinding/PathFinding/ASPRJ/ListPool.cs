@@ -21,7 +21,7 @@ namespace PathFinding.Util
 	 * mess things up quite badly in the worst case.
 	 *
 	 * \since Version 3.2
-	 * \see Pathfinding.Util.StackPool
+	 * \see PathFinding.Util.StackPool
 	 */
 	public static class ListPool<T>
 	{

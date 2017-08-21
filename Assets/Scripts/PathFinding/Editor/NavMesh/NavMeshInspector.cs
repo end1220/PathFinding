@@ -97,7 +97,7 @@ namespace PathFinding
 			Vector3[] vertices = new Vector3[builder._vertices.Length];
 			for (int i = 0; i < vertices.Length; ++i)
 			{
-				vertices[i] = builder._vertices[i].ToVector3();
+				vertices[i] = (Vector3)builder._vertices[i];
 			}
 
 			using (System.IO.StreamWriter sw = new System.IO.StreamWriter(filename))

@@ -6,12 +6,12 @@ namespace Graph
 	{
 		public int id;
 
-		public System.Object extData;
+		public SparseGraph graph;
 
 		public GraphNode()
 		{
 			id = -1;
-			extData = null;
+			graph = null;
 		}
 	}
 

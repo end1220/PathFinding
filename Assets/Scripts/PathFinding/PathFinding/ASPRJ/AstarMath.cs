@@ -100,7 +100,7 @@ namespace PathFinding {
 		 */
 		public static float ClosestPointOnLineFactor (Int3 lineStart, Int3 lineEnd, Int3 point) {
 			var lineDirection = lineEnd - lineStart;
-			float magn = lineDirection.sqrMagnitude;
+			float magn = (float)lineDirection.sqrMagnitude;
 
 			float closestPoint = Int3.Dot((point - lineStart), lineDirection);
 
@@ -850,6 +850,25 @@ namespace PathFinding {
 			return VectorMath.ClosestPointOnSegmentXZ(lineStart, lineEnd, point);
 		}
 
+
+		public static Int3 NearestPointStrict(ref Int3 lineStart, ref Int3 lineEnd, ref Int3 point)
+		{
+			Int3 rhs = lineEnd - lineStart;
+			long sqrMagnitudeLong = rhs.sqrMagnitudeLong;
+			if (sqrMagnitudeLong == 0)
+			{
+				return lineStart;
+			}
+			long m = IntMath.Clamp(Int3.DotLong(point - lineStart, rhs), 0L, sqrMagnitudeLong);
+			return (IntMath.Divide(rhs, m, sqrMagnitudeLong) + lineStart);
+		}
+
+		public static Int3 NearestPointStrict(Int3 lineStart, Int3 lineEnd, Int3 point)
+		{
+			return NearestPointStrict(ref lineStart, ref lineEnd, ref point);
+		}
+
+
 		/** Returns the approximate shortest squared distance between x,z and the line p-q.
 		 * The line is considered infinite.
 		 * This function is not entirely exact, but it is about twice as fast as DistancePointSegment2.
@@ -873,6 +892,14 @@ namespace PathFinding {
 		public static float DistancePointSegmentStrict (Vector3 a, Vector3 b, Vector3 p) {
 			return VectorMath.SqrDistancePointSegment(a, b, p);
 		}
+
+
+		public static long DistancePointSegmentStrict(Int3 a, Int3 b, Int3 p)
+		{
+			Int3 num2 = NearestPointStrict(ref a, ref b, ref p) - p;
+			return num2.sqrMagnitudeLong;
+		}
+
 
 		/** Returns a point on a cubic bezier curve. \a t is clamped between 0 and 1 */
 		[System.Obsolete("Use AstarSplines.CubicBezier instead")]
@@ -1472,6 +1499,22 @@ namespace PathFinding {
 		[System.Obsolete("Use VectorMath.LineIntersectionPoint instead")]
 		public static Vector2 IntersectionPoint (Vector2 start1, Vector2 end1, Vector2 start2, Vector2 end2, out bool intersects) {
 			return VectorMath.LineIntersectionPoint(start1, end1, start2, end2, out intersects);
+		}
+
+
+		public static Int3 IntersectionPoint(ref Int3 start1, ref Int3 end1, ref Int3 start2, ref Int3 end2, out bool intersects)
+		{
+			Int3 a = end1 - start1;
+			Int3 num2 = end2 - start2;
+			long b = (num2.z * a.x) - (num2.x * a.z);
+			if (b == 0)
+			{
+				intersects = false;
+				return start1;
+			}
+			long m = (num2.x * (start1.z - start2.z)) - (num2.z * (start1.x - start2.x));
+			intersects = true;
+			return (IntMath.Divide(a, m, b) + start1);
 		}
 
 		/** Returns the intersection point between the two line segments in XZ space.
