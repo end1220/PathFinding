@@ -11,7 +11,6 @@
 	[AddComponentMenu("PathFinding/Local Avoidance/RVO Controller")]
 	public class RVOController : MonoBehaviour
 	{
-		[CompilerGenerated]
 		private Agent rvoAgent;
 		private IRVOActor actor;
 		private Int adjustedY = 0;

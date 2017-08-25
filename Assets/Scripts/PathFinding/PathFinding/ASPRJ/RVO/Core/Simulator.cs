@@ -13,14 +13,11 @@
 		public SamplingAlgorithm algorithm;
 		private WorkerContext coroutineWorkerContext;
 		public int DeltaTimeMS;
-		private float desiredDeltaTime = 0.05f;
 		private bool doCleanObstacles;
 		private bool doubleBuffering = true;
 		private bool doUpdateObstacles;
 		public static long frameNum;
 		private bool interpolation = true;
-		private float lastStep;
-		private float lastStepInterpolationReference;
 		public List<ObstacleVertex> obstacles;
 		private bool oversampling;
 		private RVOQuadtree quadtree = new RVOQuadtree();
@@ -36,8 +33,6 @@
 			factor.den = 20L;
 			this.qualityCutoff = factor;
 			this.stepScale = 1.5f;
-			this.lastStep = -99999f;
-			this.lastStepInterpolationReference = -9999f;
 			this.wallThickness = VFactor.one;
 			this.coroutineWorkerContext = new WorkerContext();
 			this.workers = new Worker[workers];

@@ -19,7 +19,7 @@ namespace PathFinding
 			Setup(graph as AStarMap);
 		}
 
-		public virtual bool FindPath(FixVector3 from, FixVector3 to, ref List<FixVector3> result)
+		public virtual bool FindPath(Int3 from, Int3 to, ref List<Int3> result)
 		{
 			return false;
 		}

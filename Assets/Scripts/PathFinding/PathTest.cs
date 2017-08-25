@@ -18,7 +18,7 @@ public class PathTest : MonoBehaviour
     public DebugLine line;
 #endif
 
-	List<FixVector3> fixResult = new List<FixVector3>();
+	List<Int3> fixResult = new List<Int3>();
 
 	[System.NonSerialized]
 	public NavMeshNode startNode;
@@ -67,8 +67,8 @@ public class PathTest : MonoBehaviour
 	}
 
 	System.Random random = new System.Random();
-	FixVector3 from = FixVector3.zero;
-	FixVector3 to = FixVector3.zero;
+	Int3 from = Int3.zero;
+	Int3 to = Int3.zero;
 	void DoIt()
 	{
 		startNode = null;
@@ -111,7 +111,7 @@ public class PathTest : MonoBehaviour
 			if (Physics.Raycast(ray, out hit, 50, layerMask))
 			{
 				from = to;
-				to = new FixVector3(hit.point + Vector3.up * 0.01f);
+				to = new Int3(hit.point + Vector3.up * 0.01f);
 				//DoIt();
 				DoLinecast();
 			}
@@ -119,11 +119,17 @@ public class PathTest : MonoBehaviour
 	}
 
 
-	FixVector3 hit = FixVector3.zero;
+	Int3 hit = Int3.zero;
 	void DoLinecast()
 	{
 		var graph = machine.navgationGraph as NavMeshGraph;
-		hit = graph.RayCastForMoving(from, to, MoveType.Normal);
+		HitInfo hitInfo = new HitInfo(from, to);
+		if (graph.LineCastForMoving(ref hitInfo, MoveType.Normal))
+		{
+			hit = hitInfo.hitPosition;
+		}
+		else
+			hit = to;
 	}
 
 }

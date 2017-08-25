@@ -15,7 +15,7 @@ namespace PathFinding
 		private List<Int3> resultCache = new List<Int3>();
 
 
-		public override bool FindPath(FixVector3 from, FixVector3 to, ref List<FixVector3> result)
+		public override bool FindPath(Int3 from, Int3 to, ref List<Int3> result)
 		{
 			Grid3DGraph graphMap = this.map as Grid3DGraph;
 			var startNode = graphMap.GetNearbyWalkableNode(from);
@@ -32,7 +32,7 @@ namespace PathFinding
 			{
 				var point = points[i];
 				var node = graphMap.GetNodeAt(point.x, point.y, point.z);
-				result.Add(new FixVector3(node.worldPosition.x, node.worldPosition.y, node.worldPosition.z));
+				result.Add(new Int3(node.worldPosition.x, node.worldPosition.y, node.worldPosition.z));
 			}
 			if (result.Count >= 2)
 			{

@@ -7,13 +7,14 @@ namespace PathFinding
 	{
 		void Init(INavData data);
 
-		bool IsPassable(FixVector3 position);
+		bool IsPassable(Int3 position);
 
-		FixVector3 GetNearestPosition(FixVector3 position);
+		Int3 GetNearestPosition(Int3 position);
 
-		FixVector3 RayCastForMoving(FixVector3 from, FixVector3 to, MoveType mov);
+		// return true if hit obstacle
+		bool LineCastForMoving(ref HitInfo hit, MoveType mov);
 
-		FixVector3 SlideByObstacles(FixVector3 fromPos, FixVector3 oldTargetPos);
+		Int3 SlideByObstacles(Int3 from, Int3 to, Int3 hit);
 
 	}
 }

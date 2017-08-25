@@ -11,7 +11,7 @@ namespace PathFinding
 	{
 		public static PathFindingMachine Instance { get; private set; }
 
-		public PathMode pathMode = PathMode.Grid2D;
+		public PathMode pathMode = PathMode.NavMesh;
 
 		public bool EnableMultiThread;
 
@@ -83,23 +83,23 @@ namespace PathFinding
 		}
 
 
-		public bool FindPath(FixVector3 from, FixVector3 to, ref List<FixVector3> result)
+		public bool FindPath(Int3 from, Int3 to, ref List<Int3> result)
 		{
 			bool ret = pathPlanner.FindPath(from, to, ref result);
 			return ret;
 		}
 
-		public bool IsPassable(FixVector3 position)
+		public bool IsPassable(Int3 position)
 		{
 			return navgationGraph.IsPassable(position);
 		}
 
-		public bool IsMissileCross(FixVector3 position, int CrossType)
+		public bool IsMissileCross(Int3 position, int CrossType)
 		{
 			return (navgationGraph as Grid2DGraph).IsMissileCross(position, CrossType);
 		}
 
-		public FixVector3 GetNearestForce(FixVector3 position)
+		public Int3 GetNearestForce(Int3 position)
 		{
 			return navgationGraph.GetNearestPosition(position);
 		}
@@ -113,24 +113,24 @@ namespace PathFinding
 			return new Int3(x, 0, z);
 		}
 
-		public int GetGroundHeight3D(FixVector3 position)
+		public int GetGroundHeight3D(Int3 position)
 		{
 			return (navgationGraph as Grid3DGraph).GetGroundHeight3D(position);
 		}
 
 
-		public FixVector3 RayCastForMoving(FixVector3 from, FixVector3 to, MoveType mov)
+		public bool LineCastForMoving(ref HitInfo hit, MoveType mov)
 		{
-			return navgationGraph.RayCastForMoving(from, to, mov);
+			return navgationGraph.LineCastForMoving(ref hit, mov);
 		}
 
 
 		/// <summary>
 		/// 走路遇到障碍，让角色侧身滑过，而不是原地不动
 		/// </summary>
-		public FixVector3 SlideByObstacles(FixVector3 fromPos, FixVector3 oldTargetPos)
+		public Int3 SlideByObstacles(Int3 from, Int3 to, Int3 hit)
 		{
-			return navgationGraph.SlideByObstacles(fromPos, oldTargetPos);
+			return navgationGraph.SlideByObstacles(from, to, hit);
 		}
 
 

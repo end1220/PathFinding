@@ -127,11 +127,11 @@ namespace PathFinding
 		}
 
 
-		public int GetGroundHeight3D(FixVector3 position)
+		public int GetGroundHeight3D(Int3 position)
 		{
 			int stepHeight = navGraphData.buildConfig.agentHeightStep * navGraphData.buildConfig.cellSize;
 			float posY = FixMath.mm2m(position.y);
-			FixVector3 upperPosition = new FixVector3(position.x, position.y + stepHeight, position.z);
+			Int3 upperPosition = new Int3(position.x, position.y + stepHeight, position.z);
 			Ray ray = new Ray(upperPosition.ToVector3(), Vector3.down);
 			RaycastHit hit;
 			float distance = FixMath.mm2m(stepHeight) * 2;
@@ -144,7 +144,7 @@ namespace PathFinding
 		}
 
 
-		public Int3 FixVector3ToInt3(FixVector3 position)
+		public Int3 FixVector3ToInt3(Int3 position)
 		{
 			int cellSize = navGraphData.buildConfig.cellSize;
 			int dx = position.x - navGraphData.buildConfig.worldMinPos.x;
@@ -157,7 +157,7 @@ namespace PathFinding
 		}
 
 
-		public bool IsPassable(FixVector3 position)
+		public bool IsPassable(Int3 position)
 		{
 			Int3 pt3d = FixVector3ToInt3(position);
 			bool ret = this.IsNodePassable(pt3d.x, pt3d.y, pt3d.z);
@@ -165,13 +165,13 @@ namespace PathFinding
 		}
 
 
-		public FixVector3 GetNearestPosition(FixVector3 position)
+		public Int3 GetNearestPosition(Int3 position)
 		{
 			return position;
 		}
 
 
-		public Grid3DNode GetNearbyWalkableNode(FixVector3 pos)
+		public Grid3DNode GetNearbyWalkableNode(Int3 pos)
 		{
 			var pt = FixVector3ToInt3(pos);
 			var node = GetNodeAt(pt.x, pt.y, pt.z);
@@ -200,11 +200,14 @@ namespace PathFinding
 		}
 
 		
-		public FixVector3 RayCastForMoving(FixVector3 from, FixVector3 to, MoveType mov)
+		public bool LineCastForMoving(ref HitInfo hit, MoveType mov)
 		{
+			Int3 from = hit.from;
+			Int3 to = hit.to;
+
 			int halfAgentHeightStep = Math.Max(1, navGraphData.buildConfig.agentHeightStep / 2);
 
-			FixVector3 blockPoint = from;
+			Int3 blockPoint = from;
 			int stepLen = navGraphData.buildConfig.cellSize / 5;
 			bool blocked = false;
 
@@ -228,7 +231,7 @@ namespace PathFinding
 					for (int iy = halfAgentHeightStep; iy >= -halfAgentHeightStep; iy--)
 					{
 						int tmpy = y + iy * navGraphData.buildConfig.cellSize;
-						Int3 pt3d = FixVector3ToInt3(new FixVector3(x, tmpy, (int)z));
+						Int3 pt3d = FixVector3ToInt3(new Int3(x, tmpy, (int)z));
 						var node = GetNodeAt(pt3d.x, pt3d.y, pt3d.z);
 						if (IsNodePassable(pt3d.x, pt3d.y, pt3d.z))
 						{
@@ -269,7 +272,7 @@ namespace PathFinding
 					for (int iy = halfAgentHeightStep; iy >= -halfAgentHeightStep; iy--)
 					{
 						int tmpy = y + iy * navGraphData.buildConfig.cellSize;
-						Int3 pt3d = FixVector3ToInt3(new FixVector3((int)x, tmpy, z));
+						Int3 pt3d = FixVector3ToInt3(new Int3((int)x, tmpy, z));
 						var node = GetNodeAt(pt3d.x, pt3d.y, pt3d.z);
 						if (IsNodePassable(pt3d.x, pt3d.y, pt3d.z))
 						{
@@ -295,21 +298,26 @@ namespace PathFinding
 				}
 			}
 
-			FixVector3 retPos;
 			if (blockPoint != from || blocked)
-				retPos = blockPoint;
+			{
+				hit.hitPosition = blockPoint;
+				return true;
+			}
 			else
-				retPos = to;
-			retPos.y = GetGroundHeight3D(retPos);
-			return retPos;
+			{
+				hit.hitPosition = to;
+				hit.hitPosition.y = GetGroundHeight3D(hit.hitPosition);
+				return false;
+			}
+			
 		}
 
 
-		public FixVector3 SlideByObstacles(FixVector3 fromPos, FixVector3 oldTargetPos)
+		public Int3 SlideByObstacles(Int3 from, Int3 to, Int3 hit)
 		{
-			Int3 fromPoint = this.FixVector3ToInt3(fromPos);
-			Int3 targetPoint = this.FixVector3ToInt3(oldTargetPos);
-			FixVector3 newDirection = oldTargetPos - fromPos;
+			Int3 fromPoint = this.FixVector3ToInt3(from);
+			Int3 targetPoint = this.FixVector3ToInt3(to);
+			Int3 newDirection = to - from;
 			if (fromPoint.x == targetPoint.x)
 			{
 				// 去掉y方向分量
@@ -333,7 +341,7 @@ namespace PathFinding
 				}
 			}
 
-			FixVector3 retPosition = fromPos + newDirection;
+			Int3 retPosition = from + newDirection;
 			return retPosition;
 		}
 

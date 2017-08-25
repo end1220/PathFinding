@@ -117,7 +117,7 @@ namespace PathFinding
 		}
 
 
-		public Int2 FixVector3ToInt2(FixVector3 position)
+		public Int2 FixVector3ToInt2(Int3 position)
 		{
 			int gridSize = navData.GridSize;
 			int dx = position.x - navData.MinX;
@@ -128,14 +128,14 @@ namespace PathFinding
 		}
 
 
-		public FixVector3 Int2ToFixVector3(Int2 point)
+		public Int3 Int2ToFixVector3(Int2 point)
 		{
 			int x = navData.MinX + navData.GridSize * point.x;
 			int z = navData.MinZ + navData.GridSize * point.y;
-			return new FixVector3(x, 0, z);;
+			return new Int3(x, 0, z);;
 		}
 
-		public bool IsMissileCross(FixVector3 position,int CrossType)
+		public bool IsMissileCross(Int3 position,int CrossType)
 		{
 			Int2 pt2d = FixVector3ToInt2(position);
 			var node = GetNode(pt2d.x, pt2d.y);
@@ -155,7 +155,7 @@ namespace PathFinding
 			return false;
 		}
 
-		public bool IsPassable(FixVector3 position)
+		public bool IsPassable(Int3 position)
 		{
 			Int2 pt2d = FixVector3ToInt2(position);
 			bool ret = this.IsNodePassable(pt2d.x, pt2d.y);
@@ -168,7 +168,7 @@ namespace PathFinding
 		/// <param name="position"></param>
 		/// <param name="mov"></param>
 		/// <returns></returns>
-		public bool SpecialTerrainPassable(FixVector3 position, MoveType mov)
+		public bool SpecialTerrainPassable(Int3 position, MoveType mov)
 		{
 			Int2 pt2d = FixVector3ToInt2(position);
 			var node = GetNode(pt2d.x, pt2d.y);
@@ -194,7 +194,7 @@ namespace PathFinding
 		}
 
 
-		public FixVector3 GetNearestPosition(FixVector3 position)
+		public Int3 GetNearestPosition(Int3 position)
 		{
 			int step = 5;
 			if (IsPassable(position))
@@ -232,9 +232,12 @@ namespace PathFinding
 
 
 		// 射线碰撞，计算起点到终点间的最远可到达点
-		public FixVector3 RayCastForMoving(FixVector3 from, FixVector3 to, MoveType mov)
+		public bool LineCastForMoving(ref HitInfo hit, MoveType mov)
 		{
-			FixVector3 blockPoint = from;
+			Int3 from = hit.from;
+			Int3 to = hit.to;
+
+			Int3 blockPoint = from;
 			int stepLen = Math.Min(200, navData.GridSize);
 			bool blocked = false;
 
@@ -250,7 +253,7 @@ namespace PathFinding
 				{
 					x = step > 0 ? Math.Min(x, to.x) : Math.Max(x, to.x);
 					Fix64 z = (Fix64)from.z + a * (Fix64)(x - from.x);
-					var tmpPos = new FixVector3(x, 0, (int)z);
+					var tmpPos = new Int3(x, 0, (int)z);
 					if (!IsPassable(tmpPos))
 					{
 						if (!SpecialTerrainPassable(tmpPos, mov))
@@ -271,7 +274,7 @@ namespace PathFinding
 				{
 					z = step > 0 ? Math.Min(z, to.z) : Math.Max(z, to.z);
 					Fix64 x = (Fix64)from.x + a * (Fix64)(z - from.z);
-					var tmpPos = new FixVector3((int)x, 0, z);
+					var tmpPos = new Int3((int)x, 0, z);
 					if (!IsPassable(tmpPos))
 					{
 						if (!SpecialTerrainPassable(tmpPos, mov))
@@ -285,18 +288,23 @@ namespace PathFinding
 				}
 			}
 
-			if (blockPoint != from || blocked)
-				return blockPoint;
+			if (blockPoint != from)
+			{
+				hit.hitPosition = blockPoint;
+			}
 			else
-				return to;
+			{
+				hit.hitPosition = to;
+			}
+			return blocked;
 		}
 
 
-		public FixVector3 SlideByObstacles(FixVector3 fromPos, FixVector3 oldTargetPos)
+		public Int3 SlideByObstacles(Int3 from, Int3 to, Int3 hit)
 		{
-			Int2 fromPoint = this.FixVector3ToInt2(fromPos);
-			Int2 targetPoint = this.FixVector3ToInt2(oldTargetPos);
-			FixVector3 newDirection = oldTargetPos - fromPos;
+			Int2 fromPoint = this.FixVector3ToInt2(from);
+			Int2 targetPoint = this.FixVector3ToInt2(to);
+			Int3 newDirection = to - from;
 			if (fromPoint.x == targetPoint.x)
 			{
 				// 去掉z方向分量
@@ -320,7 +328,7 @@ namespace PathFinding
 				}
 			}
 
-			FixVector3 retPosition = fromPos + newDirection;
+			Int3 retPosition = from + newDirection;
 			return retPosition;
 		}
 

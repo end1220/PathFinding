@@ -16,7 +16,7 @@ namespace PathFinding
 		private List<Int3> rawPathCache = new List<Int3>();
 
 
-		public override bool FindPath(FixVector3 from, FixVector3 to, ref List<FixVector3> result)
+		public override bool FindPath(Int3 from, Int3 to, ref List<Int3> result)
 		{
 			result.Clear();
 
@@ -38,7 +38,7 @@ namespace PathFinding
 			}
 
 			for (int i = 0; i < path.Count; ++i)
-				result.Add(new FixVector3(path[i].x, path[i].y, path[i].z));
+				result.Add(new Int3(path[i].x, path[i].y, path[i].z));
 
 			return result.Count >= 2;
 		}

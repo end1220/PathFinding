@@ -13,8 +13,10 @@ namespace PathFinding
 		public BBTree bbTree = new BBTree();
 
 		const float maxNearestNodeDistance = 100;
-
 		const float maxNearestNodeDistanceSqr = maxNearestNodeDistance * maxNearestNodeDistance;
+
+		public List<NavMeshNode> trace = new List<NavMeshNode>();
+
 
 
 		public void Init(INavData data)
@@ -44,29 +46,29 @@ namespace PathFinding
 		}
 
 
-		public bool IsPassable(FixVector3 position)
+		public bool IsPassable(Int3 position)
 		{
 			var node = bbTree.QueryInside(position.ToVector3(), null);
 			return node != null;
 		}
 
 
-		public FixVector3 GetNearestPosition(FixVector3 position)
+		public Int3 GetNearestPosition(Int3 position)
 		{
 			if (IsPassable(position))
 				return position;
-			NNInfo info = bbTree.QueryCircle(position.ToVector3(), 5, null);
-			return new FixVector3(info.clampedPosition);
+			NNInfo info = GetNearest(position, NNConstraint.None);
+			return new Int3(info.clampedPosition);
 		}
 
 
-		static Vector3 ClosestPointOnNode(NavMeshNode node, FixVector3 pos)
+		static Vector3 ClosestPointOnNode(NavMeshNode node, Int3 pos)
 		{
 			return Polygon.ClosestPointOnTriangle((Vector3)node.v0, (Vector3)node.v1, (Vector3)node.v2, pos.ToVector3());
 		}
 
 
-		public NNInfo GetNearest(FixVector3 position, NNConstraint constraint, bool accurateNearestNode = false)
+		public NNInfo GetNearest(Int3 position, NNConstraint constraint, bool accurateNearestNode = false)
 		{
 			if (constraint == null)
 				constraint = NNConstraint.None;
@@ -109,33 +111,33 @@ namespace PathFinding
 		}
 
 
-		public List<NavMeshNode> trace = new List<NavMeshNode>();
-
-		public FixVector3 RayCastForMoving(FixVector3 from, FixVector3 to, MoveType mov)
+		public bool LineCastForMoving(ref HitInfo hit, MoveType mov)
 		{
-			if (trace != null) trace.Clear();
+			Int3 from = hit.from;
+			Int3 to = hit.to;
+			hit.hitPosition = from;
 
-			var end = new Int3(to.x, to.y, to.z);
-			var origin = new Int3(from.x, from.y, from.z);
+			if (trace != null)
+				trace.Clear();
 
-			FixVector3 hitPosition = from;
-
-			NavMeshNode node = GetNearest(from, NNConstraint.None).node;
-
-			if (node == null)
-			{
-				Debug.LogError("Could not find a valid node to start from");
-				hitPosition = from;
-				return hitPosition;
-			}
+			Int3 end = to;
+			Int3 origin = from;
 
 			if (origin == end)
 			{
-				return hitPosition;
+				hit.hitPosition = from;
+				return false;
+			}
+
+			NavMeshNode node = GetNearest(from, NNConstraint.None).node;
+			if (node == null)
+			{
+				Debug.LogError("Could not find a valid node to start from");
+				hit.hitPosition = from;
+				return true;
 			}
 
 			origin = (Int3)node.ClosestPointOnNode((Vector3)origin);
-
 
 			List<Int3> left = Util.ListPool<Int3>.Claim();
 			List<Int3> right = Util.ListPool<Int3>.Claim();
@@ -149,7 +151,7 @@ namespace PathFinding
 					Debug.LogError("Linecast was stuck in infinite loop. Breaking.");
 					Util.ListPool<Int3>.Release(left);
 					Util.ListPool<Int3>.Release(right);
-					return hitPosition;
+					return true;
 				}
 
 				NavMeshNode newNode = null;
@@ -158,10 +160,10 @@ namespace PathFinding
 
 				if (node.ContainsPoint(end))
 				{
-					hitPosition = to;
+					hit.hitPosition = to;
 					Util.ListPool<Int3>.Release(left);
 					Util.ListPool<Int3>.Release(right);
-					return hitPosition;
+					return false;
 				}
 
 				for (int i = 0; i < node.connections.Length; i++)
@@ -230,12 +232,12 @@ namespace PathFinding
 							if (factor1 >= 0 && factor1 <= 1)
 							{
 								Vector3 intersectionPoint = (Vector3)a + (Vector3)(b - a) * factor1;
-								hitPosition = new FixVector3(intersectionPoint);
+								hit.hitPosition = new Int3(intersectionPoint);
 
 								Util.ListPool<Int3>.Release(left);
 								Util.ListPool<Int3>.Release(right);
 
-								return hitPosition;
+								return true;
 							}
 						}
 					}
@@ -246,7 +248,7 @@ namespace PathFinding
 					Util.ListPool<Int3>.Release(left);
 					Util.ListPool<Int3>.Release(right);
 
-					return hitPosition;
+					return false;
 				}
 
 				node = newNode;
@@ -255,10 +257,33 @@ namespace PathFinding
 		}
 
 
-		public FixVector3 SlideByObstacles(FixVector3 fromPos, FixVector3 oldTargetPos)
+		public Int3 SlideByObstacles(Int3 from, Int3 to, Int3 hit)
 		{
-			return oldTargetPos;
+			/*NavMeshNode node0 = bbTree.QueryInside((Vector3)from, null);
+			if (node0 != null)
+			{
+				from = node0.position;
+			}*/
+			TwGame.BattleMap.Instance.hitPos = (Vector3)hit;
+
+			NavMeshNode node1 = bbTree.QueryInside((Vector3)hit, null);
+			if (node1 != null)
+			{
+				Int3 va, vb;
+				if (node1.Intersect(from, to, out va, out vb))
+				{
+					TwGame.BattleMap.Instance.va = (Vector3)va;
+					TwGame.BattleMap.Instance.vb = (Vector3)vb;
+					Int3 v = va;
+					if (Int3.DotLong(to - from, vb - va) > 0)
+						v = vb;
+					return v;
+				}
+			}
+
+			return hit;
 		}
+
 
 	}
 }

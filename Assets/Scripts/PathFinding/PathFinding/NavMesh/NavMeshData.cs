@@ -18,6 +18,8 @@ namespace PathFinding
 
 		private bool ShowMesh = true;
 
+		private bool ShowOutline = true;
+
 		private Material navmeshMaterial;
 		//private Material navmeshOutlineMaterial;
 
@@ -44,6 +46,11 @@ namespace PathFinding
 					editorAssets = "Assets/Scripts/PathFinding/Editor/EditorAssets";
 					navmeshMaterial = UnityEditor.AssetDatabase.LoadAssetAtPath<Material>(editorAssets + "/Materials/Navmesh.mat");
 				}
+				if (navmeshMaterial == null)
+				{
+					editorAssets = "Assets/Editor/PathFinding/EditorAssets";
+					navmeshMaterial = UnityEditor.AssetDatabase.LoadAssetAtPath<Material>(editorAssets + "/Materials/Navmesh.mat");
+				}
 				//navmeshOutlineMaterial = UnityEditor.AssetDatabase.LoadAssetAtPath<Material>(editorAssets + "/Materials/NavmeshOutline.mat");
 			}
 #endif
@@ -54,29 +61,31 @@ namespace PathFinding
 
 			// begin draw
 
-			NavMeshNode[] nodes = this.nodes;
-
-			for (int i = 0; i < nodes.Length; i++)
+			if (ShowOutline)
 			{
-				NavMeshNode node = nodes[i] as NavMeshNode;
-
-				float a1 = VectorMath.SignedTriangleAreaTimes2XZ((Vector3)node.v0, (Vector3)node.v1, (Vector3)node.v2);
-
-				long a2 = VectorMath.SignedTriangleAreaTimes2XZ(node.v0, node.v1, node.v2);
-				if (a1 * a2 < 0) Debug.LogError(a1 + " " + a2);
-
-
-				if (VectorMath.IsClockwiseXZ(node.v0, node.v1, node.v2))
+				NavMeshNode[] nodes = this.nodes;
+				for (int i = 0; i < nodes.Length; i++)
 				{
-					Debug.DrawLine((Vector3)node.v0, (Vector3)node.v1, lineColor);
-					Debug.DrawLine((Vector3)node.v1, (Vector3)node.v2, lineColor);
-					Debug.DrawLine((Vector3)node.v2, (Vector3)node.v0, lineColor);
-				}
-				else
-				{
-					Debug.DrawLine((Vector3)node.v0, (Vector3)node.v1, Color.red);
-					Debug.DrawLine((Vector3)node.v1, (Vector3)node.v2, Color.red);
-					Debug.DrawLine((Vector3)node.v2, (Vector3)node.v0, Color.red);
+					NavMeshNode node = nodes[i] as NavMeshNode;
+
+					float a1 = VectorMath.SignedTriangleAreaTimes2XZ((Vector3)node.v0, (Vector3)node.v1, (Vector3)node.v2);
+
+					long a2 = VectorMath.SignedTriangleAreaTimes2XZ(node.v0, node.v1, node.v2);
+					if (a1 * a2 < 0) Debug.LogError(a1 + " " + a2);
+
+
+					if (VectorMath.IsClockwiseXZ(node.v0, node.v1, node.v2))
+					{
+						Debug.DrawLine((Vector3)node.v0, (Vector3)node.v1, lineColor);
+						Debug.DrawLine((Vector3)node.v1, (Vector3)node.v2, lineColor);
+						Debug.DrawLine((Vector3)node.v2, (Vector3)node.v0, lineColor);
+					}
+					else
+					{
+						Debug.DrawLine((Vector3)node.v0, (Vector3)node.v1, Color.red);
+						Debug.DrawLine((Vector3)node.v1, (Vector3)node.v2, Color.red);
+						Debug.DrawLine((Vector3)node.v2, (Vector3)node.v0, Color.red);
+					}
 				}
 			}
 

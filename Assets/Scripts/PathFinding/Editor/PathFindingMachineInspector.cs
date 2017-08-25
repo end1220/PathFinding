@@ -35,6 +35,8 @@ namespace PathFinding
 			if (machine.navgationData == null || !machine.IsNavDataInvalid())
 				EditorGUILayout.HelpBox("Just click Bake, man.", MessageType.Error);
 
+			GUILayout.Space(10);
+
 			SelectInspector();
 			inspector.DrawInspector();
 

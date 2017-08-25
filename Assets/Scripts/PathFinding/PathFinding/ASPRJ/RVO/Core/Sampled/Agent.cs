@@ -1121,7 +1121,7 @@
 					VFactor factor = IntMath.atan2(-center.y, -center.x);
 					VFactor factor2 = IntMath.acos((long)radius, (long)b);
 					this.radius = radius;
-					this.leftSide = Polygon.Left(Int2.zero, center, sideChooser);
+					this.leftSide = VectorMath.RightOrColinear(Int2.zero, center, sideChooser);
 					IntMath.sincos(out factor3, out factor4, factor + factor2);
 					this.line1 = new Int2(radius * factor4, radius * factor3);
 					Int2 num8 = new Int2(this.line1.y, -this.line1.x);

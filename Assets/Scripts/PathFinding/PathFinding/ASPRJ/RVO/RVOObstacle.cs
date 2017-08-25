@@ -223,7 +223,7 @@
                     positiveInfinity = vertices[i].x;
                 }
             }
-            if (Polygon.IsClockwise(vertices[((index - 1) + vertices.Length) % vertices.Length], vertices[index], vertices[(index + 1) % vertices.Length]))
+            if (VectorMath.IsClockwiseXZ(vertices[((index - 1) + vertices.Length) % vertices.Length], vertices[index], vertices[(index + 1) % vertices.Length]))
             {
                 if (this.obstacleMode == ObstacleVertexWinding.KeepOut)
                 {

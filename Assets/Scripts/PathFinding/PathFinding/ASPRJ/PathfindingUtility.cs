@@ -302,25 +302,26 @@ public class PathFindingUtility
 		//int actorCamp = (int)actor.ActorCamp;
 		//AstarData data = AstarPath.active.GetData(actorCamp);
 		NavMeshGraph graph = PathFindingMachine.Instance.navgationGraph as NavMeshGraph;
-		NavMeshNode locatedByRasterizer = graph.bbTree.QueryInside((Vector3)srcLoc, null);
-		if (locatedByRasterizer == null)
+		NavMeshNode node = graph.bbTree.QueryInside((Vector3)srcLoc, null);
+		if (node == null)
 		{
-			NavMeshNode node2 = null;// data.IntersectByRasterizer(srcLoc, end, out edge);
+			NavMeshNode node2 = graph.bbTree.QueryInside((Vector3)end, null);// data.IntersectByRasterizer(srcLoc, end, out edge);
+			edge = node.EdgeIntersect(node.position, end);
 			if (node2 == null)
 			{
 				return Int3.zero;
 			}
-			locatedByRasterizer = node2;
+			node = node2;
 		}
 		if (state != null)
 		{
 			state.BeginMove();
-			MoveFromNode(locatedByRasterizer, edge, srcLoc, end, state, out num4);
+			MoveFromNode(node, edge, srcLoc, end, state, out num4);
 			state.EndMove();
 		}
 		else
 		{
-			MoveFromNode(locatedByRasterizer, edge, srcLoc, end, null, out num4);
+			MoveFromNode(node, edge, srcLoc, end, null, out num4);
 		}
 		checkedNodes.Clear();
 		groundY = num4.y;
@@ -437,7 +438,7 @@ public class PathFindingUtility
 		Int3 rhs = Polygon.IntersectionPoint(ref vertex, ref num2, ref srcLoc, ref destLoc, out flag);
 		if (!flag)
 		{
-			if (!Polygon.IsColinear(vertex, num2, srcLoc) || !Polygon.IsColinear(vertex, num2, destLoc))
+			if (!VectorMath.IsColinearXZ(vertex, num2, srcLoc) || !VectorMath.IsColinearXZ(vertex, num2, destLoc))
 			{
 				result = srcLoc;
 				return;
@@ -550,7 +551,7 @@ public class PathFindingUtility
 				for (int i = 0; i < nodeInfos.Count; i++)
 				{
 					TMNodeInfo info = nodeInfos[i];
-					if ((!checkedNodes.Contains(info.node) && !Polygon.LeftNotColinear(info.v0, info.v2, destLoc)) && Polygon.Left(info.v0, info.v1, destLoc))
+					if ((!checkedNodes.Contains(info.node) && !VectorMath.RightXZ(info.v0, info.v2, destLoc)) && VectorMath.RightOrColinearXZ(info.v0, info.v1, destLoc))
 					{
 						node2 = info.node;
 						vi = info.vi;

@@ -24,14 +24,14 @@
 		public bool oversampling;
 		[NonSerialized, Tooltip("[GradientDecent][unitless][0...1] A higher value will result in lower quality local avoidance but faster calculations."), HideInInspector]
 		public VFactor QualityCutoff = new VFactor(1L, 20L);
-		private Simulator.SamplingAlgorithm samplingAlgorithm;
+		private Simulator.SamplingAlgorithm samplingAlgorithm = Simulator.SamplingAlgorithm.AdaptiveSampling;
 		private Simulator simulator;
 		[Tooltip("[GradientDecent][unitless][0...2] How large steps to take when searching for a minimum to the penalty function. Larger values will make it faster, but less accurate, too low values (near 0) can also give large inaccuracies. Values around 0.5-1.5 work the best.")]
 		public float stepScale = 1.5f;
 		[NonSerialized, HideInInspector, Tooltip("Thickness of RVO obstacle walls.\nIf obstacles are passing through obstacles, try a larger value, if they are getting stuck near small obstacles, try reducing it")]
 		public VFactor WallThickness = VFactor.one;
 		[Tooltip("Number of RVO worker threads. If set to None, no multithreading will be used.")]
-		int workerThreads = 2;
+		int workerThreads = 0;
 
 
 		private void Awake()
@@ -88,8 +88,9 @@
 			}
 		}
 
-		public void UpdateLogic(int nDelta)
+		public void Tick()
 		{
+			int nDelta = (int)AppConst.FrameSyncInterval;
 			if (IsFrameMode && base.enabled)
 			{
 				if (this.desiredSimulationFPS < 1)

@@ -91,22 +91,22 @@ namespace PathFinding
 				return null;
 			}
 			
-			Int3 vertexIndex = this.GetVertex(edge % 3);
-			Int3 num2 = this.GetVertex((edge + 1) % 3);
+			Int3 vertex0 = this.GetVertex(edge % 3);
+			Int3 vertex1 = this.GetVertex((edge + 1) % 3);
 			for (int i = 0; i < connections.Length; i++)
 			{
 				NavMeshNode node2 =  graph.GetNode(connections[i]) as NavMeshNode;
 				if (node2 != null)
 				{
-					if ((node2.v1 == vertexIndex) && (node2.v0 == num2))
+					if ((node2.v1 == vertex0) && (node2.v0 == vertex1))
 					{
 						otherEdge = 0;
 					}
-					else if ((node2.v2 == vertexIndex) && (node2.v1 == num2))
+					else if ((node2.v2 == vertex0) && (node2.v1 == vertex1))
 					{
 						otherEdge = 1;
 					}
-					else if ((node2.v0 == vertexIndex) && (node2.v2 == num2))
+					else if ((node2.v0 == vertex0) && (node2.v2 == vertex1))
 					{
 						otherEdge = 2;
 					}
@@ -207,21 +207,47 @@ namespace PathFinding
 		}
 
 
+		public bool Intersect(Int3 a, Int3 b, out Int3 va, out Int3 vb)
+		{
+			if (VectorMath.SegmentsIntersectXZ(v0, v1, a, b))
+			{
+				va = v0;
+				vb = v1;
+				return true;
+			}
+			if (VectorMath.SegmentsIntersectXZ(v1, v2, a, b))
+			{
+				va = v1;
+				vb = v2;
+				return true;
+			}
+			if (VectorMath.SegmentsIntersectXZ(v2, v0, a, b))
+			{
+				va = v2;
+				vb = v0;
+				return true;
+			}
+			va = Int3.zero;
+			vb = Int3.zero;
+			return false;
+		}
+
+
 		public int EdgeIntersect(Int3 a, Int3 b)
 		{
 			Int3 num;
 			Int3 num2;
 			Int3 num3;
 			this.GetPoints(out num, out num2, out num3);
-			if (Polygon.Intersects(num, num2, a, b))
+			if (VectorMath.SegmentsIntersectXZ(num, num2, a, b))
 			{
 				return 0;
 			}
-			if (Polygon.Intersects(num2, num3, a, b))
+			if (VectorMath.SegmentsIntersectXZ(num2, num3, a, b))
 			{
 				return 1;
 			}
-			if (Polygon.Intersects(num3, num, a, b))
+			if (VectorMath.SegmentsIntersectXZ(num3, num, a, b))
 			{
 				return 2;
 			}
@@ -237,7 +263,7 @@ namespace PathFinding
 			{
 				int index = (startEdge + i) % 3;
 				int num3 = (index + 1) % 3;
-				if (Polygon.Intersects(numArray[index], numArray[num3], a, b))
+				if (VectorMath.SegmentsIntersectXZ(numArray[index], numArray[num3], a, b))
 				{
 					return index;
 				}
@@ -252,15 +278,15 @@ namespace PathFinding
 			Int3 num2;
 			Int3 num3;
 			this.GetPoints(out num, out num2, out num3);
-			if (Polygon.IsColinear(num, num2, a) && Polygon.IsColinear(num, num2, b))
+			if (VectorMath.IsColinearXZ(num, num2, a) && VectorMath.IsColinearXZ(num, num2, b))
 			{
 				return 0;
 			}
-			if (Polygon.IsColinear(num2, num3, a) && Polygon.IsColinear(num2, num3, b))
+			if (VectorMath.IsColinearXZ(num2, num3, a) && VectorMath.IsColinearXZ(num2, num3, b))
 			{
 				return 1;
 			}
-			if (Polygon.IsColinear(num3, num, a) && Polygon.IsColinear(num3, num, b))
+			if (VectorMath.IsColinearXZ(num3, num, a) && VectorMath.IsColinearXZ(num3, num, b))
 			{
 				return 2;
 			}
@@ -275,7 +301,7 @@ namespace PathFinding
 			{
 				int index = (startEdge + i) % 3;
 				int num3 = (index + 1) % 3;
-				if (Polygon.IsColinear(numArray[index], numArray[num3], a) && Polygon.IsColinear(numArray[index], numArray[num3], b))
+				if (VectorMath.IsColinearXZ(numArray[index], numArray[num3], a) && VectorMath.IsColinearXZ(numArray[index], numArray[num3], b))
 				{
 					return index;
 				}
