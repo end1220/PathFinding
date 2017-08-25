@@ -264,7 +264,6 @@ namespace PathFinding
 			{
 				from = node0.position;
 			}*/
-			TwGame.BattleMap.Instance.hitPos = (Vector3)hit;
 
 			NavMeshNode node1 = bbTree.QueryInside((Vector3)hit, null);
 			if (node1 != null)
@@ -272,8 +271,6 @@ namespace PathFinding
 				Int3 va, vb;
 				if (node1.Intersect(from, to, out va, out vb))
 				{
-					TwGame.BattleMap.Instance.va = (Vector3)va;
-					TwGame.BattleMap.Instance.vb = (Vector3)vb;
 					Int3 v = va;
 					if (Int3.DotLong(to - from, vb - va) > 0)
 						v = vb;

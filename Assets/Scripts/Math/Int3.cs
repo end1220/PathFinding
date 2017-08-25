@@ -44,6 +44,18 @@ public struct Int3
         right = new Int3(0x3e8, 0, 0);
     }
 
+	public void Set(int x, int y, int z)
+	{
+		this.x = x;
+		this.y = y;
+		this.z = z;
+	}
+
+	public Vector3 ToVector3()
+	{
+		return new Vector3(x * 0.001f, y * 0.001f, z * 0.001f);
+	}
+
     public Int3 DivBy2()
     {
         this.x = this.x >> 1;
@@ -258,7 +270,12 @@ public struct Int3
             return (((float) Math.Sqrt(((x * x) + (y * y)) + (z * z))) * 0.001f);
         }
     }
-    public double sqrMagnitude
+	public long sqrLength
+	{
+		get { return sqrMagnitudeLong; }
+	}
+
+	public double sqrMagnitude
     {
         get
         {
