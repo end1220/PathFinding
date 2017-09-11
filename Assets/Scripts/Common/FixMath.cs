@@ -30,24 +30,24 @@ public class FixMath
 
 	#region--------------距离--------------
 
-	public static long DistanceSqr(FixVector3 p1, FixVector3 p2)
+	public static long DistanceSqr(Int3 p1, Int3 p2)
 	{
 		return (p1 - p2).sqrLength;
 	}
 
-	public static long DistanceSqr2D(FixVector3 p1, FixVector3 p2)
+	public static long DistanceSqr2D(Int3 p1, Int3 p2)
 	{
 		p1.Set(p1.x, 0, p1.z);
 		p2.Set(p2.x, 0, p2.z);
 		return DistanceSqr(p1, p2);
 	}
 
-	public static FixVector3 ScaleFixVector3(FixVector3 vec, Fix64 scale)
+	public static Int3 ScaleFixVector3(Int3 vec, Fix64 scale)
 	{
 		int x = (int)((Fix64)(vec.x) * scale);
 		int y = (int)((Fix64)(vec.y) * scale);
 		int z = (int)((Fix64)(vec.z) * scale);
-		return new FixVector3(x, y, z);
+		return new Int3(x, y, z);
 	}
 
 	#endregion
@@ -62,9 +62,9 @@ public class FixMath
 	public static ushort quarterAngle = 65535 / 4;
 
 
-	public static ushort AngleOfLine(FixVector3 origin, FixVector3 target)
+	public static ushort AngleOfLine(Int3 origin, Int3 target)
 	{
-		FixVector3 delta = target - origin;
+		Int3 delta = target - origin;
 		Fix64 other = Fix64.Atan2((Fix64)delta.z, (Fix64)delta.x)
 			/ (Fix64.Pi * (Fix64)2) * (Fix64)fullAngle;
 		//Debug.Log((ushort)(32768.0 + System.Math.Atan((float)delta.z / (float)delta.x) / pi / 2 * 65535));
@@ -73,14 +73,14 @@ public class FixMath
 		return (ushort)other;
 	}
 
-	public static ushort VectorToAngle(FixVector3 direction)
+	public static ushort VectorToAngle(Int3 direction)
 	{
 		Fix64 other = Fix64.Atan2((Fix64)direction.z, (Fix64)direction.x)
 			/ (Fix64.Pi * (Fix64)2) * (Fix64)fullAngle;
 		return (ushort)other;
 	}
 
-	public static ushort ToYAngle(FixVector3 direction)
+	public static ushort ToYAngle(Int3 direction)
 	{
 		if (Math.Abs(direction.x) < 200)
 		{
@@ -110,9 +110,9 @@ public class FixMath
 		return angle;
 	}
 
-	public static FixVector3 DecomposeAngle(int length, ushort angle)
+	public static Int3 DecomposeAngle(int length, ushort angle)
 	{
-		FixVector3 result = new FixVector3();
+		Int3 result = new Int3();
 
 		Fix64 radian = (Fix64)angle / (Fix64)fullAngle * (Fix64)2 * Fix64.Pi;
 
@@ -142,12 +142,12 @@ public class FixMath
 	}
 
 
-	public static FixVector3 changeAbsolute2Relative(FixVector3 point, FixVector3 originPoint, ushort angle)
+	public static Int3 changeAbsolute2Relative(Int3 point, Int3 originPoint, ushort angle)
 	{
 		//originPoint为图中A点，directionPoint为图中B点，changePoint为图中C点  
-		FixVector3 rePoint = new FixVector3();
+		Int3 rePoint = new Int3();
 
-		FixVector3 directionPoint = FixMath.DecomposeAngle(1000, angle);
+		Int3 directionPoint = FixMath.DecomposeAngle(1000, angle);
 		directionPoint.x = originPoint.x + directionPoint.x;
 		directionPoint.y = originPoint.y + directionPoint.y;
 		directionPoint.y = originPoint.z + directionPoint.z;

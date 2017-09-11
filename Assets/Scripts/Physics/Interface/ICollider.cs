@@ -10,7 +10,7 @@ namespace FixedPoint
 		/// </summary>
 		/// <param name="point"></param>
 		/// <returns></returns>
-		bool CheckPoint(FixVector3 point);
+		bool CheckPoint(Int3 point);
 
 		/// <summary>
 		/// return true if overlapped with other colliders
@@ -21,7 +21,7 @@ namespace FixedPoint
 
 		int GetVertexCount();
 
-		FixVector3 GetVertex(int index);
+		Int3 GetVertex(int index);
 
 	}
 

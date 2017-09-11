@@ -13,22 +13,22 @@ public class FixTransform : MonoBehaviour
 	private List<FixTransform> children = new List<FixTransform>();
 
 	[SerializeField]
-	private FixVector3 position = FixVector3.zero;// world position
+	private Int3 position = Int3.zero;// world position
 	[SerializeField]
-	public FixVector3 scale = new FixVector3(FixMath.m2mm(1), FixMath.m2mm(1), FixMath.m2mm(1));// local scale
+	public Int3 scale = new Int3(FixMath.m2mm(1), FixMath.m2mm(1), FixMath.m2mm(1));// local scale
 	[SerializeField]
 	private ushort angle = 0;// local angle?
 
-	private FixVector3 old_position = FixVector3.zero;
-	private FixVector3 old_scale = new FixVector3(FixMath.m2mm(1), FixMath.m2mm(1), FixMath.m2mm(1));
+	private Int3 old_position = Int3.zero;
+	private Int3 old_scale = new Int3(FixMath.m2mm(1), FixMath.m2mm(1), FixMath.m2mm(1));
 	private ushort old_angle = 0;
 
 
-	public FixVector3 Position
+	public Int3 Position
 	{
 		set
 		{
-			FixVector3 old = position;
+			Int3 old = position;
 			position = value;
 			if (old != value)
 				UpdateChildrenPosition(this, value - old);
@@ -68,9 +68,9 @@ public class FixTransform : MonoBehaviour
 		old_position = position;
 		if (aglin)
 		{
-			this.Position = new FixVector3(transform_u3d.position);
-			this.Angle = FixMath.VectorToAngle(new FixVector3(transform_u3d.forward));
-			this.scale = new FixVector3(transform_u3d.localScale);
+			this.Position = new Int3(transform_u3d.position);
+			this.Angle = FixMath.VectorToAngle(new Int3(transform_u3d.forward));
+			this.scale = new Int3(transform_u3d.localScale);
 		}
 	}
 
@@ -149,7 +149,7 @@ public class FixTransform : MonoBehaviour
 
 	private Vector3 GetU3DForwards()
 	{
-		FixVector3 perform = FixMath.DecomposeAngle(1000, angle);
+		Int3 perform = FixMath.DecomposeAngle(1000, angle);
 		return perform.ToVector3();
 	}
 
@@ -226,7 +226,7 @@ public class FixTransform : MonoBehaviour
 	}
 
 
-	private void UpdateChildrenPosition(FixTransform trans, FixVector3 delta)
+	private void UpdateChildrenPosition(FixTransform trans, Int3 delta)
 	{
 		_TryRefreshChildren(trans);
 		int count = trans.children.Count;

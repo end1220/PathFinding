@@ -12,8 +12,8 @@ namespace PathFinding
 
 		public BBTree bbTree = new BBTree();
 
-		const float maxNearestNodeDistance = 100;
-		const float maxNearestNodeDistanceSqr = maxNearestNodeDistance * maxNearestNodeDistance;
+		const long maxNearestNodeDistance = 100 * 1000;
+		const long maxNearestNodeDistanceSqr = maxNearestNodeDistance * maxNearestNodeDistance;
 
 		public List<NavMeshNode> trace = new List<NavMeshNode>();
 
@@ -46,25 +46,34 @@ namespace PathFinding
 		}
 
 
-		public bool IsPassable(Int3 position)
+		public bool IsWalkable(Int3 position)
 		{
-			var node = bbTree.QueryInside(position.ToVector3(), null);
+			var node = bbTree.QueryInside(position, null);
 			return node != null;
 		}
 
 
 		public Int3 GetNearestPosition(Int3 position)
 		{
-			if (IsPassable(position))
+			if (IsWalkable(position))
 				return position;
 			NNInfo info = GetNearest(position, NNConstraint.None);
-			return new Int3(info.clampedPosition);
+			Int3 clamp = info.clampedPosition;
+			Int3 dir = info.node.position - clamp;
+			Int3 mod = clamp;
+			int d = 10;
+			while (mod == clamp && d > 0)
+			{
+				mod = clamp + dir / d;
+				d--;
+			}
+			return mod;
 		}
 
 
-		static Vector3 ClosestPointOnNode(NavMeshNode node, Int3 pos)
+		static Int3 ClosestPointOnNode(NavMeshNode node, Int3 pos)
 		{
-			return Polygon.ClosestPointOnTriangle((Vector3)node.v0, (Vector3)node.v1, (Vector3)node.v2, pos.ToVector3());
+			return Polygon.ClosestPointOnTriangle(node.v0, node.v1, node.v2, pos);
 		}
 
 
@@ -74,15 +83,15 @@ namespace PathFinding
 				constraint = NNConstraint.None;
 
 			//Searches in radiuses of 0.05 - 0.2 - 0.45 ... 1.28 times the average of the width and depth of the bbTree
-			float w = (bbTree.Size.width + bbTree.Size.height) * 0.5F * 0.02F;
+			int w = (bbTree.Size.Width + bbTree.Size.Height) / 100;
 
-			NNInfo query = bbTree.QueryCircle(position.ToVector3(), w, constraint);//bbTree.Query (position,constraint);
+			NNInfo query = bbTree.QueryCircle(position, w, constraint);
 
 			if (query.node == null)
 			{
 				for (int i = 1; i <= 8; i++)
 				{
-					query = bbTree.QueryCircle(position.ToVector3(), i * i * w, constraint);
+					query = bbTree.QueryCircle(position, i * i * w, constraint);
 					if (query.node != null || (i - 1) * (i - 1) * w > maxNearestNodeDistance * 2)
 					{ // *2 for a margin
 						break;
@@ -97,7 +106,7 @@ namespace PathFinding
 
 			if (query.constrainedNode != null)
 			{
-				if (constraint.constrainDistance && ((Vector3)query.constrainedNode.position - position.ToVector3()).sqrMagnitude > maxNearestNodeDistanceSqr)
+				if (constraint.constrainDistance && ((Vector3)query.constrainedNode.position - position.vec3).sqrMagnitude > maxNearestNodeDistanceSqr)
 				{
 					query.constrainedNode = null;
 				}
@@ -137,7 +146,7 @@ namespace PathFinding
 				return true;
 			}
 
-			origin = (Int3)node.ClosestPointOnNode((Vector3)origin);
+			origin = node.ClosestPointOnNode(origin);
 
 			List<Int3> left = Util.ListPool<Int3>.Claim();
 			List<Int3> right = Util.ListPool<Int3>.Claim();
@@ -259,26 +268,11 @@ namespace PathFinding
 
 		public Int3 SlideByObstacles(Int3 from, Int3 to, Int3 hit)
 		{
-			/*NavMeshNode node0 = bbTree.QueryInside((Vector3)from, null);
-			if (node0 != null)
-			{
-				from = node0.position;
-			}*/
+			Int groundY;
+			bool collidered;
+			Int3 delta = NavMeshUtility.Move(from, to - from, out groundY, out collidered);
 
-			NavMeshNode node1 = bbTree.QueryInside((Vector3)hit, null);
-			if (node1 != null)
-			{
-				Int3 va, vb;
-				if (node1.Intersect(from, to, out va, out vb))
-				{
-					Int3 v = va;
-					if (Int3.DotLong(to - from, vb - va) > 0)
-						v = vb;
-					return v;
-				}
-			}
-
-			return hit;
+			return from + delta;
 		}
 
 

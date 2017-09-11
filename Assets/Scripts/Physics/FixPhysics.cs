@@ -11,7 +11,7 @@ namespace FixedPoint
 		/// <param name="point"></param>
 		/// <param name="poly"></param>
 		/// <returns></returns>
-		public static bool IsPointInPoly(FixVector3 p, FixVector3[] poly)
+		public static bool IsPointInPoly(Int3 p, Int3[] poly)
 		{
 			int count = poly.Length;
 			if (count < 3)

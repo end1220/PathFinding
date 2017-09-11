@@ -15,5 +15,5 @@ public class AppConst
 	public static readonly string LayerMissile = "Missile";
 	public static readonly string LayerRoleModel = "RoleModel";
 
-
+	public static long FrameSyncInterval = 50;
 }
