@@ -42,9 +42,9 @@ namespace PathFinding
 			if (result.Count >= 4)
 			{
 				int cellSize = graphMap.navGraphData.buildConfig.cellSize;
-				if ((result[1] - from).sqrLength < cellSize * cellSize)
+				if ((result[1] - from).sqrMagnitudeLong < cellSize * cellSize)
 					result.RemoveAt(1);
-				if ((result[result.Count - 2] - to).sqrLength < cellSize * cellSize)
+				if ((result[result.Count - 2] - to).sqrMagnitudeLong < cellSize * cellSize)
 					result.RemoveAt(result.Count - 2);
 			}
 			return result.Count >= 2;

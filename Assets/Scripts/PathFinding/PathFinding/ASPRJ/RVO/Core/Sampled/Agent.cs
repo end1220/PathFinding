@@ -147,10 +147,10 @@
 
 		public Agent(Int3 pos)
 		{
-			this.MaxSpeed = 0x7d0;
+			this.MaxSpeed = 2000;
 			this.NeighbourDist = 15;
-			this.AgentTimeHorizon = 0x7d0;
-			this.ObstacleTimeHorizon = 0x7d0;
+			this.AgentTimeHorizon = 2000;
+			this.ObstacleTimeHorizon = 2000;
 			this.Height = 0x1388;
 			this.Radius = 0x1388;
 			this.MaxNeighbours = 10;
@@ -245,7 +245,7 @@
 					Int2 num14 = samplePos[k] - desired2D;
 					int magnitude = num14.magnitude;
 					VFactor factor4 = zero + new VFactor((long)magnitude, 5L);
-					zero += new VFactor((long)magnitude, 0x3e8L);
+					zero += new VFactor((long)magnitude, 1000L);
 					if (this.DebugDraw)
 					{
 						DrawCross((Vector2)(position2D + samplePos[k]), Rainbow(Mathf.Log(zero.single + 1f) * 5f), sampleSize[k] * 0.5f);
@@ -337,12 +337,12 @@
 				VO[] vos = context.vos;
 				int voCount = 0;
 				Int2 optimalVelocity = new Int2(this.velocity.x, this.velocity.z);
-				VFactor inverseAgentTimeHorizon = new VFactor(0x3e8L, (long)this.agentTimeHorizon.i);
+				VFactor inverseAgentTimeHorizon = new VFactor(1000L, (long)this.agentTimeHorizon.i);
 				VFactor one = VFactor.one;
 				if (this.simulator.algorithm != Simulator.SamplingAlgorithm.GradientDecent)
 				{
 					one.nom = WallWeight.i;
-					one.den = 0x3e8L;
+					one.den = 1000L;
 				}
 				one.nom = one.nom << 1;
 				one.den *= 20L;
@@ -444,9 +444,9 @@
 						long num3 = VO.Det(next.position.xz, next.dir, position2D);
 						long num4 = Int2.DotLong(next.dir, position2D - next.position.xz);
 						bool flag = (wallWeight3 >= num4) || ((wallWeight3 + num4) >= (next.position.xz - next.next.position.xz).magnitude);
-						if (Math.Abs(num3) < (this.neighbourDist.i * 0x3e8))
+						if (Math.Abs(num3) < (this.neighbourDist.i * 1000))
 						{
-							if (((num3 <= 0L) && !flag) && ((-wallThickness * 0x3e8L) < num3))
+							if (((num3 <= 0L) && !flag) && ((-wallThickness * 1000L) < num3))
 							{
 								vos[voCount] = new VO(position2D, next.position.xz - position2D, next.dir, wallWeight2);
 								voCount++;
@@ -473,7 +473,7 @@
 			orcaLines.Clear();
 			this.hasCollided = false;
 			int numObstLines = 0;
-			VFactor factor = new VFactor(0x3e8L, (long)this.AgentTimeHorizon);
+			VFactor factor = new VFactor(1000L, (long)this.AgentTimeHorizon);
 			Int2 zero = Int2.zero;
 			VLine item = new VLine();
 			Int2 a = new Int2();
@@ -503,21 +503,21 @@
 						item.direction.x = num13.y;
 						item.direction.y = -num13.x;
 						long num14 = IntMath.Divide((long)(factor.nom * num8), factor.den) - IntMath.Sqrt(sqrMagnitudeLong);
-						a.x = (int)IntMath.Divide((long)(num13.x * num14), (long)0x3e8L);
-						a.y = (int)IntMath.Divide((long)(num13.y * num14), (long)0x3e8L);
+						a.x = (int)IntMath.Divide((long)(num13.x * num14), (long)1000L);
+						a.y = (int)IntMath.Divide((long)(num13.y * num14), (long)1000L);
 					}
 					else
 					{
 						long num15 = IntMath.SqrtLong(b - num9);
 						if (Int2.DetLong(ref xz, ref num10) > 0L)
 						{
-							item.direction.x = (int)IntMath.Divide((long)(((xz.x * num15) - (xz.y * num8)) * 0x3e8L), b);
-							item.direction.y = (int)IntMath.Divide((long)(((xz.y * num8) - (xz.y * num15)) * 0x3e8L), b);
+							item.direction.x = (int)IntMath.Divide((long)(((xz.x * num15) - (xz.y * num8)) * 1000L), b);
+							item.direction.y = (int)IntMath.Divide((long)(((xz.y * num8) - (xz.y * num15)) * 1000L), b);
 						}
 						else
 						{
-							item.direction.x = -((int)IntMath.Divide((long)(((xz.x * num15) + (xz.y * num8)) * 0x3e8L), b));
-							item.direction.y = -((int)IntMath.Divide((long)(((-xz.x * num8) + (xz.y * num15)) * 0x3e8L), b));
+							item.direction.x = -((int)IntMath.Divide((long)(((xz.x * num15) + (xz.y * num8)) * 1000L), b));
+							item.direction.y = -((int)IntMath.Divide((long)(((-xz.x * num8) + (xz.y * num15)) * 1000L), b));
 						}
 						item.direction.Normalize();
 						long num16 = Int2.DotLong(ref num6, ref item.direction);
@@ -528,13 +528,13 @@
 				else
 				{
 					this.hasCollided = true;
-					VFactor factor2 = new VFactor(0x3e8L, 30L);
+					VFactor factor2 = new VFactor(1000L, 30L);
 					Int2 num17 = num6 - (xz * factor2);
 					Int2 normalized = num17.normalized;
 					item.direction = new Int2(normalized.y, -normalized.x);
 					long num19 = IntMath.Divide((long)(num8 * factor2.nom), factor2.den) - num17.magnitude;
-					a.x = (int)IntMath.Divide((long)(normalized.x * num19), (long)0x3e8L);
-					a.y = (int)IntMath.Divide((long)(normalized.y * num19), (long)0x3e8L);
+					a.x = (int)IntMath.Divide((long)(normalized.x * num19), (long)1000L);
+					a.y = (int)IntMath.Divide((long)(normalized.y * num19), (long)1000L);
 				}
 				item.point = this.velocity.xz + IntMath.Divide(a, 2L);
 				orcaLines.Add(item);
@@ -755,7 +755,7 @@
 		private static bool linearProgram1(List<VLine> lines, int lineNo, int radius, Int2 optVelocity, bool directionOpt, ref Int2 result)
 		{
 			VLine line = lines[lineNo];
-			long num = IntMath.Divide(Int2.DotLong(ref line.point, ref line.direction), 0x3e8L);
+			long num = IntMath.Divide(Int2.DotLong(ref line.point, ref line.direction), 1000L);
 			long a = ((num * num) + (radius * radius)) - line.point.sqrMagnitude;
 			if (a < 0L)
 			{
@@ -797,29 +797,29 @@
 			{
 				if (Int2.DotLong(ref optVelocity, ref line.direction) > 0L)
 				{
-					result = line.point + IntMath.Divide(line.direction * factor2, 0x3e8L);
+					result = line.point + IntMath.Divide(line.direction * factor2, 1000L);
 				}
 				else
 				{
-					result = line.point + IntMath.Divide(line.direction * factor, 0x3e8L);
+					result = line.point + IntMath.Divide(line.direction * factor, 1000L);
 				}
 			}
 			else
 			{
-				VFactor factor4 = new VFactor(Int2.DotLong(line.direction, optVelocity - line.point), 0x3e8L);
+				VFactor factor4 = new VFactor(Int2.DotLong(line.direction, optVelocity - line.point), 1000L);
 				if (factor > factor4)
 				{
-					result = line.point + IntMath.Divide(line.direction * factor, 0x3e8L);
+					result = line.point + IntMath.Divide(line.direction * factor, 1000L);
 				}
 				else if (factor2 < factor4)
 				{
-					result = line.point + IntMath.Divide(line.direction * factor2, 0x3e8L);
+					result = line.point + IntMath.Divide(line.direction * factor2, 1000L);
 				}
 				else
 				{
 					result = line.point;
-					result.x += (int)IntMath.Divide((long)(line.direction.x * factor4.nom), (long)(factor4.den * 0x3e8L));
-					result.y += (int)IntMath.Divide((long)(line.direction.y * factor4.nom), (long)(factor4.den * 0x3e8L));
+					result.x += (int)IntMath.Divide((long)(line.direction.x * factor4.nom), (long)(factor4.den * 1000L));
+					result.y += (int)IntMath.Divide((long)(line.direction.y * factor4.nom), (long)(factor4.den * 1000L));
 				}
 			}
 			return true;
@@ -829,11 +829,11 @@
 		{
 			if (directionOpt)
 			{
-				result = IntMath.Divide(optVelocity, (long)radius, 0x3e8L);
+				result = IntMath.Divide(optVelocity, (long)radius, 1000L);
 			}
 			else if (optVelocity.sqrMagnitudeLong > (radius * radius))
 			{
-				result = IntMath.Divide(optVelocity.normalized, (long)radius, 0x3e8L);
+				result = IntMath.Divide(optVelocity.normalized, (long)radius, 1000L);
 			}
 			else
 			{
@@ -997,7 +997,7 @@
 			this.velocity = this.newVelocity;
 			this.prevSmoothPos = this.smoothPos;
 			this.position = this.prevSmoothPos;
-			this.position += IntMath.Divide(this.velocity, (long)this.simulator.DeltaTimeMS, 0x3e8L);
+			this.position += IntMath.Divide(this.velocity, (long)this.simulator.DeltaTimeMS, 1000L);
 			this.Position = this.position;
 		}
 
@@ -1081,8 +1081,8 @@
 				Int2 a = center;
 				if (b > 0)
 				{
-					a.x = IntMath.Divide((int)(a.x * 0x3e8), b);
-					a.y = IntMath.Divide((int)(a.y * 0x3e8), b);
+					a.x = IntMath.Divide((int)(a.x * 1000), b);
+					a.y = IntMath.Divide((int)(a.y * 1000), b);
 				}
 				long num5 = radius;
 				num5 *= num5;
@@ -1090,7 +1090,7 @@
 				{
 					this.colliding = true;
 					this.leftSide = false;
-					this.line1 = IntMath.Divide(a, (long)(b - radius), 0x3e8L);
+					this.line1 = IntMath.Divide(a, (long)(b - radius), 1000L);
 					Int2 num6 = new Int2(this.line1.y, -this.line1.x);
 					this.dir1 = num6.normalized;
 					this.line1 += offset;
@@ -1113,7 +1113,7 @@
 					Int2 num = center + offset;
 					this.sqrCutoffDistance = b - radius;
 					this.center = center;
-					this.cutoffLine = IntMath.Divide(a, this.sqrCutoffDistance, 0x3e8L);
+					this.cutoffLine = IntMath.Divide(a, this.sqrCutoffDistance, 1000L);
 					Int2 num7 = new Int2(-this.cutoffLine.y, this.cutoffLine.x);
 					this.cutoffDir = num7.normalized;
 					this.cutoffLine += offset;
@@ -1153,7 +1153,7 @@
 					if (num >= 0L)
 					{
 						weight.nom = this.weightFactor.nom * num;
-						weight.den = this.weightFactor.den * 0x3e8L;
+						weight.den = this.weightFactor.den * 1000L;
 						return IntMath.Divide(new Int2(-this.dir1.y, this.dir1.x), weight.nom * Agent.GlobalIncompressibility, weight.den);
 					}
 					weight = VFactor.zero;
@@ -1171,24 +1171,24 @@
 				{
 					if (this.leftSide)
 					{
-						if (num2 < (this.radius * 0x3e8))
+						if (num2 < (this.radius * 1000))
 						{
 							weight.nom = this.weightFactor.nom * num2;
-							weight.den = this.weightFactor.den * 0x3e8L;
+							weight.den = this.weightFactor.den * 1000L;
 							return (new Int2(-this.cutoffDir.y, this.cutoffDir.x) * weight);
 						}
 						weight.nom = this.weightFactor.nom * num3;
-						weight.den = this.weightFactor.den * 0x3e8L;
+						weight.den = this.weightFactor.den * 1000L;
 						return (new Int2(-this.dir1.y, this.dir1.x) * weight);
 					}
-					if (num2 < (this.radius * 0x3e8))
+					if (num2 < (this.radius * 1000))
 					{
 						weight.nom = this.weightFactor.nom * num2;
-						weight.den = this.weightFactor.den * 0x3e8L;
+						weight.den = this.weightFactor.den * 1000L;
 						return (new Int2(-this.cutoffDir.y, this.cutoffDir.x) * weight);
 					}
 					weight.nom = this.weightFactor.nom * num4;
-					weight.den = this.weightFactor.den * 0x3e8L;
+					weight.den = this.weightFactor.den * 1000L;
 					return (new Int2(-this.dir2.y, this.dir2.x) * weight);
 				}
 				weight = VFactor.zero;
@@ -1202,7 +1202,7 @@
 					long num = Det(this.line1, this.dir1, p);
 					if (num >= 0L)
 					{
-						return new VFactor((num * Agent.GlobalIncompressibility) * this.weightFactor.nom, this.weightFactor.den * 0x3e8L);
+						return new VFactor((num * Agent.GlobalIncompressibility) * this.weightFactor.nom, this.weightFactor.den * 1000L);
 					}
 					return VFactor.zero;
 				}
@@ -1219,17 +1219,17 @@
 				}
 				if (this.leftSide)
 				{
-					if (num2 < (this.radius * 0x3e8))
+					if (num2 < (this.radius * 1000))
 					{
-						return new VFactor(num2 * this.weightFactor.nom, this.weightFactor.den * 0x3e8L);
+						return new VFactor(num2 * this.weightFactor.nom, this.weightFactor.den * 1000L);
 					}
-					return new VFactor(num3 * this.weightFactor.nom, this.weightFactor.den * 0x3e8L);
+					return new VFactor(num3 * this.weightFactor.nom, this.weightFactor.den * 1000L);
 				}
 				if (num2 < this.radius)
 				{
-					return new VFactor(num2 * this.weightFactor.nom, this.weightFactor.den * 0x3e8L);
+					return new VFactor(num2 * this.weightFactor.nom, this.weightFactor.den * 1000L);
 				}
-				return new VFactor(num4 * this.weightFactor.nom, this.weightFactor.den * 0x3e8L);
+				return new VFactor(num4 * this.weightFactor.nom, this.weightFactor.den * 1000L);
 			}
 		}
 	}

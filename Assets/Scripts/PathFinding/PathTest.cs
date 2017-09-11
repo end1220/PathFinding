@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 using PathFinding;
-//using TwFramework;
-//using TwGame;
 
 
 public class PathTest : MonoBehaviour
@@ -25,50 +23,83 @@ public class PathTest : MonoBehaviour
 	[System.NonSerialized]
 	public NavMeshNode endNode;
 
+	System.Random random = new System.Random();
+	Int3 from = Int3.zero;
+	Int3 to = Int3.zero;
+
+
+
+
 	void Awake()
 	{
 		Instance = this;
 	}
 
-	void OnGUI()
+	void Start()
 	{
-		if (GUI.Button(new Rect(10, 10, 40, 20), "ast"))
-		{
-			DoIt();
-		}
+		machine = FindObjectOfType<PathFindingMachine>();
+#if UNITY_EDITOR
+		line = FindObjectOfType<DebugLine>();
+#endif
 	}
 
+/*void OnGUI()
+{
+	if (GUI.Button(new Rect(10, 10, 40, 20), "ast"))
+	{
+		from = new Int3(-4900, 840, 13030);
+		to = new Int3(14330, 840, 2660);
+		DoIt();
+	}
+}*/
 
-	float lastTime = 0;
+
 	void Update()
 	{
-		/*if (Time.timeSinceLevelLoad - lastTime > 0.1f)
-		{
-			lastTime = Time.timeSinceLevelLoad;
-			from = new FixVector3(random.Next(-21000, 18000), 1000, random.Next(-2000, 2000));
-			to = new FixVector3(random.Next(18000, 21000), 1000, random.Next(-2000, 2000));
-			DoIt();
-		}*/
+		TestClick();
 
-		if (startNode != null && endNode != null)
-			UnityEngine.Debug.DrawLine((Vector3)startNode.position, (Vector3)endNode.position, Color.blue);
+		//if (startNode != null && endNode != null)
+		//	UnityEngine.Debug.DrawLine((Vector3)startNode.position, (Vector3)endNode.position, Color.blue);
 
-		UnityEngine.Debug.DrawLine(from.ToVector3() + Vector3.up * 0.1f, to.ToVector3() + Vector3.up * 0.1f, Color.blue);
+		UnityEngine.Debug.DrawLine(from.vec3 + Vector3.up * 0.1f, to.vec3 + Vector3.up * 0.1f, Color.blue);
 
-		UnityEngine.Debug.DrawLine(from.ToVector3() + Vector3.right * 0.05f + Vector3.up * 0.1f, hit.ToVector3() + Vector3.right * 0.05f + Vector3.up * 0.1f, Color.red);
+		UnityEngine.Debug.DrawLine(from.vec3 + Vector3.right * 0.05f + Vector3.up * 0.1f, hit.vec3 + Vector3.right * 0.05f + Vector3.up * 0.1f, Color.red);
 
-		var graph = machine.navgationGraph as NavMeshGraph;
+		/*var graph = machine.navgationGraph as NavMeshGraph;
 		for (int i = 0; i < graph.trace.Count-1; ++i)
 		{
 			UnityEngine.Debug.DrawLine((Vector3)graph.trace[i].position, (Vector3)graph.trace[i+1].position, Color.green);
-		}
+		}*/
 
-		TestClick();
+
+		if (startNode != null)
+		{
+			DrawLine((Vector3)startNode.v0, (Vector3)startNode.v1, Color.green);
+			DrawLine((Vector3)startNode.v1, (Vector3)startNode.v2, Color.green);
+			DrawLine((Vector3)startNode.v2, (Vector3)startNode.v0, Color.green);
+			DrawRect((Vector3)hit, 0.1f, Color.red);
+		}
 	}
 
-	System.Random random = new System.Random();
-	Int3 from = Int3.zero;
-	Int3 to = Int3.zero;
+	private void DrawLine(Vector3 from, Vector3 to, Color color)
+	{
+		UnityEngine.Debug.DrawLine(from + Vector3.up * 0.1f, to + Vector3.up * 0.1f, color);
+	}
+
+	private void DrawRect(Vector3 p, float a, Color color)
+	{
+		Vector3 v0 = p + new Vector3(-a, 0, -a);
+		Vector3 v1 = p + new Vector3(a, 0, -a);
+		Vector3 v2 = p + new Vector3(a, 0, a);
+		Vector3 v3 = p + new Vector3(-a, 0, a);
+
+		UnityEngine.Debug.DrawLine(v0, v1, color);
+		UnityEngine.Debug.DrawLine(v1, v2, color);
+		UnityEngine.Debug.DrawLine(v2, v3, color);
+		UnityEngine.Debug.DrawLine(v3, v0, color);
+	}
+
+	
 	void DoIt()
 	{
 		startNode = null;
@@ -81,7 +112,16 @@ public class PathTest : MonoBehaviour
 		watch.Start();
 
 		fixResult.Clear();
-		machine.FindPath(from, to, ref fixResult);
+		if (!machine.FindPath(from, to, ref fixResult))
+		{
+			UnityEngine.Debug.Log("ms " + watch.ElapsedMilliseconds);
+			to = PathFindingMachine.Instance.GetNearestPosition(to);
+			bool ret = machine.FindPath(from, to, ref fixResult);
+			if (!ret)
+			{
+				UnityEngine.Debug.Log("cannot find a path to " + to.ToString());
+			}
+		}
 
 		if (fixResult.Count > 0)
 		{
@@ -114,6 +154,7 @@ public class PathTest : MonoBehaviour
 				to = new Int3(hit.point + Vector3.up * 0.01f);
 				//DoIt();
 				DoLinecast();
+				//DoTriangleTest();
 			}
 		}
 	}
@@ -122,6 +163,9 @@ public class PathTest : MonoBehaviour
 	Int3 hit = Int3.zero;
 	void DoLinecast()
 	{
+		//from = new Int3(-7336, 0, -18282);
+		//to = new Int3(-5336, 0, -18282);
+
 		var graph = machine.navgationGraph as NavMeshGraph;
 		HitInfo hitInfo = new HitInfo(from, to);
 		if (graph.LineCastForMoving(ref hitInfo, MoveType.Normal))
@@ -131,6 +175,18 @@ public class PathTest : MonoBehaviour
 		else
 			hit = to;
 	}
+
+	void DoTriangleTest()
+	{
+		var graph = machine.navgationGraph as NavMeshGraph;
+		var info = graph.GetNearest(to, null);
+		var node = info.node;
+		hit = Polygon.ClosestPointOnTriangle(node.v0, node.v1, node.v2, to);
+		startNode = node;
+	}
+
+
+
 
 }
 

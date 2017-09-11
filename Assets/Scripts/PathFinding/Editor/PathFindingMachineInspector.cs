@@ -30,8 +30,11 @@ namespace PathFinding
 		public override void OnInspectorGUI()
 		{
 			machine.pathMode = (PathMode)EditorGUILayout.EnumPopup("Navgation Mode", machine.pathMode);
-			machine.EnableMultiThread = EditorGUILayout.Toggle("Enable Multi Thread", machine.EnableMultiThread);
+			//machine.EnableMultiThread = EditorGUILayout.Toggle("Enable Multi Thread", machine.EnableMultiThread);
+			var oldData = machine.navgationData;
 			machine.navgationData = EditorGUILayout.ObjectField("Nav Data", machine.navgationData, typeof(INavData), false) as INavData;
+			if (oldData != machine.navgationData)
+				MarkDirty();
 			if (machine.navgationData == null || !machine.IsNavDataInvalid())
 				EditorGUILayout.HelpBox("Just click Bake, man.", MessageType.Error);
 
@@ -52,14 +55,6 @@ namespace PathFinding
 				inspector.Bake();
 				inspector.Save();
 				MarkDirty();
-			}
-			if (machine.pathMode == PathMode.NavMesh)
-			{
-				GUILayout.Space(15);
-				if (GUILayout.Button("Export .obj", GUILayout.Width(100), GUILayout.Height(40)))
-				{
-					(inspector as NavMeshInspector).ExportObj();
-				}
 			}
 			GUILayout.EndHorizontal();
 			EditorGUILayout.Separator();

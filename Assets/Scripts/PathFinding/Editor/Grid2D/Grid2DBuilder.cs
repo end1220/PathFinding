@@ -255,8 +255,8 @@ namespace PathFinding
 				}
 			}
 			nav._setData(maskList, terrain, width, height, 
-				FixMath.m2mm(gridSize), FixMath.m2mm(minX), FixMath.m2mm(minZ),
-				FixMath.m2mm(agentRadius), slope);
+				(int)(gridSize * Int3.Precision), (int)(minX * Int3.Precision), (int)(minZ * Int3.Precision),
+				(int)(agentRadius * Int3.Precision), slope);
 			navData = nav;
 		}
 

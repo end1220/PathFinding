@@ -1,6 +1,7 @@
 ﻿
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 
 namespace PathFinding
@@ -14,7 +15,6 @@ namespace PathFinding
 
 		private int initialPenalty = 0;
 
-		private Mesh sourceMesh;
 		private Matrix4x4 matrix = Matrix4x4.identity;
 		private Matrix4x4 inverseMatrix = Matrix4x4.identity;
 
@@ -23,28 +23,141 @@ namespace PathFinding
 
 		public NavMeshNode[] nodes;
 
+		// 是否从Unity内置的navigation获取数据.
+		// 否则使用recastgraph获取.
+		// recast生成的三角网格更优化.
+		bool fromUnityNavigation = false;
 
-		public void ImportMesh()
+
+		public void Build()
 		{
-			UnityEngine.AI.NavMeshTriangulation triangulatedNavMesh = UnityEngine.AI.NavMesh.CalculateTriangulation();
+			if (fromUnityNavigation)
+			{
+				UnityEngine.AI.NavMeshTriangulation triangulatedNavMesh = UnityEngine.AI.NavMesh.CalculateTriangulation();
 
-			Mesh mesh = new Mesh();
-			mesh.name = "ExportedNavMesh";
-			mesh.vertices = triangulatedNavMesh.vertices;
-			mesh.triangles = triangulatedNavMesh.indices;
-			sourceMesh = mesh;
+				Mesh mesh = new Mesh();
+				mesh.name = "ExportedNavMesh";
+				mesh.vertices = triangulatedNavMesh.vertices;
+				mesh.triangles = triangulatedNavMesh.indices;
+				Mesh sourceMesh = mesh;
+				if (sourceMesh == null)
+					return;
+				ScanInternal(sourceMesh.triangles, sourceMesh.vertices);
+			}
+			else
+			{
+				AstarPathEditor.MenuScan();
+
+				Pathfinding.RecastGraph target = AstarPath.active.graphs[0] as Pathfinding.RecastGraph;
+				int[] triangles;
+				Vector3[] vertices;
+				GetRecastData(target, out triangles, out vertices);
+
+				ScanInternal(triangles, vertices);
+			}
+			
 		}
 
 
-		public void ScanInternal()
+
+		public static void GetRecastData(Pathfinding.RecastGraph target, out int[] triangleArray, out Vector3[] vertexArray)
 		{
-			if (sourceMesh == null)
+			triangleArray = null;
+			vertexArray = null;
+
+			if (target == null)
 				return;
 
+			Pathfinding.RecastGraph.NavmeshTile[] tiles = target.GetTiles();
+
+			if (tiles == null)
+			{
+				if (EditorUtility.DisplayDialog("Scan graph before exporting?", "The graph does not contain any mesh data. Do you want to scan it?", "Ok", "Cancel"))
+				{
+					AstarPathEditor.MenuScan();
+					tiles = target.GetTiles();
+					if (tiles == null)
+						return;
+				}
+				else
+				{
+					return;
+				}
+			}
+
+			//string path = EditorUtility.SaveFilePanel("Export .obj", "", "navmesh.obj", "obj");
+			//if (path == "") return;
+
+			//Generate .obj
+			/*var sb = new System.Text.StringBuilder();
+
+			string name = System.IO.Path.GetFileNameWithoutExtension(path);
+
+			sb.Append("g ").Append(name).AppendLine();*/
+
+			List<Vector3> vertList = new List<Vector3>();
+			List<int> triangleList = new List<int>();
+
+			//Vertices start from 1
+			int vCount = 0;
+
+			//Define single texture coordinate to zero
+			//sb.Append("vt 0 0\n");
+
+			for (int t = 0; t < tiles.Length; t++)
+			{
+				Pathfinding.RecastGraph.NavmeshTile tile = tiles[t];
+
+				if (tile == null) continue;
+
+				Pathfinding.Int3[] vertices = tile.verts;
+
+				//Write vertices
+				for (int i = 0; i < vertices.Length; i++)
+				{
+					var v = (Vector3)vertices[i];
+					//sb.Append(string.Format("v {0} {1} {2}\n", -v.x, v.y, v.z));
+					vertList.Add(v);
+				}
+
+				//Write triangles
+				Pathfinding.TriangleMeshNode[] nodes = tile.nodes;
+				for (int i = 0; i < nodes.Length; i++)
+				{
+					Pathfinding.TriangleMeshNode node = nodes[i];
+					if (node == null)
+					{
+						Debug.LogError("Node was null or no TriangleMeshNode. Critical error. Graph type " + target.GetType().Name);
+						return;
+					}
+					if (node.GetVertexArrayIndex(0) < 0 || node.GetVertexArrayIndex(0) >= vertices.Length) throw new System.Exception("ERR");
+
+					//sb.Append(string.Format("f {0}/1 {1}/1 {2}/1\n", (node.GetVertexArrayIndex(0) + vCount), (node.GetVertexArrayIndex(1) + vCount), (node.GetVertexArrayIndex(2) + vCount)));
+					triangleList.Add(node.GetVertexArrayIndex(0) + vCount);
+					triangleList.Add(node.GetVertexArrayIndex(1) + vCount);
+					triangleList.Add(node.GetVertexArrayIndex(2) + vCount);
+				}
+
+				vCount += vertices.Length;
+			}
+
+			/*string obj = sb.ToString();
+
+			using (var sw = new System.IO.StreamWriter(path))
+			{
+				sw.Write(obj);
+			}*/
+			triangleArray = triangleList.ToArray();
+			vertexArray = vertList.ToArray();
+		}
+
+
+		public void ScanInternal(int[] triangles, Vector3[] vertices)
+		{
 			GenerateMatrix();
 
-			_triangles = sourceMesh.triangles;
-			Vector3[] originalVertices = sourceMesh.vertices;
+			_triangles = triangles;
+			Vector3[] originalVertices = vertices;
 
 			CombineRepeatedVertices(originalVertices, _triangles, out _vertices);
 			InsertTriangles(ref _triangles, _vertices);

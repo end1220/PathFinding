@@ -66,7 +66,10 @@ namespace PathFinding
 		{
 			if (navgationData != null && IsNavDataInvalid())
 				navgationData.OnDrawGizmosSelected(transform);
+			//if (navgationGraph is NavMeshGraph)
+			//	(navgationGraph as NavMeshGraph).bbTree.OnDrawGizmos();
 		}
+
 
 		public bool IsNavDataInvalid()
 		{
@@ -89,33 +92,16 @@ namespace PathFinding
 			return ret;
 		}
 
-		public bool IsPassable(Int3 position)
+
+		public bool IsWalkable(Int3 position)
 		{
-			return navgationGraph.IsPassable(position);
+			return navgationGraph.IsWalkable(position);
 		}
 
-		public bool IsMissileCross(Int3 position, int CrossType)
-		{
-			return (navgationGraph as Grid2DGraph).IsMissileCross(position, CrossType);
-		}
 
-		public Int3 GetNearestForce(Int3 position)
+		public Int3 GetNearestPosition(Int3 position)
 		{
 			return navgationGraph.GetNearestPosition(position);
-		}
-
-		public Int3 Vector3ToPoint3D(Vector3 position)
-		{
-			var navGrid = navgationData as Grid2DNavData;
-			int x = (FixMath.m2mm(position.x) - navGrid.MinX) / navGrid.GridSize;
-			int z = (FixMath.m2mm(position.z) - navGrid.MinZ) / navGrid.GridSize;
-
-			return new Int3(x, 0, z);
-		}
-
-		public int GetGroundHeight3D(Int3 position)
-		{
-			return (navgationGraph as Grid3DGraph).GetGroundHeight3D(position);
 		}
 
 

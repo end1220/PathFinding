@@ -110,8 +110,8 @@ namespace PathFinding
 				{
 					for (int z = 0; z < Height; ++z)
 					{
-						float fposx = FixMath.mm2m(MinX) + FixMath.mm2m(GridSize) * (x/* + 0.5f*/);
-						float fposz = FixMath.mm2m(MinZ) + FixMath.mm2m(GridSize) * (z/* + 0.5f*/);
+						float fposx = (MinX + GridSize * x) * Int3.PrecisionFactor;
+						float fposz = (MinZ + GridSize * z) * Int3.PrecisionFactor;
 						pos[x, z] = new Vector3(fposx, 1, fposz);
 					}
 				}
@@ -129,7 +129,7 @@ namespace PathFinding
 
 			Color defaultColor = Gizmos.color;
 
-			float a = FixMath.mm2m(GridSize) / 2;
+			float a = GridSize / 2 * Int3.PrecisionFactor;
 
 			// passables
 			for (int i = 0; i < width; ++i)

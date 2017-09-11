@@ -4,20 +4,19 @@
 	using PathFinding.RVO.Sampled;
 	using System;
 	using System.Collections.Generic;
-	using System.Runtime.CompilerServices;
 	using UnityEngine;
 
 
-	[AddComponentMenu("PathFinding/Local Avoidance/RVO Controller")]
+	/*[AddComponentMenu("PathFinding/Local Avoidance/RVO Controller")]
 	public class RVOController : MonoBehaviour
 	{
 		private Agent rvoAgent;
 		private IRVOActor actor;
 		private Int adjustedY = 0;
 		[Tooltip("How far in the time to look for collisions with other agents")]
-		public int agentTimeHorizon = 0x7d0;
+		public int agentTimeHorizon = 2000;
 		[Tooltip("Center of the agent relative to the pivot point of this game object")]
-		public Int3 center = new Int3(0, 0x3e8, 0);
+		public Int3 center = new Int3(0, 1000, 0);
 		[HideInInspector]
 		public bool checkNavNode;
 		//[AstarEnumFlag]
@@ -27,7 +26,7 @@
 		public bool enableRotation;
 		private static readonly Color GizmoColor = new Color(0.9411765f, 0.8352941f, 0.1176471f);
 		[Tooltip("Height of the agent. In world units")]
-		public Int height = 0x7d0;
+		public Int height = 2000;
 		private Int3 lastPosition;
 		public RVOLayer layer = RVOLayer.DefaultAgent;
 		[Tooltip("A locked unit cannot move. Other units will still avoid it. But avoidance quailty is not the best")]
@@ -39,11 +38,11 @@
 		[Tooltip("Max number of other agents to take into account.\nA smaller value can reduce CPU load, a higher value can lead to better local avoidance quality.")]
 		public int maxNeighbours = 6;
 		[Tooltip("Max speed of the agent. In world units/second")]
-		public Int maxSpeed = 0x2710;
+		public Int maxSpeed = 10000;
 		[Tooltip("Maximum distance to other agents to take them into account for collisions.\nDecreasing this value can lead to better performance, increasing it can lead to better quality of the simulation")]
-		public Int neighbourDist = 0x7d0;
+		public Int neighbourDist = 2000;
 		[HideInInspector]
-		public int obstacleTimeHorizon = 0x7d0;
+		public int obstacleTimeHorizon = 2000;
 		[Tooltip("Radius of the agent")]
 		public Int radius = 400;
 		public float rotationSpeed = 30f;
@@ -76,7 +75,7 @@
 					Int num3;
 					Int3 delta = num2 - actor.location;
 					bool hasReachedNavEdge;
-					Int3 num5 = PathFindingUtility.Move(actor, delta, out num3, out /*actor.*/hasReachedNavEdge, null);
+					Int3 num5 = NavMeshUtility.Move(actor, delta, out num3, out hasReachedNavEdge);
 					Int3 pos = actor.location + num5;
 					actor.location = pos;
 					actor.groundY = num3;
@@ -227,20 +226,20 @@
 		public void OnGet()
 		{
 			this.radius = 400;
-			this.maxSpeed = 0x2710;
-			this.height = 0x7d0;
+			this.maxSpeed = 10000;
+			this.height = 2000;
 			this.locked = false;
 			this.lockWhenNotMoving = false;
-			this.agentTimeHorizon = 0x7d0;
-			this.obstacleTimeHorizon = 0x7d0;
-			this.neighbourDist = 0x7d0;
+			this.agentTimeHorizon = 2000;
+			this.obstacleTimeHorizon = 2000;
+			this.neighbourDist = 2000;
 			this.maxNeighbours = 6;
 			this.mask = -1;
 			this.layer = RVOLayer.DefaultAgent;
 			this.collidesWith = (RVOLayer)(-1);
 			this.wallAvoidForce = 1f;
 			this.wallAvoidFalloff = 1f;
-			this.center = new Int3(0, 0x3e8, 0);
+			this.center = new Int3(0, 1000, 0);
 			this.enableRotation = false;
 			this.rotationSpeed = 30f;
 			this.simulator = null;
@@ -270,13 +269,6 @@
 			this.adjustedY = pos.y;
 		}
 
-		public void Update()
-		{
-			if (!RVOSimulator.IsFrameMode)
-			{
-				this.DoUpdate(Time.deltaTime);
-			}
-		}
 
 		protected void UpdateAgentProperties()
 		{
@@ -295,10 +287,7 @@
 
 		public void UpdateLogic(int dt)
 		{
-			if (RVOSimulator.IsFrameMode)
-			{
-				this.DoUpdate(dt * 0.001f);
-			}
+			DoUpdate(dt * 0.001f);
 		}
 
 		public Int3 position
@@ -316,5 +305,5 @@
 				return this.rvoAgent.Velocity;
 			}
 		}
-	}
+	}*/
 }

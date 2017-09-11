@@ -47,8 +47,7 @@ namespace PathFinding
 		{
 			try
 			{
-				builder.ImportMesh();
-				builder.ScanInternal();
+				builder.Build();
 
 				navData = ScriptableObject.CreateInstance<NavMeshData>();
 				navData.nodes = builder.nodes;
@@ -91,8 +90,7 @@ namespace PathFinding
 			string filename = exepath + "/" +
 				System.IO.Path.GetFileNameWithoutExtension(UnityEditor.SceneManagement.EditorSceneManager.GetActiveScene().path) + "_NavMesh.obj";
 
-			builder.ImportMesh();
-			builder.ScanInternal();
+			builder.Build();
 
 			Vector3[] vertices = new Vector3[builder._vertices.Length];
 			for (int i = 0; i < vertices.Length; ++i)

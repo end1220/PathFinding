@@ -135,7 +135,7 @@ namespace PathFinding
 			return new Int3(x, 0, z);;
 		}
 
-		public bool IsMissileCross(Int3 position,int CrossType)
+		/*public bool IsMissileCross(Int3 position,int CrossType)
 		{
 			Int2 pt2d = FixVector3ToInt2(position);
 			var node = GetNode(pt2d.x, pt2d.y);
@@ -153,9 +153,9 @@ namespace PathFinding
 			}
 
 			return false;
-		}
+		}*/
 
-		public bool IsPassable(Int3 position)
+		public bool IsWalkable(Int3 position)
 		{
 			Int2 pt2d = FixVector3ToInt2(position);
 			bool ret = this.IsNodePassable(pt2d.x, pt2d.y);
@@ -197,7 +197,7 @@ namespace PathFinding
 		public Int3 GetNearestPosition(Int3 position)
 		{
 			int step = 5;
-			if (IsPassable(position))
+			if (IsWalkable(position))
 				return position;
 			Int2 pt2 = FixVector3ToInt2(position);
 			for (int x = pt2.x; x < pt2.x + step; ++x)
@@ -254,7 +254,7 @@ namespace PathFinding
 					x = step > 0 ? Math.Min(x, to.x) : Math.Max(x, to.x);
 					Fix64 z = (Fix64)from.z + a * (Fix64)(x - from.x);
 					var tmpPos = new Int3(x, 0, (int)z);
-					if (!IsPassable(tmpPos))
+					if (!IsWalkable(tmpPos))
 					{
 						if (!SpecialTerrainPassable(tmpPos, mov))
 						{
@@ -275,7 +275,7 @@ namespace PathFinding
 					z = step > 0 ? Math.Min(z, to.z) : Math.Max(z, to.z);
 					Fix64 x = (Fix64)from.x + a * (Fix64)(z - from.z);
 					var tmpPos = new Int3((int)x, 0, z);
-					if (!IsPassable(tmpPos))
+					if (!IsWalkable(tmpPos))
 					{
 						if (!SpecialTerrainPassable(tmpPos, mov))
 						{

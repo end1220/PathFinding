@@ -130,17 +130,17 @@ namespace PathFinding
 		public int GetGroundHeight3D(Int3 position)
 		{
 			int stepHeight = navGraphData.buildConfig.agentHeightStep * navGraphData.buildConfig.cellSize;
-			float posY = FixMath.mm2m(position.y);
+			float posY = position.y * Int3.PrecisionFactor;
 			Int3 upperPosition = new Int3(position.x, position.y + stepHeight, position.z);
-			Ray ray = new Ray(upperPosition.ToVector3(), Vector3.down);
+			Ray ray = new Ray(upperPosition.vec3, Vector3.down);
 			RaycastHit hit;
-			float distance = FixMath.mm2m(stepHeight) * 2;
+			float distance = stepHeight * 2 * Int3.PrecisionFactor;
 			int layerMask = 1 << LayerMask.NameToLayer(AppConst.LayerTerrain) | 1 << LayerMask.NameToLayer(AppConst.LayerLink);
 			if (Physics.Raycast(ray, out hit, distance, layerMask))
 			{
 				posY = hit.point.y;
 			}
-			return FixMath.m2mm(posY);
+			return (int)(posY * Int3.Precision);
 		}
 
 
@@ -157,7 +157,7 @@ namespace PathFinding
 		}
 
 
-		public bool IsPassable(Int3 position)
+		public bool IsWalkable(Int3 position)
 		{
 			Int3 pt3d = FixVector3ToInt3(position);
 			bool ret = this.IsNodePassable(pt3d.x, pt3d.y, pt3d.z);

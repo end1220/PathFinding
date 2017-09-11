@@ -6,9 +6,9 @@
     [AddComponentMenu("PathFinding/Local Avoidance/Square Obstacle")]
     public class RVOSquareObstacle : RVOObstacle
     {
-        public Int2 center = new Int2(0x3e8, 0x3e8);
-        public int height = 0x3e8;
-        public Int2 size = new Int2(0x3e8, 0x3e8);
+        public Int2 center = new Int2(1000, 1000);
+        public int height = 1000;
+        public Int2 size = new Int2(1000, 1000);
 
         protected override bool AreGizmosDirty()
         {

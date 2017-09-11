@@ -44,7 +44,7 @@ namespace PathFinding
 			cfg.worldSize = new Int3(worldSize);
 			cfg.worldCenterPos = new Int3(render.bounds.center);
 			cfg.worldMinPos = new Int3(render.bounds.min);
-			cfg.cellSize = (int)FixMath.m2mm(cellSize);
+			cfg.cellSize = (int)(cellSize * Int3.Precision);
 			cfg.agentHeight = agentHeight;
 			cfg.agentRadius = agentRadius;
 			cfg.agentHeightStep = (int)Math.Round(agentHeight / cellSize);

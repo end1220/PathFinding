@@ -7,7 +7,7 @@ namespace PathFinding
 	{
 		void Init(INavData data);
 
-		bool IsPassable(Int3 position);
+		bool IsWalkable(Int3 position);
 
 		Int3 GetNearestPosition(Int3 position);
 

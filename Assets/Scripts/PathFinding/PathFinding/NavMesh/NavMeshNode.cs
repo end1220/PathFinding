@@ -174,20 +174,34 @@ namespace PathFinding
 		}
 
 
+		public Int3 ClosestPointOnNode(Int3 p)
+		{
+			return Polygon.ClosestPointOnTriangle(v0, v1, v2, p);
+		}
+
+
 		public Vector3 ClosestPointOnNodeXZ(Vector3 p)
 		{
-			Int3 tp1 = v0;
-			Int3 tp2 = v1;
-			Int3 tp3 = v2;
-
 			Vector2 closest = Polygon.ClosestPointOnTriangle(
-				new Vector2(tp1.x * Int3.PrecisionFactor, tp1.z * Int3.PrecisionFactor),
-				new Vector2(tp2.x * Int3.PrecisionFactor, tp2.z * Int3.PrecisionFactor),
-				new Vector2(tp3.x * Int3.PrecisionFactor, tp3.z * Int3.PrecisionFactor),
+				new Vector2(v0.x * Int3.PrecisionFactor, v0.z * Int3.PrecisionFactor),
+				new Vector2(v1.x * Int3.PrecisionFactor, v1.z * Int3.PrecisionFactor),
+				new Vector2(v2.x * Int3.PrecisionFactor, v2.z * Int3.PrecisionFactor),
 				new Vector2(p.x, p.z)
 				);
 
 			return new Vector3(closest.x, p.y, closest.y);
+		}
+
+		public Int3 ClosestPointOnNodeXZ(Int3 p)
+		{
+			Int2 closest = Polygon.ClosestPointOnTriangle(
+				new Int2(v0.x, v0.z),
+				new Int2(v1.x, v1.z),
+				new Int2(v2.x, v2.z),
+				new Int2(p.x, p.z)
+				);
+
+			return new Int3(closest.x, p.y, closest.y);
 		}
 
 

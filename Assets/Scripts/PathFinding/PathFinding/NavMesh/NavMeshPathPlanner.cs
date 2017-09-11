@@ -22,8 +22,8 @@ namespace PathFinding
 
 			NavMeshGraph navMap = this.map as NavMeshGraph;
 
-			var startNode = navMap.bbTree.QueryInside(to.ToVector3(), null);
-			var endNode = navMap.bbTree.QueryInside(from.ToVector3(), null);
+			var startNode = navMap.bbTree.QueryInside(to, null);
+			var endNode = navMap.bbTree.QueryInside(from, null);
 			if (startNode == null || endNode == null)
 				return false;
 
