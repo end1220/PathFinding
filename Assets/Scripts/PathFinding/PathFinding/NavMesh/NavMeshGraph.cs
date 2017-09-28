@@ -6,7 +6,7 @@ using AStar;
 
 namespace PathFinding
 {
-	public class NavMeshGraph : AStarMap, INavGraph
+	public class NavMeshGraph : INavGraph
 	{
 		NavMeshData navData;
 
@@ -19,7 +19,7 @@ namespace PathFinding
 
 
 
-		public void Init(INavData data)
+		public override void Init(INavData data)
 		{
 			navData = data as NavMeshData;
 
@@ -46,14 +46,20 @@ namespace PathFinding
 		}
 
 
-		public bool IsWalkable(Int3 position)
+		public override bool IsWalkable(Int3 position)
 		{
 			var node = bbTree.QueryInside(position, null);
 			return node != null;
 		}
 
 
-		public Int3 GetNearestPosition(Int3 position)
+		public override AStarNode GetNodeAt(Int3 position)
+		{
+			return bbTree.QueryInside(position, null);
+		}
+
+
+		public override Int3 GetNearestPosition(Int3 position)
 		{
 			if (IsWalkable(position))
 				return position;
@@ -120,7 +126,7 @@ namespace PathFinding
 		}
 
 
-		public bool LineCastForMoving(ref HitInfo hit, MoveType mov)
+		public override bool LineCastForMoving(ref HitInfo hit, MoveType mov)
 		{
 			Int3 from = hit.from;
 			Int3 to = hit.to;
@@ -266,7 +272,7 @@ namespace PathFinding
 		}
 
 
-		public Int3 SlideByObstacles(Int3 from, Int3 to, Int3 hit)
+		public override Int3 SlideByObstacles(Int3 from, Int3 to, Int3 hit)
 		{
 			Int groundY;
 			bool collidered;

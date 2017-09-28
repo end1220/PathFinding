@@ -9,23 +9,51 @@ namespace PathFinding
 
 	public class Grid3DPathPlanner : IPathPlanner
 	{
-		Grid3DNode startNode;
-		Grid3DNode targetNode;
 
-		private List<Int3> resultCache = new List<Int3>();
-
-
-		public override bool FindPath(Int3 from, Int3 to, ref List<Int3> result)
+		public override bool Process(AStarContext context)
 		{
-			Grid3DGraph graphMap = this.map as Grid3DGraph;
-			var startNode = graphMap.GetNearbyWalkableNode(from);
-			var endNode = graphMap.GetNearbyWalkableNode(to);
+			PathFindingRequest request = context.Request as PathFindingRequest;
+
+			ProcessingNode startNode = context.GetStartNode();
+			ProcessingNode endNode = context.GetTargetNode();
 			if (startNode == null || endNode == null)
 				return false;
 
-			var points = FindPath3D(startNode.id, endNode.id);
+			FindPath(startNode, endNode, context);
+			List<Int3> path = context.rawPathPoints;
+			if (path.Count > 0)
+			{
+				// set the first and last point to 'from' and 'to'.
+				path[0] = request.fromPosition;
+				path[path.Count - 1] = request.toPosition;
+				// then optimize
+				NavMeshPathOptimizer.Optimize(ref context.rawPathNodeCache, ref path);
+			}
 
-			Grid3DPathOptimizer.Optimize(graphMap, ref points);
+			return context.rawPathPoints.Count >= 2;
+		}
+
+
+		private void FindPath(ProcessingNode start, ProcessingNode end, AStarContext context)
+		{
+			Grid3DGraph graphMap = context.map as Grid3DGraph;
+			ProcessingNode endNode = DoAStar(context);
+
+			context.rawPathNodeCache.Clear();
+			context.rawPathPoints.Clear();
+			ProcessingNode pathNode = endNode;
+			while (pathNode != null)
+			{
+				Grid3DNode navNode = pathNode.astarNode as Grid3DNode;
+				Grid3DNode node = graphMap.GetNodeAt(navNode.x, navNode.y, navNode.z);
+				context.rawPathNodeCache.Add(navNode);
+				context.rawPathPoints.Add(node.worldPosition);
+				pathNode = pathNode.prev;
+			}
+
+			//var points = FindPath3D(startNode.id, endNode.id);
+
+			/*Grid3DPathOptimizer.Optimize(graphMap, ref points);
 
 			result.Clear();
 			for (int i = 0; i < points.Count; ++i)
@@ -47,52 +75,28 @@ namespace PathFinding
 				if ((result[result.Count - 2] - to).sqrMagnitudeLong < cellSize * cellSize)
 					result.RemoveAt(result.Count - 2);
 			}
-			return result.Count >= 2;
+			return result.Count >= 2;*/
 		}
 
 
-		public List<Int3> FindPath3D(int startId, int endId)
+		protected override bool CheckArrived(ProcessingNode node, AStarContext context)
 		{
-			Grid3DNode node = _findPath(startId, endId);
-
-			resultCache.Clear();
-			while (node != null)
-			{
-				resultCache.Add(new Int3(node.x, node.y, node.z));
-				node = node.prev as Grid3DNode;
-			}
-			
-			return resultCache;
+			ProcessingNode targetNode = context.GetTargetNode();
+			return node.astarNode.id == targetNode.astarNode.id;
 		}
 
-
-		private Grid3DNode _findPath(int start, int end)
+		protected override int CalCostG(ProcessingNode prevNode, ProcessingNode currentNode, AStarContext context)
 		{
-			startNode = map.GetNode(end) as Grid3DNode;
-			targetNode = map.GetNode(start) as Grid3DNode;
-			if (startNode == null || targetNode == null)
-				return null;
-
-			Grid3DNode endNode = DoAStar(startNode) as Grid3DNode;
-
-			return endNode;
+			return prevNode.g + context.map.GetEdge(prevNode.astarNode.id, currentNode.astarNode.id).cost;
 		}
 
-		protected override bool CheckArrived(AStarNode node)
+		protected override int CalCostH(ProcessingNode node, AStarContext context)
 		{
-			return node.id == targetNode.id;
-		}
-
-		protected override int CalCostG(AStarNode prevNode, AStarNode currentNode)
-		{
-			return prevNode.g + map.GetEdge(prevNode.id, currentNode.id).cost;
-		}
-
-		protected override int CalCostH(AStarNode node)
-		{
-			int dx = Math.Abs(targetNode.x - ((Grid3DNode)node).x);
-			int dy = Math.Abs(targetNode.y - ((Grid3DNode)node).y);
-			int dz = Math.Abs(targetNode.z - ((Grid3DNode)node).z);
+			Grid3DNode targetNode = context.GetTargetNode().astarNode as Grid3DNode;
+			Grid3DNode calNode = node.astarNode as Grid3DNode;
+			int dx = Math.Abs(targetNode.x - calNode.x);
+			int dy = Math.Abs(targetNode.y - calNode.y);
+			int dz = Math.Abs(targetNode.z - calNode.z);
 			dx *= 10;
 			dy *= 10;
 			dz *= 10;

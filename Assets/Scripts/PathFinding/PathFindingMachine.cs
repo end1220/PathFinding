@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using AStar;
 
 
 namespace PathFinding
@@ -20,6 +21,8 @@ namespace PathFinding
 		public INavGraph navgationGraph;
 
 		private IPathPlanner pathPlanner;
+
+		public AStarEngine astarEngine = new AStarEngine();
 
 
 		void Awake()
@@ -53,7 +56,9 @@ namespace PathFinding
 						break;
 				}
 				navgationGraph.Init(navgationData);
-				pathPlanner.SetGraph(navgationGraph);
+				astarEngine.Context.ResizeNodes(navgationGraph.GetNodeCount());
+				astarEngine.planner = pathPlanner;
+				//pathPlanner.SetGraph(navgationGraph);
 			}
 			catch (Exception e)
 			{
@@ -86,9 +91,16 @@ namespace PathFinding
 		}
 
 
-		public bool FindPath(Int3 from, Int3 to, ref List<Int3> result)
+		public bool FindPath(Int3 from, Int3 to, ref List<Int3> result, TwGame.Team team)
 		{
-			bool ret = pathPlanner.FindPath(from, to, ref result);
+			PathFindingRequest req = new PathFindingRequest(from, to, navgationGraph, pathPlanner, (int)team);
+			//astarEngine.AddRequest(req);
+			bool ret = astarEngine.ProcessRequest(req);
+			if (ret)
+			{
+				result.Clear();
+				result.AddRange(astarEngine.Context.rawPathPoints);
+			}
 			return ret;
 		}
 
@@ -104,7 +116,10 @@ namespace PathFinding
 			return navgationGraph.GetNearestPosition(position);
 		}
 
-
+		/// <summary>
+		/// 射线检测可走性。
+		/// 返回True表示检测到障碍
+		/// </summary>
 		public bool LineCastForMoving(ref HitInfo hit, MoveType mov)
 		{
 			return navgationGraph.LineCastForMoving(ref hit, mov);

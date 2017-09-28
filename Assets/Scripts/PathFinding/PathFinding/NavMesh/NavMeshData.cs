@@ -32,7 +32,7 @@ namespace PathFinding
 		}
 
 		List<GizmoMeshData> gizmoMeshes = new List<GizmoMeshData>();
-		private Color lineColor = new Color(0.25f, 0.25f, 0.25f);
+		private Color lineColor = new Color(0.15f, 0.15f, 0.15f);
 
 
 		public override void OnDrawGizmosSelected(Transform transform)
@@ -73,18 +73,18 @@ namespace PathFinding
 					long a2 = VectorMath.SignedTriangleAreaTimes2XZ(node.v0, node.v1, node.v2);
 					if (a1 * a2 < 0) Debug.LogError(a1 + " " + a2);
 
-
+					Vector3 up = Vector3.up * 0.01f;
 					if (VectorMath.IsClockwiseXZ(node.v0, node.v1, node.v2))
 					{
-						Debug.DrawLine((Vector3)node.v0, (Vector3)node.v1, lineColor);
-						Debug.DrawLine((Vector3)node.v1, (Vector3)node.v2, lineColor);
-						Debug.DrawLine((Vector3)node.v2, (Vector3)node.v0, lineColor);
+						Debug.DrawLine((Vector3)node.v0, up + (Vector3)node.v1, lineColor);
+						Debug.DrawLine((Vector3)node.v1, up + (Vector3)node.v2, lineColor);
+						Debug.DrawLine((Vector3)node.v2, up + (Vector3)node.v0, lineColor);
 					}
 					else
 					{
-						Debug.DrawLine((Vector3)node.v0, (Vector3)node.v1, Color.red);
-						Debug.DrawLine((Vector3)node.v1, (Vector3)node.v2, Color.red);
-						Debug.DrawLine((Vector3)node.v2, (Vector3)node.v0, Color.red);
+						Debug.DrawLine((Vector3)node.v0, up + (Vector3)node.v1, Color.red);
+						Debug.DrawLine((Vector3)node.v1, up + (Vector3)node.v2, Color.red);
+						Debug.DrawLine((Vector3)node.v2, up + (Vector3)node.v0, Color.red);
 					}
 				}
 			}

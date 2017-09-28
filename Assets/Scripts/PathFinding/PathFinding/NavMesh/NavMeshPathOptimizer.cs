@@ -1,5 +1,5 @@
 ﻿
-using System;
+using AStar;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,7 +14,7 @@ namespace PathFinding
 		static List<Int3> right = new List<Int3>();
 
 
-		public static void Optimize(ref List<NavMeshNode> path, ref List<Int3> vectorPath)
+		public static void Optimize(ref List<AStarNode> path, ref List<Int3> vectorPath)
 		{
 			
 			if (path == null || path.Count == 0 || vectorPath == null || vectorPath.Count != path.Count)
@@ -32,17 +32,19 @@ namespace PathFinding
 
 			for (int i = 0; i < path.Count - 1; i++)
 			{
+				NavMeshNode node0 = path[i] as NavMeshNode;
+				NavMeshNode node1 = path[i + 1] as NavMeshNode;
 				// Get the portal between path[i] and path[i+1] and add it to the left and right lists
-				bool portalWasAdded = path[i].GetPortal(path[i + 1], left, right);
+				bool portalWasAdded = node0.GetPortal(node1, left, right);
 
 				if (!portalWasAdded)
 				{
 					// Fallback, just use the positions of the nodes
-					left.Add(path[i].position);
-					right.Add(path[i].position);
+					left.Add(node0.position);
+					right.Add(node0.position);
 
-					left.Add(path[i + 1].position);
-					right.Add(path[i + 1].position);
+					left.Add(node1.position);
+					right.Add(node1.position);
 				}
 			}
 

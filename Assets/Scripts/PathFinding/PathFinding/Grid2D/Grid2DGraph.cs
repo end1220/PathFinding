@@ -5,7 +5,7 @@ using AStar;
 
 namespace PathFinding
 {
-	public class Grid2DGraph : AStarMap, INavGraph
+	public class Grid2DGraph : INavGraph
 	{
 		private const int NEIGHBOUR_COUNT = 8;
 		private readonly int[] xOffset = { -1, -1, -1, 0, 1, 1, 1, 0 };
@@ -20,7 +20,7 @@ namespace PathFinding
 		Grid2DNavData navData;
 
 
-		public void Init(INavData data)
+		public override void Init(INavData data)
 		{
 			navData = data as Grid2DNavData;
 			nodeIdCounter = 0;
@@ -52,6 +52,12 @@ namespace PathFinding
 				return node;
 			}
 			return null;
+		}
+
+		public override AStarNode GetNodeAt(Int3 position)
+		{
+			Int2 pt2d = FixVector3ToInt2(position);
+			return GetNode(pt2d.x, pt2d.y);
 		}
 
 		public void SetNodePassable(int x, int y, bool passable)
@@ -155,7 +161,7 @@ namespace PathFinding
 			return false;
 		}*/
 
-		public bool IsWalkable(Int3 position)
+		public override bool IsWalkable(Int3 position)
 		{
 			Int2 pt2d = FixVector3ToInt2(position);
 			bool ret = this.IsNodePassable(pt2d.x, pt2d.y);
@@ -194,7 +200,7 @@ namespace PathFinding
 		}
 
 
-		public Int3 GetNearestPosition(Int3 position)
+		public override Int3 GetNearestPosition(Int3 position)
 		{
 			int step = 5;
 			if (IsWalkable(position))
@@ -232,7 +238,7 @@ namespace PathFinding
 
 
 		// 射线碰撞，计算起点到终点间的最远可到达点
-		public bool LineCastForMoving(ref HitInfo hit, MoveType mov)
+		public override bool LineCastForMoving(ref HitInfo hit, MoveType mov)
 		{
 			Int3 from = hit.from;
 			Int3 to = hit.to;
@@ -300,7 +306,7 @@ namespace PathFinding
 		}
 
 
-		public Int3 SlideByObstacles(Int3 from, Int3 to, Int3 hit)
+		public override Int3 SlideByObstacles(Int3 from, Int3 to, Int3 hit)
 		{
 			Int2 fromPoint = this.FixVector3ToInt2(from);
 			Int2 targetPoint = this.FixVector3ToInt2(to);

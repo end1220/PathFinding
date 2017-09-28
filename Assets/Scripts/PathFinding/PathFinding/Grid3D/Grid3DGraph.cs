@@ -8,7 +8,7 @@ using AStar;
 
 namespace PathFinding
 {
-	public class Grid3DGraph : AStarMap, INavGraph
+	public class Grid3DGraph : INavGraph
 	{
 		public Grid3DNavData navGraphData;
 
@@ -38,7 +38,7 @@ namespace PathFinding
 		}
 
 
-		public void Init(INavData data)
+		public override void Init(INavData data)
 		{
 			Grid3DNavData navData = data as Grid3DNavData;
 			ParseNavData(navData);
@@ -93,6 +93,13 @@ namespace PathFinding
 			if (IsIndexValid(x, y, z))
 				return nodeMatrix[x, y, z];
 			return null;
+		}
+
+
+		public override AStarNode GetNodeAt(Int3 position)
+		{
+			Int3 pt3d = FixVector3ToInt3(position);
+			return GetNodeAt(pt3d.x, pt3d.y, pt3d.z);
 		}
 
 
@@ -157,7 +164,7 @@ namespace PathFinding
 		}
 
 
-		public bool IsWalkable(Int3 position)
+		public override bool IsWalkable(Int3 position)
 		{
 			Int3 pt3d = FixVector3ToInt3(position);
 			bool ret = this.IsNodePassable(pt3d.x, pt3d.y, pt3d.z);
@@ -165,7 +172,7 @@ namespace PathFinding
 		}
 
 
-		public Int3 GetNearestPosition(Int3 position)
+		public override Int3 GetNearestPosition(Int3 position)
 		{
 			return position;
 		}
@@ -200,7 +207,7 @@ namespace PathFinding
 		}
 
 		
-		public bool LineCastForMoving(ref HitInfo hit, MoveType mov)
+		public override bool LineCastForMoving(ref HitInfo hit, MoveType mov)
 		{
 			Int3 from = hit.from;
 			Int3 to = hit.to;
@@ -313,7 +320,7 @@ namespace PathFinding
 		}
 
 
-		public Int3 SlideByObstacles(Int3 from, Int3 to, Int3 hit)
+		public override Int3 SlideByObstacles(Int3 from, Int3 to, Int3 hit)
 		{
 			Int3 fromPoint = this.FixVector3ToInt3(from);
 			Int3 targetPoint = this.FixVector3ToInt3(to);

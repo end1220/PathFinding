@@ -112,11 +112,11 @@ public class PathTest : MonoBehaviour
 		watch.Start();
 
 		fixResult.Clear();
-		if (!machine.FindPath(from, to, ref fixResult))
+		if (!machine.FindPath(from, to, ref fixResult, TwGame.Team.Neutral))
 		{
 			UnityEngine.Debug.Log("ms " + watch.ElapsedMilliseconds);
 			to = PathFindingMachine.Instance.GetNearestPosition(to);
-			bool ret = machine.FindPath(from, to, ref fixResult);
+			bool ret = machine.FindPath(from, to, ref fixResult, TwGame.Team.Neutral);
 			if (!ret)
 			{
 				UnityEngine.Debug.Log("cannot find a path to " + to.ToString());

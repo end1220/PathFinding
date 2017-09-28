@@ -4,35 +4,32 @@ namespace AStar
 {
 	public abstract class AStarPathPlanner
 	{
-		private AStarNode openList;
+		static bool enableTracing = false;
 
-		private AStarNode closedList;
+		public abstract bool Process(AStarContext handler);
 
-		protected AStarMap map;
-
-
-		public void Setup(AStarMap map)
+		
+		protected ProcessingNode DoAStar(AStarContext context)
 		{
-			this.map = map;
-		}
+			if (enableTracing)
+				context.TracingNodes.Clear();
 
-		protected AStarNode DoAStar(AStarNode startNode)
-		{
-			openList = null;
-			closedList = null;
+			ProcessingNode startNode = context.GetStartNode();
+			context.openList = null;
+			context.closedList = null;
 
 			startNode.g = 0;
-			startNode.h = CalCostH(startNode);
+			startNode.h = CalCostH(startNode, context);
 			startNode.f = startNode.g + startNode.h;
 			startNode.prev = null;
 			startNode.next = null;
 
-			AddToOpenList(startNode);
+			context.AddToOpenList(startNode);
 
-			AStarNode arriveNode = null;
+			ProcessingNode arriveNode = null;
 
 			int count = 0;
-			while (openList != null)
+			while (context.openList != null)
 			{
 				count++;
 				if (count > 10000)
@@ -40,44 +37,48 @@ namespace AStar
 					UnityEngine.Debug.LogError("AStarPathPlanner : too many nodes....");
 					break;
 				}
-				AStarNode curNode = openList;
-				if (CheckArrived(curNode))
+				ProcessingNode curNode = context.openList;
+				if (CheckArrived(curNode, context))
 				{
 					arriveNode = curNode;
 					break;
 				}
-				EvaluateAllNeighbours(curNode);
-				RemoveFromOpenList(curNode);
-				AddToClosedList(curNode);
+				EvaluateAllNeighbours(curNode, context);
+				context.RemoveFromOpenList(curNode);
+				context.AddToClosedList(curNode);
+
+				if (enableTracing)
+					context.TracingNodes.Add(curNode.astarNode);
 			}
 
 			return arriveNode;
 		}
 
-		protected abstract bool CheckArrived(AStarNode node);
+		protected abstract bool CheckArrived(ProcessingNode node, AStarContext context);
 
-		protected abstract int CalCostG(AStarNode prevNode, AStarNode currentNode);
+		protected abstract int CalCostG(ProcessingNode prevNode, ProcessingNode currentNode, AStarContext context);
 
-		protected abstract int CalCostH(AStarNode node);
+		protected abstract int CalCostH(ProcessingNode node, AStarContext context);
 
-		private void EvaluateAllNeighbours(AStarNode node)
+		private void EvaluateAllNeighbours(ProcessingNode node, AStarContext context)
 		{
-			int neighbourCount = map.GetNeighbourNodeCount(node);
+			int neighbourCount = context.map.GetNeighbourNodeCount(node.astarNode);
 			for (int i = 0; i < neighbourCount; ++i)
 			{
-				AStarNode neighbour = map.GetNeighbourNode(node, i);
+				AStarNode astarNode = context.map.GetNeighbourNode(node.astarNode, i);
+				ProcessingNode neighbour = context.GetNode(astarNode);
 				if (neighbour != null)
-					EvaluateNeighbour(node, neighbour);
+					EvaluateNeighbour(node, neighbour, context);
 			}
 		}
 
-		private void EvaluateNeighbour(AStarNode currentNode, AStarNode neighbourNode)
+		private void EvaluateNeighbour(ProcessingNode currentNode, ProcessingNode neighbourNode, AStarContext context)
 		{
-			int g = CalCostG(currentNode, neighbourNode);
-			int h = CalCostH(neighbourNode);
+			int g = CalCostG(currentNode, neighbourNode, context);
+			int h = CalCostH(neighbourNode, context);
 			int f = g + h;
 
-			AStarNode findNode = FindInOpenList(neighbourNode);
+			ProcessingNode findNode = context.FindInOpenList(neighbourNode);
 			if (findNode != null)
 			{
 				if (f < findNode.f)
@@ -90,187 +91,32 @@ namespace AStar
 			}
 			else
 			{
-				findNode = FindInClosedList(neighbourNode);
+				findNode = context.FindInClosedList(neighbourNode);
 				if (findNode != null)
 				{
 					if (f < findNode.f)
 					{
-						RemoveFromClosedList(findNode);
+						context.RemoveFromClosedList(findNode);
 						findNode.g = g;
 						findNode.h = h;
 						findNode.f = f;
 						findNode.prev = currentNode;
-						AddToOpenList(findNode);
+						context.AddToOpenList(findNode);
 					}
 				}
 				else
 				{
-					AStarNode newNode = neighbourNode;
+					ProcessingNode newNode = neighbourNode;
 					newNode.g = g;
 					newNode.h = h;
 					newNode.f = f;
 					newNode.prev = currentNode;
-					AddToOpenList(newNode);
+					context.AddToOpenList(newNode);
 				}
 			}
 
 		}
 
-		private void AddToOpenList(AStarNode node)
-		{
-			if (openList == null)
-			{
-				openList = node;
-				node.next = null;
-			}
-			else
-			{
-				AStarNode prevNode = null;
-				AStarNode curNode = openList;
-				while (curNode != null)
-				{
-					if (node.f < curNode.f)
-					{
-						node.next = curNode;
-						if (prevNode != null)
-							prevNode.next = node;
-						else
-							openList = node;
-						break;
-					}
-					else if (curNode.next == null)
-					{
-						curNode.next = node;
-						node.next = null;
-						break;
-					}
-					prevNode = curNode;
-					curNode = curNode.next;
-				}
-			}
-		}
-
-		private void AddToClosedList(AStarNode node)
-		{
-			if (closedList == null)
-			{
-				closedList = node;
-				node.next = null;
-			}
-			else
-			{
-				AStarNode prevNode = null;
-				AStarNode curNode = closedList;
-				while (curNode != null)
-				{
-					if (node.f < curNode.f)
-					{
-						node.next = curNode;
-						if (prevNode != null)
-							prevNode.next = node;
-						else
-							closedList = node;
-						break;
-					}
-					else if (curNode.next == null)
-					{
-						curNode.next = node;
-						node.next = null;
-						break;
-					}
-					prevNode = curNode;
-					curNode = curNode.next;
-				}
-			}
-		}
-
-		private void RemoveFromOpenList(AStarNode node)
-		{
-			if (openList != null)
-			{
-				AStarNode prevNode = null;
-				AStarNode curNode = openList;
-				while (curNode != null)
-				{
-					if (node.id == curNode.id)
-					{
-						if (prevNode != null)
-							prevNode.next = curNode.next;
-						else
-							openList = curNode.next;
-						curNode.next = null;
-						break;
-					}
-					prevNode = curNode;
-					curNode = curNode.next;
-				}
-			}
-		}
-
-		private void RemoveFromClosedList(AStarNode node)
-		{
-			if (closedList != null)
-			{
-				AStarNode prevNode = null;
-				AStarNode curNode = closedList;
-				while (curNode != null)
-				{
-					if (node.id == curNode.id)
-					{
-						if (prevNode != null)
-							prevNode.next = curNode.next;
-						else
-							closedList = curNode.next;
-						curNode.next = null;
-						break;
-					}
-					prevNode = curNode;
-					curNode = curNode.next;
-				}
-			}
-		}
-
-		private AStarNode FindInOpenList(AStarNode node)
-		{
-			if (openList == null)
-			{
-				return null;
-			}
-			else
-			{
-				AStarNode curNode = openList;
-				while (curNode != null)
-				{
-					if (curNode.id == node.id)
-						return curNode;
-					
-					curNode = curNode.next;
-				}
-
-				return null;
-			}
-		}
-
-		private AStarNode FindInClosedList(AStarNode node)
-		{
-			if (closedList == null)
-			{
-				return null;
-			}
-			else
-			{
-				AStarNode curNode = closedList; 
-				while (curNode != null)
-				{
-					if (curNode.id == node.id)
-						return curNode;
-					
-					curNode = curNode.next;
-				}
-
-				return null;
-			}
-		}
 
 	}
 
